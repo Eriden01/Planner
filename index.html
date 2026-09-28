@@ -1,0 +1,1173 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#f7f7f8" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="Artem Planner" />
+  <link rel="manifest" href="./manifest.webmanifest" />
+  <link rel="apple-touch-icon" href="./icon-192.png" />
+  <title>Artem Planner v0.4</title>
+  <style>
+    :root{
+      --bg:#f7f7f8;
+      --surface:#ffffff;
+      --surface-2:#fbfbfc;
+      --border:#e7e7eb;
+      --text:#18181b;
+      --muted:#71717a;
+      --muted-2:#a1a1aa;
+      --accent:#6366f1;
+      --accent-2:#eef2ff;
+      --success:#22c55e;
+      --success-bg:#ecfdf3;
+      --danger:#ef4444;
+      --danger-bg:#fff1f2;
+      --warning:#f59e0b;
+      --warning-bg:#fff7ed;
+      --blue:#3b82f6;
+      --blue-bg:#eff6ff;
+      --purple:#8b5cf6;
+      --purple-bg:#f5f3ff;
+      --pink:#ec4899;
+      --pink-bg:#fdf2f8;
+      --shadow:0 10px 30px rgba(24,24,27,.06);
+      --radius:16px;
+      --radius-sm:11px;
+      --sidebar:220px;
+      --right:300px;
+    }
+
+    *{box-sizing:border-box}
+    html{color-scheme:light}
+    html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",sans-serif}
+    button,input,select,textarea{font:inherit}
+    button{cursor:pointer}
+    .app{min-height:100vh;display:grid;grid-template-columns:var(--sidebar) minmax(0,1fr);background:var(--bg)}
+    .sidebar{
+      position:sticky;top:0;height:100vh;padding:18px 14px 16px;border-right:1px solid var(--border);
+      background:rgba(250,250,251,.88);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+      display:flex;flex-direction:column;gap:16px;z-index:20
+    }
+    .brand{display:flex;align-items:center;gap:11px;padding:4px 8px 8px;font-weight:700}
+    .brand-mark{width:30px;height:30px;border-radius:9px;background:linear-gradient(145deg,#4f46e5,#818cf8);display:grid;place-items:center;color:#fff;box-shadow:0 8px 18px rgba(99,102,241,.22)}
+    .search{position:relative}
+    .search input{width:100%;border:1px solid var(--border);background:#f1f1f3;border-radius:10px;padding:9px 12px 9px 34px;outline:none}
+    .search span{position:absolute;left:12px;top:9px;color:var(--muted)}
+    .nav{display:flex;flex-direction:column;gap:4px}
+    .nav button{border:0;background:transparent;padding:10px 11px;border-radius:10px;display:flex;gap:10px;align-items:center;color:#303036;text-align:left}
+    .nav button:hover{background:#f0f0f3}
+    .nav button.active{background:#e9edff;color:#4f46e5;font-weight:600}
+    .nav-icon{width:18px;text-align:center;opacity:.92}
+    .sidebar-section{font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted-2);padding:4px 10px}
+    .project-list{display:flex;flex-direction:column;gap:3px}
+    .project-chip{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:9px;color:#3f3f46}
+    .dot{width:9px;height:9px;border-radius:50%}
+    .sidebar-footer{margin-top:auto}
+    .sidebar-footer button{width:100%;border:0;background:transparent;text-align:left;padding:10px;border-radius:10px;color:#52525b}
+    .content{min-width:0;padding:18px 20px 36px}
+    .page{display:none;max-width:1500px;margin:0 auto}
+    .page.active{display:block}
+    .topbar{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:18px}
+    .title-wrap h1{font-size:30px;line-height:1.05;margin:0 0 5px;letter-spacing:-.03em}
+    .subtitle{color:var(--muted);font-size:14px}
+    .actions{display:flex;gap:9px;align-items:center;flex-wrap:wrap}
+    .btn{border:1px solid var(--border);background:var(--surface);color:#3f3f46;border-radius:10px;padding:9px 12px;display:inline-flex;align-items:center;gap:8px;box-shadow:0 1px 0 rgba(0,0,0,.02)}
+    .btn:hover{background:#fafafa}
+    .btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+    .btn.danger{color:var(--danger)}
+    .segmented{display:flex;background:#eeeef1;padding:3px;border-radius:10px}
+    .segmented button{border:0;background:transparent;padding:7px 12px;border-radius:8px;color:#52525b}
+    .segmented button.active{background:#fff;color:#18181b;box-shadow:0 1px 4px rgba(0,0,0,.08)}
+    .cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:14px}
+    .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px;box-shadow:var(--shadow)}
+    .metric{position:relative;overflow:hidden}
+    .metric .label{color:#52525b;font-size:13px;margin-bottom:10px}
+    .metric .value{font-size:25px;font-weight:760;letter-spacing:-.03em}
+    .metric .hint{font-size:12px;color:var(--muted);margin-top:7px}
+    .metric.green{background:linear-gradient(180deg,#fbfffc,#f3fbf6)}
+    .metric.red{background:linear-gradient(180deg,#fffdfd,#fff6f6)}
+    .metric.blue{background:linear-gradient(180deg,#fcfdff,#f4f8ff)}
+    .metric.purple{background:linear-gradient(180deg,#fefcff,#f8f5ff)}
+    .grid-2{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(280px,.7fr);gap:14px}
+    .grid-equal{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    .section-title{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:13px}
+    .section-title h2{font-size:17px;margin:0;letter-spacing:-.015em}
+    .section-title .small{color:var(--muted);font-size:12px}
+    .table-wrap{overflow:auto;border:1px solid var(--border);border-radius:14px;background:#fff}
+    table{border-collapse:collapse;width:100%;min-width:720px}
+    th,td{padding:11px 12px;border-bottom:1px solid #eeeeef;text-align:left;font-size:13px;white-space:nowrap}
+    th{color:var(--muted);font-weight:600;background:#fcfcfd;position:sticky;top:0;z-index:1}
+    tr:last-child td{border-bottom:0}
+    .amount.income{color:#16a34a;font-weight:700}
+    .amount.expense{color:#e11d48;font-weight:700}
+    .amount.saving{color:#2563eb;font-weight:700}
+    .badge{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:5px 8px;font-size:12px;background:#f4f4f5}
+    .badge.green{background:#ecfdf3;color:#15803d}.badge.red{background:#fff1f2;color:#be123c}.badge.blue{background:#eff6ff;color:#1d4ed8}
+    .empty{padding:24px;color:var(--muted);text-align:center}
+    .bar-row{margin:13px 0}
+    .bar-head{display:flex;justify-content:space-between;font-size:13px;margin-bottom:7px}
+    .bar{height:8px;background:#eeeef2;border-radius:999px;overflow:hidden}
+    .bar > span{display:block;height:100%;border-radius:inherit;background:var(--accent)}
+    .food-week{display:grid;grid-template-columns:repeat(7,minmax(125px,1fr));gap:9px;overflow:auto;padding-bottom:4px}
+    .day-col{border:1px solid var(--border);border-radius:13px;background:#fff;padding:10px;min-width:125px}
+    .day-head{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:9px}
+    .day-head strong{font-size:13px}.day-head span{font-size:12px;color:var(--muted)}
+    .meal{border-radius:10px;padding:9px;margin:7px 0;background:#f7f7f8}
+    .meal.breakfast{background:#eefaf1}.meal.lunch{background:#fff4e6}.meal.dinner{background:#eef6ff}.meal.snack{background:#f7efff}
+    .meal-title{font-size:11px;color:#52525b;margin-bottom:4px}
+    .meal-line{display:flex;justify-content:space-between;gap:8px;font-size:12px}
+    .meal-note{overflow:hidden;text-overflow:ellipsis}
+    .mini-list{display:flex;flex-direction:column;gap:9px}
+    .mini-item{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px;border:1px solid var(--border);border-radius:11px;background:#fff}
+    .mini-item .left{display:flex;align-items:center;gap:9px;min-width:0}
+    .mini-item .meta{font-size:12px;color:var(--muted)}
+    .mini-item strong{font-size:13px}
+    .calendar-shell{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:14px}
+    .calendar-main{min-width:0}
+    .calendar-toolbar{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px;flex-wrap:wrap}
+    .calendar-toolbar .left,.calendar-toolbar .right{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+    .week-label{font-weight:700;letter-spacing:-.015em;min-width:180px;text-align:center}
+    .week-scroll{overflow:auto;border:1px solid var(--border);border-radius:16px;background:#fff;box-shadow:var(--shadow)}
+    .week-grid{display:grid;grid-template-columns:64px repeat(7,minmax(126px,1fr));grid-template-rows:54px repeat(34,28px);min-width:980px;position:relative;background:#fff}
+    .week-head{padding:9px 8px;text-align:center;background:#fbfbfc;border-right:1px solid #efeff1;border-bottom:1px solid #e7e7eb;position:sticky;top:0;z-index:8}
+    .week-head.today{background:#eef2ff;color:#4338ca}
+    .week-head strong{display:block;font-size:13px}.week-head span{font-size:11px;color:var(--muted)}
+    .time-cell{padding:5px 7px;text-align:right;color:var(--muted);font-size:10px;background:#fcfcfd;border-right:1px solid #efeff1;border-bottom:1px solid #efeff1;z-index:1}
+    .calendar-slot{border:0;border-right:1px solid #f0f0f2;border-bottom:1px solid #f3f3f5;background:#fff;padding:0;min-width:0}
+    .calendar-slot:hover{background:#f7f8ff}
+    .calendar-slot.closed{background:repeating-linear-gradient(135deg,#fafafa,#fafafa 7px,#f6f6f7 7px,#f6f6f7 14px);cursor:not-allowed}
+    .calendar-slot.hour{border-bottom-color:#e7e7eb}
+    .calendar-event{z-index:4;margin:2px 4px;border:0;border-left:3px solid;border-radius:8px;padding:6px 7px;text-align:left;overflow:hidden;box-shadow:0 2px 8px rgba(24,24,27,.06);font-size:11px;line-height:1.18;color:#27272a}
+    .calendar-event:hover{filter:brightness(.985);box-shadow:0 4px 12px rgba(24,24,27,.10)}
+    .calendar-event strong{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:11px}
+    .calendar-event span{display:block;margin-top:2px;color:#52525b;font-size:10px}
+    .calendar-event.work{background:#f1f2f4;border-color:#a1a1aa}.calendar-event.commute{background:#eaf3ff;border-color:#60a5fa}.calendar-event.food{background:#eafaf0;border-color:#4ade80}.calendar-event.freelance{background:#f2edff;border-color:#a78bfa}.calendar-event.together{background:#fdebf5;border-color:#f472b6}.calendar-event.personal{background:#eaf7ff;border-color:#38bdf8}.calendar-event.project{background:#eef2ff;border-color:#6366f1}.calendar-event.home{background:#fff3e8;border-color:#fb923c}.calendar-event.rest{background:#fff8dc;border-color:#facc15}.calendar-event.sport{background:#ecfdf5;border-color:#10b981}.calendar-event.other{background:#f4f4f5;border-color:#71717a}
+    .legend{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}
+    .legend span{display:inline-flex;align-items:center;gap:6px;font-size:11px;color:#52525b;background:#fff;border:1px solid var(--border);padding:5px 8px;border-radius:999px}
+    .legend i{width:8px;height:8px;border-radius:50%;display:block}
+    .calendar-task{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:9px 0;border-bottom:1px solid #f0f0f1}
+    .calendar-task:last-child{border-bottom:0}
+    .calendar-task .task-text{min-width:0;font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .calendar-task .schedule-btn{border:1px solid var(--border);background:#fff;border-radius:8px;padding:5px 7px;color:#52525b;font-size:11px}
+    .today-panel{display:flex;flex-direction:column;gap:12px}
+    .today-block{padding:14px;border:1px solid var(--border);border-radius:14px;background:#fff}
+    .today-block h3{margin:0 0 10px;font-size:15px}
+    .quick-task{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:9px;padding:9px 0;border-bottom:1px solid #f0f0f1}
+    .quick-task:last-child{border-bottom:0}
+    .quick-task input{accent-color:var(--accent)}
+    .quick-task-title{border:0;background:transparent;text-align:left;padding:3px 0;color:var(--text);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .quick-task-actions{display:flex;gap:4px}
+    .tiny-btn{border:0;background:transparent;color:#a1a1aa;border-radius:7px;padding:4px 6px}
+    .tiny-btn:hover{background:#f4f4f5;color:#52525b}
+    .tiny-btn.danger:hover{background:#fff1f2;color:#e11d48}
+    .project-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px;margin-bottom:14px}
+    .project-card{border:1px solid var(--border);background:#fff;border-radius:15px;padding:15px;box-shadow:var(--shadow)}
+    .project-card-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+    .project-name{display:flex;align-items:center;gap:9px;font-weight:700;min-width:0}
+    .project-name span:last-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .project-desc{margin:9px 0 12px;color:var(--muted);font-size:12px;line-height:1.45;min-height:18px}
+    .project-meta{display:flex;justify-content:space-between;gap:10px;color:var(--muted);font-size:11px;margin-bottom:7px}
+    .project-empty{padding:42px 18px;text-align:center;border:1px dashed #d7d7dd;border-radius:16px;background:#fbfbfc;color:var(--muted)}
+    .project-task-row{display:grid;grid-template-columns:auto minmax(0,1fr) auto auto;align-items:center;gap:9px;padding:10px 0;border-bottom:1px solid #f0f0f1}
+    .project-task-row:last-child{border-bottom:0}
+    .project-task-copy{min-width:0}.project-task-copy strong{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:13px}.project-task-copy span{font-size:11px;color:var(--muted)}
+    .period-label{color:var(--muted);font-size:12px}
+    .dialog-help{font-size:12px;color:var(--muted);line-height:1.45;margin-top:-2px}
+    .swatch{width:12px;height:12px;border-radius:50%;display:inline-block;vertical-align:-1px;margin-right:7px}
+    .fab-timer{position:fixed;left:calc(var(--sidebar) + 50%);bottom:20px;transform:translateX(-50%);z-index:30;background:rgba(255,255,255,.94);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid var(--border);box-shadow:0 18px 40px rgba(0,0,0,.13);border-radius:999px;padding:10px 14px;display:flex;align-items:center;gap:13px}
+    .timer-btn{width:40px;height:40px;border-radius:50%;border:0;background:var(--accent);color:#fff;font-weight:700}
+    .timer-copy{min-width:130px}.timer-copy strong{display:block;font-size:13px}.timer-copy span{font-size:11px;color:var(--muted)}
+    .timer-time{font-variant-numeric:tabular-nums;font-weight:750}
+    .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .field{display:flex;flex-direction:column;gap:6px}
+    .field.full{grid-column:1/-1}
+    .field label{font-size:12px;color:#52525b}
+    .field input,.field select,.field textarea{border:1px solid var(--border);border-radius:10px;padding:10px 11px;background:#fff;outline:none}
+    .field textarea{min-height:76px;resize:vertical}
+    dialog{border:1px solid var(--border);border-radius:18px;padding:0;box-shadow:0 24px 80px rgba(0,0,0,.22);width:min(560px,calc(100vw - 28px));max-height:min(88vh,760px);overflow:auto;background:#fff;color:#18181b;color-scheme:light}
+    dialog::backdrop{background:rgba(24,24,27,.28);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px)}
+    .dialog-inner{padding:20px;background:#fff;color:#18181b}
+    .dialog-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+    .dialog-head h3{margin:0;font-size:19px;color:#18181b}
+    .icon-btn{border:1px solid #e4e4e7;background:#f7f7f8;color:#52525b;border-radius:10px;width:34px;height:34px;font-size:21px;line-height:1}
+    .icon-btn:hover{background:#eeeef1;color:#18181b}
+    dialog .field label{color:#3f3f46;font-weight:600}
+    dialog input,dialog select,dialog textarea{background:#fff!important;color:#18181b!important;border-color:#d4d4d8!important;-webkit-text-fill-color:#18181b;opacity:1}
+    dialog input::placeholder,dialog textarea::placeholder{color:#a1a1aa;-webkit-text-fill-color:#a1a1aa}
+    dialog select option{background:#fff;color:#18181b}
+    .dialog-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:18px;align-items:center}
+    .settings-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    .note{padding:12px 13px;background:#f6f7fb;border:1px solid #e5e7f4;border-radius:12px;color:#52525b;font-size:13px;line-height:1.45}
+    .mobile-nav{display:none}
+    .task-toolbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:12px}.task-toolbar select,.task-toolbar input{border:1px solid var(--border);background:#fff;border-radius:9px;padding:8px 10px;outline:none}.task-list{display:flex;flex-direction:column}.task-row{display:grid;grid-template-columns:auto minmax(0,1fr) auto auto auto;gap:10px;align-items:center;padding:11px 4px;border-bottom:1px solid #f0f0f2}.task-row:last-child{border-bottom:0}.task-main{min-width:0}.task-main strong{display:block;font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.task-main span{display:block;color:var(--muted);font-size:11px;margin-top:3px}.priority{width:8px;height:8px;border-radius:50%;display:inline-block}.priority.high{background:#ef4444}.priority.normal{background:#f59e0b}.priority.low{background:#3b82f6}.task-time{font-size:11px;color:var(--muted);text-align:right;min-width:64px}.task-actions{display:flex;gap:5px}.task-actions button{border:1px solid var(--border);background:#fff;border-radius:8px;padding:6px 8px;color:#52525b}.task-actions button:hover{background:#f7f7f8}.task-actions .play{color:#4f46e5}.task-actions .danger{color:#dc2626}.kpi-line{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}.kpi-mini{padding:12px;border:1px solid var(--border);border-radius:12px;background:#fff}.kpi-mini span{font-size:11px;color:var(--muted);display:block}.kpi-mini strong{font-size:18px;margin-top:3px;display:block}.project-finance{margin-top:9px;padding-top:9px;border-top:1px solid #f1f1f2;display:grid;grid-template-columns:repeat(3,1fr);gap:7px}.project-finance span{font-size:10px;color:var(--muted)}.project-finance strong{display:block;font-size:12px;color:var(--text);margin-top:2px}.calendar-event[draggable="true"]{cursor:grab}.calendar-event.dragging{opacity:.55}.drop-active{outline:2px solid #818cf8;outline-offset:-2px;background:#eef2ff!important}.template-status{font-size:11px;color:var(--muted)}.today-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}.today-summary .mini{padding:10px;border:1px solid var(--border);border-radius:11px;background:#fff}.today-summary span{font-size:10px;color:var(--muted)}.today-summary strong{display:block;font-size:15px;margin-top:3px}.money-project{display:flex;align-items:center;gap:6px}.money-project .dot{flex:0 0 auto}.forecast{font-size:12px;color:var(--muted);margin-top:8px}.archive-tag{font-size:10px;background:#f4f4f5;border-radius:999px;padding:3px 6px;color:#71717a}
+    .delete-row{border:0;background:transparent;color:#a1a1aa;font-size:16px}
+    .delete-row:hover{color:var(--danger)}
+    .money-total{font-variant-numeric:tabular-nums}
+    .muted{color:var(--muted)}
+
+    .cloud-indicator{display:flex;align-items:center;gap:8px;padding:8px 10px;margin-bottom:5px;border-radius:10px;color:#52525b;font-size:11px;background:#f4f4f5}
+    .sync-dot{width:8px;height:8px;border-radius:50%;background:#a1a1aa;box-shadow:0 0 0 3px rgba(161,161,170,.12)}
+    .sync-dot.ok{background:#22c55e;box-shadow:0 0 0 3px rgba(34,197,94,.12)}
+    .sync-dot.busy{background:#6366f1;box-shadow:0 0 0 3px rgba(99,102,241,.12)}
+    .sync-dot.warn{background:#f59e0b;box-shadow:0 0 0 3px rgba(245,158,11,.12)}
+    .sync-dot.err{background:#ef4444;box-shadow:0 0 0 3px rgba(239,68,68,.12)}
+    .cloud-card{grid-column:1/-1}
+    .cloud-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}
+    .cloud-state{display:inline-flex;align-items:center;gap:7px;padding:6px 9px;border-radius:999px;background:#f4f4f5;color:#52525b;font-size:11px}
+    .cloud-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+    .cloud-meta{font-size:11px;color:var(--muted);line-height:1.5;margin-top:10px}
+    .cloud-warning{display:none;margin-top:10px;padding:10px 12px;border:1px solid #fed7aa;background:#fff7ed;color:#9a3412;border-radius:10px;font-size:12px;line-height:1.4}
+    .cloud-warning.show{display:block}
+    .sync-config-note{margin-top:10px;font-size:11px;color:var(--muted)}
+    @media(max-width:1100px){
+      .cards{grid-template-columns:repeat(2,1fr)}
+      .grid-2,.calendar-shell{grid-template-columns:1fr}
+    }
+    @media(max-width:780px){
+      :root{--sidebar:0px}
+      body{padding-bottom:74px}
+      .app{display:block}
+      .sidebar{display:none}
+      .content{padding:14px 12px 90px}
+      .topbar{align-items:flex-start}
+      .title-wrap h1{font-size:28px}
+      .actions .segmented{display:none}
+      #moneyPeriod{display:flex}
+      .cards{grid-template-columns:1fr 1fr;gap:9px}
+      .card{padding:13px;border-radius:14px;box-shadow:none}
+      .metric .value{font-size:21px}
+      .grid-2,.grid-equal,.settings-grid{grid-template-columns:1fr}
+      .food-week{grid-template-columns:repeat(7,132px)}
+      .calendar-shell{display:block}
+      .calendar-shell > .today-panel{margin-top:12px}
+      .week-grid{grid-template-columns:56px repeat(7,124px);min-width:924px}
+      .calendar-toolbar{align-items:flex-start}
+      .week-label{order:-1;width:100%;text-align:left;min-width:0}
+      .fab-timer{left:50%;bottom:82px;max-width:calc(100vw - 24px)}
+      .mobile-nav{display:grid;grid-template-columns:repeat(6,1fr);position:fixed;left:0;right:0;bottom:0;z-index:40;background:rgba(255,255,255,.95);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-top:1px solid var(--border);padding:7px 8px calc(7px + env(safe-area-inset-bottom))}
+      .mobile-nav button{border:0;background:transparent;border-radius:10px;padding:7px 2px;color:#71717a;font-size:10px}
+      .mobile-nav button.active{color:var(--accent)}
+      .mobile-nav .mi{display:block;font-size:18px;margin-bottom:2px}
+      .form-grid{grid-template-columns:1fr}
+      .field.full{grid-column:auto}
+      dialog{width:calc(100vw - 20px);max-height:86vh;border-radius:16px}
+      .dialog-inner{padding:16px}
+      .dialog-actions{position:sticky;bottom:0;background:#fff;padding-top:10px}
+    }
+  </style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand"><div class="brand-mark">M</div><span>Artem Planner</span></div>
+    <div class="search"><span>⌕</span><input placeholder="Поиск..." /></div>
+    <div class="nav" id="desktopNav">
+      <button data-page="today" class="active"><span class="nav-icon">◫</span>Сегодня</button>
+      <button data-page="calendar"><span class="nav-icon">□</span>Календарь</button>
+      <button data-page="tasks"><span class="nav-icon">☑</span>Задачи</button>
+      <button data-page="projects"><span class="nav-icon">✓</span>Проекты</button>
+      <button data-page="money"><span class="nav-icon">▣</span>Деньги</button>
+      <button data-page="food"><span class="nav-icon">⌁</span>Еда</button>
+    </div>
+    <div class="sidebar-section">Проекты</div>
+    <div class="project-list" id="sidebarProjects"></div>
+    <div class="sidebar-footer"><div class="cloud-indicator"><span class="sync-dot" id="sidebarSyncDot"></span><span id="sidebarSyncText">Только локально</span></div><button data-page="settings">⚙ Настройки</button></div>
+  </aside>
+
+  <main class="content">
+    <section class="page active" id="page-today">
+      <div class="topbar">
+        <div class="title-wrap"><h1>Сегодня</h1><div class="subtitle" id="todayDate"></div></div>
+        <div class="actions"><button class="btn primary" data-open="quickTask">＋ Добавить задачу</button></div>
+      </div>
+      <div class="grid-2">
+        <div class="card">
+          <div class="section-title"><h2>День</h2><span class="small">План по времени</span></div>
+          <div class="mini-list" id="todaySchedule"></div>
+        </div>
+        <div class="today-panel">
+          <div class="today-block">
+            <h3>Задачи на сегодня</h3>
+            <div class="today-summary"><div class="mini"><span>Запланировано</span><strong id="todayPlanned">0 ч</strong></div><div class="mini"><span>Свободно</span><strong id="todayFree">0 ч</strong></div><div class="mini"><span>Фокус</span><strong id="todayTracked">0 ч</strong></div></div>
+            <div id="quickTasks"></div>
+          </div>
+          <div class="today-block">
+            <h3>Сводка денег</h3>
+            <div class="mini-item"><span>Доходы месяца</span><strong id="todayIncome">0 ₽</strong></div>
+            <div class="mini-item"><span>Расходы месяца</span><strong id="todayExpense">0 ₽</strong></div>
+            <div class="mini-item"><span>Еда месяца</span><strong id="todayFood">0 ₽</strong></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="page" id="page-calendar">
+      <div class="topbar">
+        <div class="title-wrap"><h1>Календарь</h1><div class="subtitle">Кликни по свободному времени, чтобы добавить блок. Клик по блоку — редактирование.</div></div>
+        <div class="actions"><button class="btn primary" id="newCalendarEvent">＋ Событие</button></div>
+      </div>
+      <div class="calendar-shell">
+        <div class="calendar-main">
+          <div class="calendar-toolbar">
+            <div class="left">
+              <button class="btn" id="prevWeek" aria-label="Предыдущая неделя">←</button>
+              <button class="btn" id="currentWeek">Сегодня</button>
+              <button class="btn" id="nextWeek" aria-label="Следующая неделя">→</button>
+              <div class="week-label" id="calendarWeekLabel"></div>
+            </div>
+            <div class="right">
+              <button class="btn" id="seedWorkWeek">Базовые будни</button>
+              <button class="btn" id="saveWeekTemplate">Сохранить шаблон</button>
+              <button class="btn" id="applyWeekTemplate">Применить шаблон</button>
+              <button class="btn" id="clearWeek">Очистить неделю</button>
+            </div>
+          </div>
+          <div class="week-scroll"><div class="week-grid" id="weekGrid"></div></div>
+          <div class="legend">
+            <span><i style="background:#a1a1aa"></i>Работа</span><span><i style="background:#60a5fa"></i>Дорога</span><span><i style="background:#4ade80"></i>Еда</span><span><i style="background:#a78bfa"></i>Фриланс</span><span><i style="background:#f472b6"></i>Вместе</span><span><i style="background:#38bdf8"></i>Личное</span><span><i style="background:#6366f1"></i>Проект</span><span><i style="background:#facc15"></i>Отдых</span>
+          </div>
+        </div>
+        <div class="today-panel">
+          <div class="today-block">
+            <h3>Эта неделя</h3>
+            <div class="mini-item"><span>Запланировано</span><strong id="plannedHours">0 ч</strong></div>
+            <div class="mini-item"><span>Свободно в сетке</span><strong id="freeHours">112 ч</strong></div>
+            <div id="calendarBalance"></div>
+          </div>
+          <div class="today-block">
+            <h3>Задачи без времени</h3>
+            <div id="unscheduledTasks"></div>
+          </div>
+          <div class="today-block">
+            <h3>Как пользоваться</h3>
+            <div class="note">Клик по сетке — создать событие. Задачу можно перетащить в календарь. Событие можно перетащить на другое время; длительность сохранится. Шаблон недели можно сохранить и применить к следующей неделе.</div><div class="template-status" id="templateStatus"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="page" id="page-tasks">
+      <div class="topbar">
+        <div class="title-wrap"><h1>Задачи</h1><div class="subtitle">Единый список задач: проект, срок, приоритет, оценка и фактическое время</div></div>
+        <div class="actions"><button class="btn primary" id="newTask">＋ Новая задача</button></div>
+      </div>
+      <div class="cards">
+        <div class="card metric blue"><div class="label">Открыто</div><div class="value" id="tasksOpenCount">0</div><div class="hint">не завершены</div></div>
+        <div class="card metric green"><div class="label">Готово</div><div class="value" id="tasksDoneCount">0</div><div class="hint">за всё время</div></div>
+        <div class="card metric purple"><div class="label">План</div><div class="value" id="tasksEstimate">0 ч</div><div class="hint">оценка открытых задач</div></div>
+        <div class="card metric red"><div class="label">Факт</div><div class="value" id="tasksTracked">0 ч</div><div class="hint">затраченное время</div></div>
+      </div>
+      <div class="card">
+        <div class="task-toolbar">
+          <select id="taskStatusFilter"><option value="open">Открытые</option><option value="all">Все</option><option value="done">Выполненные</option></select>
+          <select id="taskProjectFilter"><option value="">Все проекты</option></select>
+          <select id="taskPriorityFilter"><option value="">Любой приоритет</option><option value="high">Высокий</option><option value="normal">Обычный</option><option value="low">Низкий</option></select>
+          <input id="taskSearch" placeholder="Поиск задач">
+        </div>
+        <div id="tasksList" class="task-list"></div>
+      </div>
+    </section>
+
+    <section class="page" id="page-projects">
+      <div class="topbar">
+        <div class="title-wrap"><h1>Проекты</h1><div class="subtitle">Только твои проекты и задачи — без демонстрационных записей</div></div>
+        <div class="actions"><button class="btn" id="newProjectTask">＋ Задача</button><button class="btn" id="toggleArchivedProjects">Архив</button><button class="btn primary" id="newProject">＋ Новый проект</button></div>
+      </div>
+      <div class="project-grid" id="projectsGrid"></div>
+      <div class="card">
+        <div class="section-title"><h2>Задачи</h2><span class="small">Можно привязать к проекту или оставить без проекта</span></div>
+        <div id="projectTasksList"></div>
+      </div>
+    </section>
+
+    <section class="page" id="page-money">
+      <div class="topbar">
+        <div class="title-wrap"><h1>Деньги</h1><div class="subtitle">Доходы, расходы и накопления</div></div>
+        <div class="actions">
+          <div class="segmented" id="moneyPeriod"><button data-money-period="day">День</button><button data-money-period="week">Неделя</button><button class="active" data-money-period="month">Месяц</button><button data-money-period="year">Год</button></div>
+          <button class="btn primary" data-open="money">＋ Добавить запись</button>
+        </div>
+      </div>
+
+      <div class="cards">
+        <div class="card metric green"><div class="label">Заработано</div><div class="value money-total" id="moneyIncome">0 ₽</div><div class="hint" id="incomeHint">0 источников дохода</div></div>
+        <div class="card metric red"><div class="label">Потрачено</div><div class="value money-total" id="moneyExpense">0 ₽</div><div class="hint" id="expenseHint">Расходы за период</div></div>
+        <div class="card metric blue"><div class="label">Отложено</div><div class="value money-total" id="moneySaved">0 ₽</div><div class="hint" id="savedHint">Накопления за период</div></div>
+        <div class="card metric purple"><div class="label">Осталось</div><div class="value money-total" id="moneyBalance">0 ₽</div><div class="hint">Доходы − расходы − накопления</div></div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="section-title"><h2>История операций</h2><span class="period-label" id="moneyPeriodLabel">Текущий месяц</span></div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Дата</th><th>Категория</th><th>Проект</th><th>Описание</th><th>Тип</th><th>Сумма</th><th></th></tr></thead>
+              <tbody id="moneyRows"></tbody>
+            </table>
+            <div id="moneyEmpty" class="empty">Пока нет операций.</div>
+          </div>
+        </div>
+        <div class="today-panel">
+          <div class="today-block">
+            <h3>Цели</h3>
+            <div class="bar-row"><div class="bar-head"><span>Подушка безопасности</span><span id="goalSafetyText">0 / 150 000 ₽</span></div><div class="bar"><span id="goalSafetyBar" style="width:0%;background:#3b82f6"></span></div></div>
+            <div class="bar-row"><div class="bar-head"><span>Переезд</span><span id="goalMoveText">0 / 100 000 ₽</span></div><div class="bar"><span id="goalMoveBar" style="width:0%;background:#8b5cf6"></span></div></div>
+          </div>
+          <div class="today-block"><h3>По проектам</h3><div id="moneyProjects"></div></div>
+          <div class="today-block">
+            <h3>Категории расходов</h3>
+            <div id="moneyCategories"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="page" id="page-food">
+      <div class="topbar">
+        <div class="title-wrap"><h1>Еда</h1><div class="subtitle">Расходы на каждый день, неделю и месяц</div></div>
+        <div class="actions">
+          <div class="segmented"><button>День</button><button class="active">Неделя</button><button>Месяц</button></div>
+          <button class="btn primary" data-open="food">＋ Добавить запись</button>
+        </div>
+      </div>
+
+      <div class="cards">
+        <div class="card metric green"><div class="label">Сегодня</div><div class="value" id="foodToday">0 ₽</div><div class="hint" id="foodTodayHint">из 1 000 ₽</div></div>
+        <div class="card metric red"><div class="label">Неделя</div><div class="value" id="foodWeek">0 ₽</div><div class="hint" id="foodWeekHint">из 7 000 ₽</div></div>
+        <div class="card metric blue"><div class="label">Месяц</div><div class="value" id="foodMonth">0 ₽</div><div class="hint" id="foodMonthHint">из 30 000 ₽</div><div class="forecast" id="foodForecast"></div></div>
+        <div class="card metric purple"><div class="label">Средний день</div><div class="value" id="foodAvg">0 ₽</div><div class="hint">по дням с расходами</div></div>
+      </div>
+
+      <div class="card" style="margin-bottom:14px">
+        <div class="section-title"><h2>Неделя</h2><span class="small">Расходы и приёмы пищи</span></div>
+        <div class="food-week" id="foodWeekBoard"></div>
+      </div>
+
+      <div class="grid-equal">
+        <div class="card">
+          <div class="section-title"><h2>Последние записи</h2><span class="small">Еда</span></div>
+          <div class="mini-list" id="foodRecent"></div>
+        </div>
+        <div class="card">
+          <div class="section-title"><h2>Категории</h2><span class="small">Этот месяц</span></div>
+          <div id="foodCategories"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="page" id="page-settings">
+      <div class="topbar">
+        <div class="title-wrap"><h1>Настройки</h1><div class="subtitle">Синхронизация, локальные данные и бюджеты</div></div>
+      </div>
+      <div class="settings-grid">
+        <div class="card cloud-card">
+          <div class="cloud-head"><div><h2 style="margin:0;font-size:17px">Supabase · синхронизация</h2><div class="subtitle" style="margin-top:4px">Одна база для Mac и iPhone</div></div><div class="cloud-state"><span class="sync-dot" id="cloudSyncDot"></span><span id="cloudStatus">Не настроено</span></div></div>
+          <div class="form-grid">
+            <div class="field full"><label>Project URL</label><input id="supabaseUrl" type="url" placeholder="https://xxxx.supabase.co" autocomplete="off"></div>
+            <div class="field full"><label>Publishable / anon key</label><input id="supabaseKey" type="password" placeholder="sb_publishable_… или anon key" autocomplete="off"></div>
+            <div class="field"><label>Email</label><input id="supabaseEmail" type="email" placeholder="you@example.com" autocomplete="username"></div>
+            <div class="field"><label>Пароль</label><input id="supabasePassword" type="password" placeholder="Пароль не сохраняется" autocomplete="current-password"></div>
+          </div>
+          <div class="cloud-actions">
+            <button class="btn" id="saveSupabaseConfig">Сохранить подключение</button>
+            <button class="btn" id="supabaseSignUp">Создать аккаунт</button>
+            <button class="btn primary" id="supabaseSignIn">Войти</button>
+            <button class="btn" id="supabaseSignOut" style="display:none">Выйти</button>
+            <button class="btn" id="syncNow" disabled>Синхронизировать</button>
+          </div>
+          <div class="cloud-warning" id="cloudConflict">На устройстве и в облаке есть разные данные, а определить более новую версию безопасно нельзя. Выбери источник вручную.</div>
+          <div class="cloud-actions" id="cloudConflictActions" style="display:none">
+            <button class="btn" id="uploadLocalCloud">↑ Отправить данные этого устройства</button>
+            <button class="btn" id="downloadCloudLocal">↓ Загрузить данные из облака</button>
+          </div>
+          <div class="cloud-meta" id="cloudMeta">Для подключения сначала выполни SUPABASE_SETUP.sql из архива в SQL Editor проекта Supabase.</div>
+          <div class="sync-config-note">Используй только Publishable/anon key. <strong>Service role key сюда вставлять нельзя.</strong> URL, публичный ключ и email сохраняются только на этом устройстве; пароль не сохраняется.</div>
+        </div>
+        <div class="card">
+          <div class="section-title"><h2>Бюджеты на еду</h2></div>
+          <div class="form-grid">
+            <div class="field"><label>День, ₽</label><input id="budgetDay" type="number" min="0"></div>
+            <div class="field"><label>Неделя, ₽</label><input id="budgetWeek" type="number" min="0"></div>
+            <div class="field full"><label>Месяц, ₽</label><input id="budgetMonth" type="number" min="0"></div>
+          </div>
+          <div class="dialog-actions"><button class="btn primary" id="saveBudgets">Сохранить</button></div>
+        </div>
+        <div class="card">
+          <div class="section-title"><h2>Данные</h2></div>
+          <div class="note">Локальная копия всегда остаётся в Safari. После подключения Supabase изменения также отправляются в облако и приходят на другие авторизованные устройства.</div>
+          <input type="file" id="importFile" accept="application/json" hidden><div class="dialog-actions"><button class="btn" id="exportData">Экспорт JSON</button><button class="btn" id="importData">Импорт JSON</button><button class="btn danger" id="resetData">Сбросить данные</button></div>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<div class="fab-timer" id="timerDock">
+  <button class="timer-btn" id="timerToggle">▶</button>
+  <div class="timer-copy"><strong id="timerTitle">Фокус</strong><span id="timerState">Таймер остановлен</span></div>
+  <div class="timer-time" id="timerTime">00:00:00</div><button class="btn" id="timerStop" style="padding:7px 10px">■</button>
+</div>
+
+<nav class="mobile-nav" id="mobileNav">
+  <button data-page="today" class="active"><span class="mi">◫</span>Сегодня</button>
+  <button data-page="calendar"><span class="mi">□</span>Календарь</button>
+  <button data-page="tasks"><span class="mi">☑</span>Задачи</button>
+  <button data-page="money"><span class="mi">▣</span>Деньги</button>
+  <button data-page="food"><span class="mi">⌁</span>Еда</button>
+  <button data-page="projects"><span class="mi">✓</span>Проекты</button>
+  <button data-page="settings"><span class="mi">⚙</span>Ещё</button>
+</nav>
+
+<dialog id="moneyDialog">
+  <form id="moneyForm" class="dialog-inner">
+    <div class="dialog-head"><h3>Новая операция</h3><button type="button" class="icon-btn" data-dialog-close="moneyDialog" aria-label="Закрыть">×</button></div>
+    <div class="form-grid">
+      <div class="field"><label>Дата</label><input name="date" type="date" required></div>
+      <div class="field"><label>Тип</label><select name="type"><option value="income">Доход</option><option value="expense">Расход</option><option value="saving">Отложено</option></select></div>
+      <div class="field"><label>Категория</label><input name="category" placeholder="Например, Фриланс" required></div>
+      <div class="field"><label>Сумма, ₽</label><input name="amount" type="number" min="0" step="0.01" required></div>
+      <div class="field"><label>Проект</label><select name="projectId" id="moneyProjectSelect"><option value="">Без проекта</option></select></div>
+      <div class="field full"><label>Описание</label><input name="note" placeholder="Короткое описание"></div>
+    </div>
+    <div class="dialog-actions"><button type="button" class="btn" data-dialog-close="moneyDialog">Отмена</button><button type="submit" class="btn primary">Добавить</button></div>
+  </form>
+</dialog>
+
+<dialog id="foodDialog">
+  <form id="foodForm" class="dialog-inner">
+    <div class="dialog-head"><h3>Расход на еду</h3><button type="button" class="icon-btn" data-dialog-close="foodDialog" aria-label="Закрыть">×</button></div>
+    <div class="form-grid">
+      <div class="field"><label>Дата</label><input name="date" type="date" required></div>
+      <div class="field"><label>Приём пищи</label><select name="meal"><option value="breakfast">Завтрак</option><option value="lunch">Обед</option><option value="dinner">Ужин</option><option value="snack">Перекус</option></select></div>
+      <div class="field"><label>Категория</label><select name="category"><option>Продукты</option><option>Доставка</option><option>Кафе</option><option>Перекусы</option></select></div>
+      <div class="field"><label>Сумма, ₽</label><input name="amount" type="number" min="0" step="0.01" required></div>
+      <div class="field full"><label>Что было</label><input name="note" placeholder="Например, курица и рис"></div>
+      <div class="field full"><label><input name="syncMoney" type="checkbox" checked> Добавить этот расход также в «Деньги»</label></div>
+    </div>
+    <div class="dialog-actions"><button type="button" class="btn" data-dialog-close="foodDialog">Отмена</button><button type="submit" class="btn primary">Добавить</button></div>
+  </form>
+</dialog>
+
+<dialog id="taskDialog">
+  <form id="taskForm" class="dialog-inner">
+    <div class="dialog-head"><h3 id="taskDialogTitle">Новая задача</h3><button type="button" class="icon-btn" data-dialog-close="taskDialog" aria-label="Закрыть">×</button></div>
+    <input type="hidden" name="id">
+    <div class="form-grid">
+      <div class="field full"><label>Название</label><input name="title" required placeholder="Что нужно сделать?"></div>
+      <div class="field"><label>Проект</label><select name="projectId" id="taskProjectSelect"><option value="">Без проекта</option></select></div>
+      <div class="field"><label>Срок</label><input name="due" type="date"></div>
+      <div class="field"><label>Приоритет</label><select name="priority"><option value="normal">Обычный</option><option value="high">Высокий</option><option value="low">Низкий</option></select></div>
+      <div class="field"><label>Оценка времени, мин</label><input name="estimateMinutes" type="number" min="0" step="15" placeholder="60"></div>
+      <div class="field"><label>Статус</label><select name="status"><option value="backlog">Не запланировано</option><option value="planned">Запланировано</option><option value="in_progress">В работе</option><option value="done">Выполнено</option></select></div>
+      <div class="field full"><label>Заметка</label><textarea name="notes" placeholder="Контекст, ссылки, критерий готовности"></textarea></div>
+    </div>
+    <div class="dialog-actions"><button type="button" class="btn danger" id="deleteTask" style="margin-right:auto;display:none">Удалить</button><button type="button" class="btn" data-dialog-close="taskDialog">Отмена</button><button type="submit" class="btn primary">Сохранить</button></div>
+  </form>
+</dialog>
+
+<dialog id="projectDialog">
+  <form id="projectForm" class="dialog-inner">
+    <div class="dialog-head"><h3 id="projectDialogTitle">Новый проект</h3><button type="button" class="icon-btn" data-dialog-close="projectDialog" aria-label="Закрыть">×</button></div>
+    <input type="hidden" name="id">
+    <div class="form-grid">
+      <div class="field full"><label>Название</label><input name="name" required placeholder="Например, Личный сайт"></div>
+      <div class="field"><label>Цвет</label><select name="color">
+        <option value="#6366f1">Индиго</option><option value="#8b5cf6">Фиолетовый</option><option value="#3b82f6">Синий</option><option value="#22c55e">Зелёный</option><option value="#f59e0b">Оранжевый</option><option value="#ef4444">Красный</option><option value="#ec4899">Розовый</option>
+      </select></div>
+      <div class="field full"><label>Описание</label><textarea name="description" placeholder="Что это за проект и какой результат нужен"></textarea></div>
+      <div class="field full"><label><input name="archived" type="checkbox"> В архиве</label></div>
+    </div>
+    <div class="dialog-help">Удаление проекта не удалит его задачи: они станут задачами «Без проекта».</div>
+    <div class="dialog-actions"><button type="button" class="btn danger" id="deleteProject" style="margin-right:auto;display:none">Удалить проект</button><button type="button" class="btn" data-dialog-close="projectDialog">Отмена</button><button type="submit" class="btn primary">Сохранить</button></div>
+  </form>
+</dialog>
+
+<dialog id="eventDialog">
+  <form id="eventForm" class="dialog-inner">
+    <div class="dialog-head"><h3 id="eventDialogTitle">Событие</h3><button type="button" class="icon-btn" data-dialog-close="eventDialog" aria-label="Закрыть">×</button></div>
+    <input type="hidden" name="id">
+    <div class="form-grid">
+      <div class="field full"><label>Название</label><input name="title" required placeholder="Например, Фриланс"></div>
+      <div class="field"><label>Дата</label><input name="date" type="date" required></div>
+      <div class="field"><label>Категория</label><select name="category">
+        <option value="work">Работа</option><option value="commute">Дорога</option><option value="food">Еда</option><option value="freelance">Фриланс</option><option value="project">Свой проект</option><option value="together">Время вместе</option><option value="personal">Личное время</option><option value="home">Быт</option><option value="rest">Отдых</option><option value="sport">Спорт</option><option value="other">Другое</option>
+      </select></div>
+      <div class="field"><label>Проект</label><select name="projectId" id="eventProjectSelect"><option value="">Без проекта</option></select></div>
+      <div class="field"><label>Связанная задача</label><select name="taskId" id="eventTaskSelect"><option value="">Без задачи</option></select></div>
+      <div class="field"><label>Начало</label><input name="start" type="time" step="1800" required></div>
+      <div class="field"><label>Конец</label><input name="end" type="time" step="1800" required></div>
+      <div class="field full"><label>Заметка</label><textarea name="note" placeholder="Необязательно"></textarea></div>
+      <div class="field"><label>Повтор</label><select name="repeat"><option value="none">Не повторять</option><option value="daily">Каждый день</option><option value="weekly">Каждую неделю</option></select></div>
+      <div class="field"><label>Повторять до</label><input name="repeatUntil" type="date"></div>
+    </div>
+    <div class="dialog-actions"><button type="button" class="btn danger" id="deleteEvent" style="margin-right:auto;display:none">Удалить</button><button type="button" class="btn" data-dialog-close="eventDialog">Отмена</button><button type="submit" class="btn primary">Сохранить</button></div>
+  </form>
+</dialog>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const $ = (s, root=document) => root.querySelector(s);
+const $$ = (s, root=document) => [...root.querySelectorAll(s)];
+const fmt = n => new Intl.NumberFormat('ru-RU',{maximumFractionDigits:2}).format(n||0) + ' ₽';
+const iso = d => {
+  const z = new Date(d.getTime() - d.getTimezoneOffset()*60000);
+  return z.toISOString().slice(0,10);
+};
+const todayISO = iso(new Date());
+const uid = () => (crypto.randomUUID ? crypto.randomUUID() : Date.now().toString(36)+Math.random().toString(36).slice(2));
+const startOfWeek = d => {
+  const x=new Date(d); const day=(x.getDay()+6)%7; x.setHours(0,0,0,0); x.setDate(x.getDate()-day); return x;
+};
+const monthKey = d => d.slice(0,7);
+
+const defaults = {
+  money: [],
+  food: [],
+  budgets:{day:1000,week:7000,month:30000},
+  tasks:[],
+  projects:[],
+  calendar:[],
+  timer:{activeTaskId:'',running:false,startedAt:null},
+  timeEntries:[],
+  weekTemplate:[],
+  meta:{schema:5,updatedAt:null}
+};
+
+function load(){
+  try{
+    const raw=localStorage.getItem('artemPlanner.v01');
+    return raw ? {...structuredClone(defaults),...JSON.parse(raw)} : structuredClone(defaults);
+  }catch(e){ return structuredClone(defaults); }
+}
+let db=load();
+db.calendar ??= []; db.tasks ??= []; db.projects ??= []; db.money ??= []; db.food ??= []; db.budgets ??= structuredClone(defaults.budgets); db.meta ??= {}; db.timeEntries ??=[]; db.weekTemplate ??=[];
+// v0.3: удаляем только старые демонстрационные быстрые задачи из прототипа.
+if((db.meta.schema||0)<3){
+  const legacy=new Set(['Монтаж ролика','Ответить клиенту','План на неделю']);
+  db.tasks=db.tasks.filter(t=>!legacy.has(t.title));
+  db.meta.schema=3;
+}
+if((db.meta.schema||0)<4){
+  db.tasks=db.tasks.map(t=>({...t,priority:t.priority||'normal',estimateMinutes:Number(t.estimateMinutes||60),status:t.status||(t.done?'done':'backlog'),notes:t.notes||''}));
+  db.projects=db.projects.map(p=>({...p,archived:!!p.archived}));
+  db.calendar=db.calendar.map(e=>({...e,taskId:e.taskId||'',projectId:e.projectId||''}));
+  db.money=db.money.map(m=>({...m,projectId:m.projectId||''}));
+  db.timer={activeTaskId:'',running:false,startedAt:null};
+  db.timeEntries=db.timeEntries||[]; db.weekTemplate=db.weekTemplate||[]; db.meta.schema=4;
+}
+if((db.meta.schema||0)<5){
+  db.meta.updatedAt=db.meta.updatedAt||null;
+  db.meta.schema=5;
+}
+function persistLocal(touch=true){
+  db.meta??={};
+  db.meta.schema=5;
+  if(touch) db.meta.updatedAt=new Date().toISOString();
+  localStorage.setItem('artemPlanner.v01',JSON.stringify(db));
+}
+function save(){
+  persistLocal(true);
+  cloudDirty=true;
+  scheduleCloudPush();
+  updateCloudUI();
+}
+persistLocal(false);
+
+// --- Supabase sync: local-first, one JSONB state row per user. ---
+const CLOUD_CONFIG_KEY='artemPlanner.supabase.v1';
+const DEVICE_KEY='artemPlanner.deviceId.v1';
+let cloudClient=null,cloudUser=null,cloudRealtime=null,cloudAuthSubscription=null;
+let cloudMode='local',cloudDirty=false,cloudBusy=false,cloudPushTimer=null,cloudLastSync=null,cloudLastRemote=null;
+function getDeviceId(){let id=localStorage.getItem(DEVICE_KEY);if(!id){id=uid();localStorage.setItem(DEVICE_KEY,id)}return id}
+const DEVICE_ID=getDeviceId();
+const DEFAULT_SUPABASE_CONFIG={url:'https://znemcttpdzngstcdwgeg.supabase.co',key:'sb_publishable_-Z2DCXTcYOxQZE9UPjIWgA_SaDzxfj9'};
+function loadCloudConfig(){
+  try{
+    const saved=JSON.parse(localStorage.getItem(CLOUD_CONFIG_KEY)||'{}');
+    return {url:saved.url||DEFAULT_SUPABASE_CONFIG.url,key:saved.key||DEFAULT_SUPABASE_CONFIG.key,email:saved.email||''};
+  }catch{return {...DEFAULT_SUPABASE_CONFIG,email:''}}
+}
+function storeCloudConfig(){
+  const cfg={url:($('#supabaseUrl')?.value||'').trim().replace(/\/$/,''),key:($('#supabaseKey')?.value||'').trim(),email:($('#supabaseEmail')?.value||'').trim()};
+  localStorage.setItem(CLOUD_CONFIG_KEY,JSON.stringify(cfg)); return cfg;
+}
+function cloudConfigValid(cfg=loadCloudConfig()){return /^https:\/\/.+/.test(cfg.url||'')&&String(cfg.key||'').length>20}
+function dataHasContent(x){return !!((x?.tasks?.length||0)+(x?.projects?.length||0)+(x?.calendar?.length||0)+(x?.money?.length||0)+(x?.food?.length||0)+(x?.timeEntries?.length||0)+(x?.weekTemplate?.length||0))}
+function normalizeCloudData(raw){
+  const next={...structuredClone(defaults),...(raw&&typeof raw==='object'?raw:{})};
+  for(const k of ['money','food','tasks','projects','calendar','timeEntries','weekTemplate']) if(!Array.isArray(next[k])) next[k]=[];
+  next.budgets={...defaults.budgets,...(next.budgets||{})}; next.timer={...defaults.timer,...(next.timer||{})}; next.meta={...defaults.meta,...(next.meta||{}),schema:5}; return next;
+}
+function dotClass(mode){return mode==='ready'?'ok':mode==='syncing'?'busy':mode==='conflict'?'warn':mode==='error'?'err':''}
+function cloudStatusCopy(){
+  if(cloudMode==='syncing')return 'Синхронизация…';
+  if(cloudMode==='ready')return cloudDirty?'Есть несохранённые изменения':'Синхронизировано';
+  if(cloudMode==='conflict')return 'Нужен выбор источника';
+  if(cloudMode==='error')return 'Ошибка синхронизации';
+  if(cloudUser)return 'Подключено';
+  if(cloudConfigValid())return 'Нужно войти';
+  return 'Только локально';
+}
+function updateCloudUI(message=''){
+  const text=message||cloudStatusCopy(),cls=dotClass(cloudMode);
+  for(const id of ['sidebarSyncDot','cloudSyncDot']){const el=$('#'+id);if(el)el.className='sync-dot'+(cls?' '+cls:'')}
+  const st=$('#cloudStatus');if(st)st.textContent=text; const side=$('#sidebarSyncText');if(side)side.textContent=text;
+  const signed=!!cloudUser; const out=$('#supabaseSignOut'),inn=$('#supabaseSignIn'),up=$('#supabaseSignUp'),sync=$('#syncNow');
+  if(out)out.style.display=signed?'inline-flex':'none'; if(inn)inn.style.display=signed?'none':'inline-flex'; if(up)up.style.display=signed?'none':'inline-flex'; if(sync)sync.disabled=!signed||cloudMode==='conflict'||cloudBusy;
+  const conflict=cloudMode==='conflict'; $('#cloudConflict')?.classList.toggle('show',conflict); if($('#cloudConflictActions'))$('#cloudConflictActions').style.display=conflict?'flex':'none';
+  const meta=$('#cloudMeta'); if(meta){const email=cloudUser?.email||loadCloudConfig().email||'';const stamp=cloudLastSync?new Intl.DateTimeFormat('ru-RU',{hour:'2-digit',minute:'2-digit',second:'2-digit'}).format(cloudLastSync):'—';meta.textContent=signed?`Аккаунт: ${email||cloudUser.id} · устройство ${DEVICE_ID.slice(0,8)} · последняя синхронизация ${stamp}`:'Для подключения сначала выполни SUPABASE_SETUP.sql из архива в SQL Editor проекта Supabase.'}
+}
+function renderAfterRemote(){
+  try{renderToday();renderMoney();renderFood();renderProjects();renderTasks();renderCalendar();renderTemplateStatus();drawTimer();fillProjectSelect();}catch(err){console.error('renderAfterRemote',err)}
+  if($('#budgetDay'))$('#budgetDay').value=db.budgets.day;if($('#budgetWeek'))$('#budgetWeek').value=db.budgets.week;if($('#budgetMonth'))$('#budgetMonth').value=db.budgets.month;
+}
+function applyCloudState(row){
+  const incoming=normalizeCloudData(row?.data); const stamp=row?.updated_at||incoming.meta?.updatedAt||new Date().toISOString(); incoming.meta.updatedAt=stamp;
+  db=incoming; persistLocal(false); cloudDirty=false; cloudLastSync=new Date(); cloudMode='ready'; renderAfterRemote(); updateCloudUI();
+}
+async function fetchCloudRow(){
+  if(!cloudClient||!cloudUser)return null;
+  const {data,error}=await cloudClient.from('planner_state').select('data,updated_at,device_id,version').eq('user_id',cloudUser.id).maybeSingle();
+  if(error)throw error; return data||null;
+}
+async function pushCloudState(force=false){
+  if(!cloudClient||!cloudUser||cloudMode==='conflict'||cloudBusy)return false;
+  if(!force&&!cloudDirty)return true;
+  cloudBusy=true;cloudMode='syncing';updateCloudUI();
+  try{
+    if(!db.meta?.updatedAt){db.meta??={};db.meta.updatedAt=new Date().toISOString();persistLocal(false)}
+    const payload={user_id:cloudUser.id,data:db,updated_at:db.meta.updatedAt,device_id:DEVICE_ID,version:1};
+    const {error}=await cloudClient.from('planner_state').upsert(payload,{onConflict:'user_id'});if(error)throw error;
+    cloudDirty=false;cloudLastSync=new Date();cloudMode='ready';updateCloudUI();return true;
+  }catch(err){console.error(err);cloudMode=navigator.onLine?'error':'local';updateCloudUI(navigator.onLine?'Ошибка синхронизации':'Офлайн · данные сохранены локально');return false}
+  finally{cloudBusy=false;updateCloudUI()}
+}
+function scheduleCloudPush(){
+  clearTimeout(cloudPushTimer); if(!cloudClient||!cloudUser||cloudMode==='conflict')return;
+  cloudPushTimer=setTimeout(()=>pushCloudState(false),700);
+}
+async function reconcileCloud(){
+  if(!cloudClient||!cloudUser||cloudBusy)return;
+  cloudBusy=true;cloudMode='syncing';updateCloudUI();
+  try{
+    const row=await fetchCloudRow(); cloudLastRemote=row;
+    if(!row){cloudMode='ready';cloudBusy=false;await pushCloudState(true);return}
+    const remote=normalizeCloudData(row.data),localHas=dataHasContent(db),remoteHas=dataHasContent(remote),lt=Date.parse(db.meta?.updatedAt||''),rt=Date.parse(row.updated_at||remote.meta?.updatedAt||'');
+    if(!localHas&&remoteHas){applyCloudState(row);return}
+    if(localHas&&!remoteHas){cloudMode='ready';cloudBusy=false;await pushCloudState(true);return}
+    if(!localHas&&!remoteHas){applyCloudState(row);return}
+    if(Number.isFinite(lt)&&Number.isFinite(rt)){
+      if(rt>lt+250){applyCloudState(row);return}
+      if(lt>rt+250){cloudMode='ready';cloudBusy=false;cloudDirty=true;await pushCloudState(true);return}
+      cloudDirty=false;cloudLastSync=new Date();cloudMode='ready';updateCloudUI();return;
+    }
+    cloudMode='conflict';updateCloudUI();
+  }catch(err){console.error(err);cloudMode='error';updateCloudUI('Проверь таблицу, RLS и подключение')}
+  finally{cloudBusy=false;updateCloudUI()}
+}
+function stopCloudRealtime(){if(cloudRealtime&&cloudClient){cloudClient.removeChannel(cloudRealtime).catch(()=>{})}cloudRealtime=null}
+function startCloudRealtime(){
+  stopCloudRealtime();if(!cloudClient||!cloudUser)return;
+  cloudRealtime=cloudClient.channel('planner-state-'+cloudUser.id).on('postgres_changes',{event:'*',schema:'public',table:'planner_state',filter:`user_id=eq.${cloudUser.id}`},payload=>{
+    const row=payload.new;if(!row||row.device_id===DEVICE_ID)return;const rt=Date.parse(row.updated_at||''),lt=Date.parse(db.meta?.updatedAt||'');
+    if(!Number.isFinite(lt)||rt>lt+250)applyCloudState(row);
+  }).subscribe(status=>{if(status==='SUBSCRIBED'&&cloudMode!=='conflict'){cloudMode='ready';updateCloudUI()}});
+}
+async function beginCloudSession(){if(!cloudUser)return;startCloudRealtime();await reconcileCloud()}
+async function initializeCloudClient(){
+  const cfg=loadCloudConfig(); if($('#supabaseUrl'))$('#supabaseUrl').value=cfg.url||'';if($('#supabaseKey'))$('#supabaseKey').value=cfg.key||'';if($('#supabaseEmail'))$('#supabaseEmail').value=cfg.email||'';
+  if(!cloudConfigValid(cfg)){cloudMode='local';updateCloudUI();return}
+  if(!window.supabase?.createClient){cloudMode='error';updateCloudUI('Не загрузилась библиотека Supabase');return}
+  try{
+    cloudAuthSubscription?.unsubscribe?.(); stopCloudRealtime();
+    cloudClient=window.supabase.createClient(cfg.url,cfg.key,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:false}});
+    const {data,error}=await cloudClient.auth.getSession();if(error)throw error;cloudUser=data.session?.user||null;
+    const {data:listener}=cloudClient.auth.onAuthStateChange((_event,session)=>{cloudUser=session?.user||null;updateCloudUI();setTimeout(()=>{if(cloudUser)beginCloudSession();else{stopCloudRealtime();cloudMode='local';updateCloudUI()}},0)});cloudAuthSubscription=listener?.subscription||null;
+    if(cloudUser)await beginCloudSession();else{cloudMode='local';updateCloudUI()}
+  }catch(err){console.error(err);cloudMode='error';updateCloudUI('Ошибка подключения к Supabase')}
+}
+$('#saveSupabaseConfig')?.addEventListener('click',async()=>{storeCloudConfig();cloudUser=null;cloudMode='local';updateCloudUI('Подключение сохранено');await initializeCloudClient()});
+$('#supabaseSignUp')?.addEventListener('click',async()=>{storeCloudConfig();if(!cloudClient)await initializeCloudClient();const email=($('#supabaseEmail')?.value||'').trim(),password=$('#supabasePassword')?.value||'';if(!email||password.length<6){alert('Укажи email и пароль минимум из 6 символов.');return}if(!cloudClient){alert('Сначала укажи корректные Project URL и Publishable/anon key.');return}const {data,error}=await cloudClient.auth.signUp({email,password});if(error){alert(error.message);return}if(!data.session)alert('Аккаунт создан. Если в Supabase включено подтверждение email — подтверди письмо, затем нажми «Войти».');else{cloudUser=data.user;await beginCloudSession()}});
+$('#supabaseSignIn')?.addEventListener('click',async()=>{storeCloudConfig();if(!cloudClient)await initializeCloudClient();const email=($('#supabaseEmail')?.value||'').trim(),password=$('#supabasePassword')?.value||'';if(!email||!password){alert('Укажи email и пароль.');return}if(!cloudClient){alert('Сначала укажи корректные Project URL и Publishable/anon key.');return}const {data,error}=await cloudClient.auth.signInWithPassword({email,password});if(error){alert(error.message);return}cloudUser=data.user;await beginCloudSession()});
+$('#supabaseSignOut')?.addEventListener('click',async()=>{if(cloudClient)await cloudClient.auth.signOut();cloudUser=null;stopCloudRealtime();cloudMode='local';updateCloudUI()});
+$('#syncNow')?.addEventListener('click',reconcileCloud);
+$('#uploadLocalCloud')?.addEventListener('click',async()=>{if(!confirm('Заменить облачную версию данными с этого устройства?'))return;db.meta.updatedAt=new Date().toISOString();persistLocal(false);cloudMode='ready';cloudDirty=true;await pushCloudState(true)});
+$('#downloadCloudLocal')?.addEventListener('click',async()=>{if(!confirm('Заменить локальные данные версией из облака?'))return;try{const row=cloudLastRemote||await fetchCloudRow();if(row)applyCloudState(row)}catch(err){alert('Не удалось загрузить данные из облака.')}});
+window.addEventListener('online',()=>{if(cloudUser)reconcileCloud()});
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&cloudUser)reconcileCloud()});
+setInterval(()=>{if(cloudUser&&navigator.onLine&&(cloudDirty||cloudMode==='error'))reconcileCloud()},30000);
+updateCloudUI();
+setTimeout(initializeCloudClient,0);
+
+function showPage(name){
+  $$('.page').forEach(p=>p.classList.toggle('active',p.id==='page-'+name));
+  $$('[data-page]').forEach(b=>b.classList.toggle('active',b.dataset.page===name));
+  if(name==='money') renderMoney();
+  if(name==='food') renderFood();
+  if(name==='today') renderToday();
+  if(name==='calendar') renderCalendar();
+  if(name==='projects') renderProjects();
+  if(name==='tasks') renderTasks();
+  if(name==='settings') updateCloudUI();
+}
+$$('[data-page]').forEach(b=>b.addEventListener('click',()=>showPage(b.dataset.page)));
+$$('[data-open]').forEach(b=>b.addEventListener('click',()=>{
+  const t=b.dataset.open;
+  if(t==='money'){ $('#moneyForm').reset(); fillProjectSelect(); $('#moneyForm [name=date]').value=todayISO; $('#moneyDialog').showModal(); }
+  if(t==='food'){ $('#foodForm').reset(); $('#foodForm [name=date]').value=todayISO; $('#foodForm [name=syncMoney]').checked=true; $('#foodDialog').showModal(); }
+  if(t==='quickTask'){ openTaskDialog(); }
+}));
+
+function renderToday(){
+  $('#todayDate').textContent = new Intl.DateTimeFormat('ru-RU',{weekday:'long',day:'numeric',month:'long'}).format(new Date());
+  const visible=[...db.tasks].filter(t=>!t.done&&(!t.due||t.due<=todayISO||db.calendar.some(e=>e.date===todayISO&&e.taskId===t.id))).sort((a,b)=>String(a.due||'9999').localeCompare(String(b.due||'9999')));
+  $('#quickTasks').innerHTML = visible.length ? visible.map(t=>`<div class="quick-task"><input type="checkbox" data-task="${t.id}" ${t.done?'checked':''}><button class="quick-task-title" data-edit-task="${t.id}" style="${t.done?'text-decoration:line-through;color:#a1a1aa':''}">${escapeHTML(t.title)}</button><div class="quick-task-actions"><button class="tiny-btn danger" data-delete-task="${t.id}" title="Удалить">×</button></div></div>`).join('') : '<div class="empty">Быстрых задач пока нет.</div>';
+  renderTodaySchedule();
+  $$('[data-task]').forEach(c=>c.onchange=()=>{ const t=db.tasks.find(x=>x.id===c.dataset.task); if(t){t.done=c.checked;save();renderToday();renderProjects();renderCalendarSide();}});
+  $$('[data-edit-task]').forEach(b=>b.onclick=()=>openTaskDialog(b.dataset.editTask));
+  $$('[data-delete-task]').forEach(b=>b.onclick=()=>deleteTaskById(b.dataset.deleteTask));
+  const todayEvents=db.calendar.filter(e=>e.date===todayISO),planned=todayEvents.reduce((a,e)=>a+eventHours(e),0),dow=new Date(todayISO+'T12:00:00').getDay(),available=(dow===0||dow===6)?16:16;$('#todayPlanned').textContent=planned.toLocaleString('ru-RU',{maximumFractionDigits:1})+' ч';$('#todayFree').textContent=Math.max(0,available-planned).toLocaleString('ru-RU',{maximumFractionDigits:1})+' ч';$('#todayTracked').textContent=msHoursText(db.timeEntries.filter(x=>x.date===todayISO).reduce((a,e)=>a+Number(e.ms||0),0)+(db.timer.running&&db.timer.startedAt?Date.now()-db.timer.startedAt:0));
+  const m=monthKey(todayISO);
+  const income=db.money.filter(x=>monthKey(x.date)===m&&x.type==='income').reduce((a,b)=>a+b.amount,0);
+  const expense=db.money.filter(x=>monthKey(x.date)===m&&x.type==='expense').reduce((a,b)=>a+b.amount,0);
+  const food=db.food.filter(x=>monthKey(x.date)===m).reduce((a,b)=>a+b.amount,0);
+  $('#todayIncome').textContent=fmt(income); $('#todayExpense').textContent=fmt(expense); $('#todayFood').textContent=fmt(food);
+}
+
+function projectOptions(selected='',includeArchived=false){
+  return '<option value="">Без проекта</option>'+db.projects.filter(p=>includeArchived||!p.archived).map(p=>`<option value="${p.id}" ${p.id===selected?'selected':''}>${escapeHTML(p.name)}</option>`).join('');
+}
+function fillProjectSelect(selected=''){
+  const sel=$('#taskProjectSelect'); if(sel) sel.innerHTML=projectOptions(selected);
+  const money=$('#moneyProjectSelect'); if(money) money.innerHTML=projectOptions(money.value||'');
+  const event=$('#eventProjectSelect'); if(event) event.innerHTML=projectOptions(event.value||'');
+  const filter=$('#taskProjectFilter'); if(filter){const v=filter.value;filter.innerHTML='<option value="">Все проекты</option>'+db.projects.filter(p=>!p.archived).map(p=>`<option value="${p.id}">${escapeHTML(p.name)}</option>`).join('');filter.value=v;}
+}
+function openTaskDialog(id=''){
+  const form=$('#taskForm'); form.reset();
+  const t=id?db.tasks.find(x=>x.id===id):null;
+  form.elements.id.value=t?.id||''; form.elements.title.value=t?.title||''; form.elements.due.value=t?.due||'';
+  form.elements.priority.value=t?.priority||'normal'; form.elements.estimateMinutes.value=t?.estimateMinutes||60; form.elements.status.value=t?.status||(t?.done?'done':'backlog'); form.elements.notes.value=t?.notes||'';
+  fillProjectSelect(t?.projectId||'');
+  $('#taskDialogTitle').textContent=t?'Редактировать задачу':'Новая задача';
+  $('#deleteTask').style.display=t?'inline-flex':'none';
+  $('#taskDialog').showModal(); setTimeout(()=>form.elements.title.focus(),0);
+}
+function deleteTaskById(id){
+  if(!id)return; if(!confirm('Удалить задачу?'))return;
+  db.tasks=db.tasks.filter(t=>t.id!==id); db.calendar=db.calendar.map(e=>e.taskId===id?{...e,taskId:''}:e); save(); renderToday(); renderProjects(); renderTasks(); renderCalendarSide();
+  if($('#taskDialog').open) $('#taskDialog').close();
+}
+$('#taskForm').addEventListener('submit',e=>{
+  e.preventDefault(); const f=e.currentTarget; const id=f.elements.id.value; const title=f.elements.title.value.trim(); if(!title)return;
+  const status=f.elements.status.value||'backlog'; const obj={id:id||uid(),title,projectId:f.elements.projectId.value||'',due:f.elements.due.value||'',priority:f.elements.priority.value||'normal',estimateMinutes:Number(f.elements.estimateMinutes.value||0),status,notes:f.elements.notes.value.trim(),done:status==='done'};
+  if(id){const i=db.tasks.findIndex(t=>t.id===id);if(i>=0)db.tasks[i]=obj}else db.tasks.push(obj);
+  save(); $('#taskDialog').close(); renderToday(); renderProjects(); renderTasks(); renderCalendarSide();
+});
+$('#deleteTask').onclick=()=>deleteTaskById($('#taskForm').elements.id.value);
+
+
+function trackedTaskMs(taskId){return db.timeEntries.filter(x=>x.taskId===taskId).reduce((a,b)=>a+Number(b.ms||0),0)+(db.timer.running&&db.timer.activeTaskId===taskId&&db.timer.startedAt?Date.now()-db.timer.startedAt:0)}
+function trackedProjectMs(projectId){return db.tasks.filter(t=>t.projectId===projectId).reduce((a,t)=>a+trackedTaskMs(t.id),0)}
+function minutesText(min){const h=Math.floor(min/60),m=Math.round(min%60);return h?`${h} ч${m?' '+m+' м':''}`:`${m} мин`}
+function msHoursText(ms){const h=ms/3600000;return `${h.toLocaleString('ru-RU',{maximumFractionDigits:1})} ч`}
+function taskStatusLabel(s){return {backlog:'Не запланировано',planned:'Запланировано',in_progress:'В работе',done:'Выполнено'}[s]||s}
+function renderTasks(){
+  fillProjectSelect();
+  const status=$('#taskStatusFilter')?.value||'open', project=$('#taskProjectFilter')?.value||'', priority=$('#taskPriorityFilter')?.value||'', q=($('#taskSearch')?.value||'').trim().toLowerCase();
+  let rows=[...db.tasks];
+  if(status==='open') rows=rows.filter(t=>!t.done); else if(status==='done') rows=rows.filter(t=>t.done);
+  if(project) rows=rows.filter(t=>t.projectId===project); if(priority) rows=rows.filter(t=>t.priority===priority); if(q) rows=rows.filter(t=>(t.title+' '+(t.notes||'')).toLowerCase().includes(q));
+  rows.sort((a,b)=>(a.done-b.done)||({high:0,normal:1,low:2}[a.priority]-({high:0,normal:1,low:2}[b.priority]))||String(a.due||'9999').localeCompare(String(b.due||'9999')));
+  const list=$('#tasksList'); if(!list)return;
+  list.innerHTML=rows.length?rows.map(t=>{const p=db.projects.find(x=>x.id===t.projectId),tracked=trackedTaskMs(t.id);return `<div class="task-row" draggable="true" data-drag-task="${t.id}"><input type="checkbox" data-task-page-check="${t.id}" ${t.done?'checked':''}><div class="task-main"><strong style="${t.done?'text-decoration:line-through;color:#a1a1aa':''}"><i class="priority ${t.priority||'normal'}"></i> ${escapeHTML(t.title)}</strong><span>${p?escapeHTML(p.name)+' · ':''}${taskStatusLabel(t.status||'backlog')}${t.due?' · до '+t.due:''}${t.notes?' · '+escapeHTML(t.notes):''}</span></div><div class="task-time"><div>план ${minutesText(Number(t.estimateMinutes||0))}</div><div>факт ${msHoursText(tracked)}</div></div><div class="task-actions"><button class="play" data-task-start="${t.id}" title="Запустить таймер">▶</button><button data-task-calendar="${t.id}" title="В календарь">▦</button></div><div class="task-actions"><button data-task-edit2="${t.id}">Изм.</button><button class="danger" data-task-del2="${t.id}">×</button></div></div>`}).join(''):'<div class="empty">Задач по этому фильтру нет.</div>';
+  const open=db.tasks.filter(t=>!t.done),done=db.tasks.filter(t=>t.done);$('#tasksOpenCount').textContent=open.length;$('#tasksDoneCount').textContent=done.length;$('#tasksEstimate').textContent=minutesText(open.reduce((a,t)=>a+Number(t.estimateMinutes||0),0));$('#tasksTracked').textContent=msHoursText(db.timeEntries.reduce((a,e)=>a+Number(e.ms||0),0)+(db.timer.running&&db.timer.startedAt?Date.now()-db.timer.startedAt:0));
+  $$('[data-task-page-check]',list).forEach(c=>c.onchange=()=>{const t=db.tasks.find(x=>x.id===c.dataset.taskPageCheck);if(t){t.done=c.checked;t.status=c.checked?'done':'backlog';save();renderTasks();renderToday();renderProjects()}});
+  $$('[data-task-edit2]',list).forEach(b=>b.onclick=()=>openTaskDialog(b.dataset.taskEdit2));$$('[data-task-del2]',list).forEach(b=>b.onclick=()=>deleteTaskById(b.dataset.taskDel2));
+  $$('[data-task-start]',list).forEach(b=>b.onclick=()=>startTaskTimer(b.dataset.taskStart));$$('[data-task-calendar]',list).forEach(b=>b.onclick=()=>scheduleTaskDialog(b.dataset.taskCalendar));
+  $$('[data-drag-task]',list).forEach(el=>el.ondragstart=e=>{e.dataTransfer.setData('text/task-id',el.dataset.dragTask);e.dataTransfer.effectAllowed='move'});
+}
+$('#newTask').onclick=()=>openTaskDialog();
+['taskStatusFilter','taskProjectFilter','taskPriorityFilter'].forEach(id=>$('#'+id)?.addEventListener('change',renderTasks));$('#taskSearch')?.addEventListener('input',renderTasks);
+
+let moneyPeriod='month';
+function moneyBounds(period=moneyPeriod){
+  const now=new Date(); now.setHours(0,0,0,0); let start,end,label;
+  if(period==='day'){
+    start=new Date(now); end=new Date(now); end.setDate(end.getDate()+1);
+    label=new Intl.DateTimeFormat('ru-RU',{day:'numeric',month:'long'}).format(start);
+  }else if(period==='week'){
+    start=startOfWeek(now); end=new Date(start); end.setDate(end.getDate()+7);
+    const f=new Intl.DateTimeFormat('ru-RU',{day:'numeric',month:'short'}); label=`${f.format(start)} — ${f.format(new Date(end.getTime()-86400000))}`;
+  }else if(period==='year'){
+    start=new Date(now.getFullYear(),0,1); end=new Date(now.getFullYear()+1,0,1); label=String(now.getFullYear());
+  }else{
+    start=new Date(now.getFullYear(),now.getMonth(),1); end=new Date(now.getFullYear(),now.getMonth()+1,1);
+    label=new Intl.DateTimeFormat('ru-RU',{month:'long',year:'numeric'}).format(start);
+  }
+  return {start:iso(start),end:iso(end),label};
+}
+function inDateBounds(date,b){return date>=b.start&&date<b.end}
+
+function renderMoney(){
+  const bounds=moneyBounds(), rows=db.money.filter(x=>inDateBounds(x.date,bounds)).sort((a,b)=>(b.date+b.id).localeCompare(a.date+a.id));
+  const income=rows.filter(x=>x.type==='income').reduce((a,b)=>a+b.amount,0);
+  const expense=rows.filter(x=>x.type==='expense').reduce((a,b)=>a+b.amount,0);
+  const saved=rows.filter(x=>x.type==='saving').reduce((a,b)=>a+b.amount,0);
+  $('#moneyIncome').textContent=fmt(income); $('#moneyExpense').textContent=fmt(expense); $('#moneySaved').textContent=fmt(saved); $('#moneyBalance').textContent=fmt(income-expense-saved);
+  $('#incomeHint').textContent=`${new Set(rows.filter(x=>x.type==='income').map(x=>x.category)).size} источников дохода`;
+  $('#expenseHint').textContent=`Расходы · ${bounds.label}`; $('#savedHint').textContent=`Накопления · ${bounds.label}`; $('#moneyPeriodLabel').textContent=bounds.label;
+  $$('[data-money-period]').forEach(b=>b.classList.toggle('active',b.dataset.moneyPeriod===moneyPeriod));
+  $('#moneyRows').innerHTML=rows.map(x=>{
+    const t=x.type==='income'?'Доход':x.type==='expense'?'Расход':'Отложено';
+    const cls=x.type==='income'?'income':x.type==='expense'?'expense':'saving'; const sign=x.type==='income'?'+':'−';
+    const p=db.projects.find(p=>p.id===x.projectId);return `<tr><td>${new Intl.DateTimeFormat('ru-RU',{day:'2-digit',month:'short'}).format(new Date(x.date+'T12:00:00'))}</td><td><span class="badge ${x.type==='income'?'green':x.type==='expense'?'red':'blue'}">${escapeHTML(x.category)}</span></td><td>${p?`<span class="money-project"><i class="dot" style="background:${p.color}"></i>${escapeHTML(p.name)}</span>`:'—'}</td><td>${escapeHTML(x.note||'—')}</td><td>${t}</td><td class="amount ${cls}">${sign} ${fmt(x.amount)}</td><td><button class="delete-row" data-money-del="${x.id}" title="Удалить">×</button></td></tr>`;
+  }).join('');
+  $('#moneyEmpty').style.display=rows.length?'none':'block';
+  $$('[data-money-del]').forEach(b=>b.onclick=()=>{ const id=b.dataset.moneyDel;if(!confirm('Удалить операцию?'))return;db.money=db.money.filter(x=>x.id!==id);db.food=db.food.filter(x=>x.moneyId!==id);save();renderMoney();renderFood();renderToday();});
+  const cats={}; rows.filter(x=>x.type==='expense').forEach(x=>cats[x.category]=(cats[x.category]||0)+x.amount);
+  const top=Object.entries(cats).sort((a,b)=>b[1]-a[1]);
+  const projectTotals={};rows.forEach(x=>{if(x.projectId){projectTotals[x.projectId]??={income:0,expense:0};if(x.type==='income')projectTotals[x.projectId].income+=x.amount;if(x.type==='expense')projectTotals[x.projectId].expense+=x.amount}});$('#moneyProjects').innerHTML=Object.keys(projectTotals).length?Object.entries(projectTotals).map(([id,v])=>{const p=db.projects.find(p=>p.id===id);return `<div class="mini-item"><div class="left"><i class="dot" style="background:${p?.color||'#6366f1'}"></i><span>${escapeHTML(p?.name||'Проект')}</span></div><strong>${fmt(v.income-v.expense)}</strong></div>`}).join(''):'<div class="empty">Нет операций, связанных с проектами.</div>';
+  $('#moneyCategories').innerHTML = top.length ? top.map(([k,v])=>`<div class="bar-row"><div class="bar-head"><span>${escapeHTML(k)}</span><span>${fmt(v)}</span></div><div class="bar"><span style="width:${expense?Math.min(100,v/expense*100):0}%;background:#f59e0b"></span></div></div>`).join('') : '<div class="empty">Нет расходов за выбранный период.</div>';
+  const totalSaved=db.money.filter(x=>x.type==='saving').reduce((a,b)=>a+b.amount,0);
+  const safety=Math.min(150000,totalSaved), move=Math.min(100000,Math.max(0,totalSaved-150000));
+  $('#goalSafetyText').textContent=`${fmt(safety)} / 150 000 ₽`; $('#goalSafetyBar').style.width=Math.min(100,safety/150000*100)+'%';
+  $('#goalMoveText').textContent=`${fmt(move)} / 100 000 ₽`; $('#goalMoveBar').style.width=Math.min(100,move/100000*100)+'%';
+}
+$$('[data-money-period]').forEach(b=>b.onclick=()=>{moneyPeriod=b.dataset.moneyPeriod;renderMoney()});
+$('#moneyForm').addEventListener('submit',e=>{
+  e.preventDefault(); const fd=new FormData(e.currentTarget); const amount=Number(fd.get('amount')); if(!amount||amount<0)return;
+  db.money.push({id:uid(),date:fd.get('date'),type:fd.get('type'),category:(fd.get('category')||'Другое').trim(),projectId:fd.get('projectId')||'',amount,note:(fd.get('note')||'').trim()});
+  save(); $('#moneyDialog').close(); e.currentTarget.reset(); renderMoney(); renderToday();
+});
+
+function mealName(v){return {breakfast:'Завтрак',lunch:'Обед',dinner:'Ужин',snack:'Перекус'}[v]||v}
+function mealClass(v){return ['breakfast','lunch','dinner','snack'].includes(v)?v:'snack'}
+
+function renderFood(){
+  const now=new Date(); const weekStart=startOfWeek(now); const weekEnd=new Date(weekStart); weekEnd.setDate(weekEnd.getDate()+7);
+  const month=monthKey(todayISO);
+  const todaySum=db.food.filter(x=>x.date===todayISO).reduce((a,b)=>a+b.amount,0);
+  const weekEntries=db.food.filter(x=>{const d=new Date(x.date+'T12:00:00'); return d>=weekStart&&d<weekEnd});
+  const weekSum=weekEntries.reduce((a,b)=>a+b.amount,0);
+  const monthEntries=db.food.filter(x=>monthKey(x.date)===month);
+  const monthSum=monthEntries.reduce((a,b)=>a+b.amount,0);
+  const days=new Set(monthEntries.map(x=>x.date)).size;
+  $('#foodToday').textContent=fmt(todaySum); $('#foodWeek').textContent=fmt(weekSum); $('#foodMonth').textContent=fmt(monthSum); $('#foodAvg').textContent=fmt(days?monthSum/days:0);
+  $('#foodTodayHint').textContent=`из ${fmt(db.budgets.day)}`; $('#foodWeekHint').textContent=`из ${fmt(db.budgets.week)}`; $('#foodMonthHint').textContent=`из ${fmt(db.budgets.month)}`; const dayOfMonth=now.getDate(),daysInMonth=new Date(now.getFullYear(),now.getMonth()+1,0).getDate(),forecast=dayOfMonth?monthSum/dayOfMonth*daysInMonth:0;$('#foodForecast').textContent=`Прогноз месяца: ${fmt(forecast)}${db.budgets.month?` · ${forecast<=db.budgets.month?'в лимите':'выше лимита'}`:''}`;
+
+  const dayNames=['Пн','Вт','Ср','Чт','Пт','Сб','Вс'];
+  const cols=[];
+  for(let i=0;i<7;i++){
+    const d=new Date(weekStart); d.setDate(d.getDate()+i); const key=iso(d);
+    const entries=weekEntries.filter(x=>x.date===key);
+    const sum=entries.reduce((a,b)=>a+b.amount,0);
+    cols.push(`<div class="day-col"><div class="day-head"><div><strong>${dayNames[i]}</strong><br><span>${d.getDate()} ${new Intl.DateTimeFormat('ru-RU',{month:'short'}).format(d)}</span></div><strong>${sum?fmt(sum):'—'}</strong></div>${entries.length?entries.map(x=>`<div class="meal ${mealClass(x.meal)}"><div class="meal-title">${mealName(x.meal)}</div><div class="meal-line"><span class="meal-note">${escapeHTML(x.note||x.category)}</span><strong>${fmt(x.amount)}</strong></div></div>`).join(''):'<div class="meal"><div class="meal-title">Пусто</div><div class="meal-line"><span class="muted">Нет записей</span></div></div>'}</div>`);
+  }
+  $('#foodWeekBoard').innerHTML=cols.join('');
+
+  const recent=[...db.food].sort((a,b)=>(b.date+a.id).localeCompare(a.date+b.id)).slice(0,8);
+  $('#foodRecent').innerHTML=recent.length?recent.map(x=>`<div class="mini-item"><div class="left"><span>🍽</span><div><strong>${escapeHTML(x.note||x.category)}</strong><div class="meta">${x.date} · ${mealName(x.meal)} · ${escapeHTML(x.category)}</div></div></div><div><strong>${fmt(x.amount)}</strong> <button class="delete-row" data-food-del="${x.id}">×</button></div></div>`).join(''):'<div class="empty">Добавь первую запись о еде.</div>';
+  $$('[data-food-del]').forEach(b=>b.onclick=()=>{ const x=db.food.find(v=>v.id===b.dataset.foodDel); if(x?.moneyId) db.money=db.money.filter(m=>m.id!==x.moneyId); db.food=db.food.filter(v=>v.id!==b.dataset.foodDel); save(); renderFood(); renderMoney(); renderToday();});
+  const cats={}; monthEntries.forEach(x=>cats[x.category]=(cats[x.category]||0)+x.amount);
+  $('#foodCategories').innerHTML=Object.entries(cats).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`<div class="bar-row"><div class="bar-head"><span>${escapeHTML(k)}</span><span>${fmt(v)}</span></div><div class="bar"><span style="width:${monthSum?Math.min(100,v/monthSum*100):0}%;background:#22c55e"></span></div></div>`).join('')||'<div class="empty">Нет данных.</div>';
+}
+
+$('#foodForm').addEventListener('submit',e=>{
+  e.preventDefault(); const fd=new FormData(e.currentTarget); const amount=Number(fd.get('amount')); if(!amount||amount<0)return;
+  const item={id:uid(),date:fd.get('date'),meal:fd.get('meal'),category:fd.get('category'),amount,note:(fd.get('note')||'').trim()};
+  if(fd.get('syncMoney')){
+    const moneyId=uid(); item.moneyId=moneyId;
+    db.money.push({id:moneyId,date:item.date,type:'expense',category:'Еда · '+item.category,amount:item.amount,note:item.note||mealName(item.meal),source:'food',sourceId:item.id});
+  }
+  db.food.push(item); save(); $('#foodDialog').close(); e.currentTarget.reset(); renderFood(); renderMoney(); renderToday();
+});
+
+function escapeHTML(s){return String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+
+let calendarWeekStart = startOfWeek(new Date());
+const categoryLabels={work:'Работа',commute:'Дорога',food:'Еда',freelance:'Фриланс',project:'Свой проект',together:'Вместе',personal:'Личное',home:'Быт',rest:'Отдых',sport:'Спорт',other:'Другое'};
+function projectName(id){return db.projects.find(p=>p.id===id)?.name||'Без проекта'}
+function renderSidebarProjects(){
+  const box=$('#sidebarProjects'); if(!box)return;
+  const active=db.projects.filter(p=>!p.archived); box.innerHTML=active.length?active.slice(0,8).map(p=>`<button class="project-chip" data-sidebar-project="${p.id}" style="border:0;background:transparent;width:100%;text-align:left"><span class="dot" style="background:${p.color||'#6366f1'}"></span>${escapeHTML(p.name)}</button>`).join(''):'<div class="project-chip muted">Проектов пока нет</div>';
+  $$('[data-sidebar-project]',box).forEach(b=>b.onclick=()=>{showPage('projects');setTimeout(()=>document.querySelector(`[data-project-card="${b.dataset.sidebarProject}"]`)?.scrollIntoView({behavior:'smooth',block:'center'}),0)});
+}
+let showArchivedProjects=false;
+function renderProjects(){
+  renderSidebarProjects();
+  const grid=$('#projectsGrid'); const list=$('#projectTasksList'); if(!grid||!list)return;
+  const visibleProjects=db.projects.filter(p=>showArchivedProjects?true:!p.archived);
+  if(!visibleProjects.length){grid.innerHTML='<div class="project-empty" style="grid-column:1/-1"><strong>Проектов пока нет</strong><br><span>Создай первый проект — например, фриланс, личный продукт или обучение.</span></div>'}
+  else grid.innerHTML=visibleProjects.map(p=>{
+    const tasks=db.tasks.filter(t=>t.projectId===p.id), done=tasks.filter(t=>t.done).length, pct=tasks.length?Math.round(done/tasks.length*100):0;
+    const tracked=trackedProjectMs(p.id),income=db.money.filter(m=>m.projectId===p.id&&m.type==='income').reduce((a,m)=>a+m.amount,0),expense=db.money.filter(m=>m.projectId===p.id&&m.type==='expense').reduce((a,m)=>a+m.amount,0),hours=tracked/3600000,rate=hours?income/hours:0;
+    return `<div class="project-card" data-project-card="${p.id}"><div class="project-card-head"><div class="project-name"><span class="dot" style="background:${p.color||'#6366f1'}"></span><span>${escapeHTML(p.name)}</span>${p.archived?'<span class="archive-tag">архив</span>':''}</div><div><button class="tiny-btn" data-edit-project="${p.id}" title="Редактировать">•••</button></div></div><div class="project-desc">${escapeHTML(p.description||'Без описания')}</div><div class="project-meta"><span>${tasks.length} задач · ${done} готово</span><span>${pct}%</span></div><div class="bar"><span style="width:${pct}%;background:${p.color||'#6366f1'}"></span></div><div class="project-finance"><div><span>Время</span><strong>${msHoursText(tracked)}</strong></div><div><span>Доход</span><strong>${fmt(income-expense)}</strong></div><div><span>₽/час</span><strong>${hours?fmt(rate):'—'}</strong></div></div></div>`;
+  }).join('');
+  const tasks=[...db.tasks].sort((a,b)=>(a.done-b.done)||String(a.due||'9999').localeCompare(String(b.due||'9999')));
+  list.innerHTML=tasks.length?tasks.map(t=>{const p=db.projects.find(p=>p.id===t.projectId);return `<div class="project-task-row"><input type="checkbox" data-project-task-check="${t.id}" ${t.done?'checked':''}><div class="project-task-copy"><strong style="${t.done?'text-decoration:line-through;color:#a1a1aa':''}">${escapeHTML(t.title)}</strong><span>${p?`<span class="swatch" style="background:${p.color}"></span>${escapeHTML(p.name)}`:'Без проекта'}${t.due?' · '+t.due:''}</span></div><button class="tiny-btn" data-project-task-edit="${t.id}">Изм.</button><button class="tiny-btn danger" data-project-task-del="${t.id}">×</button></div>`}).join(''):'<div class="empty">Задач пока нет.</div>';
+  $$('[data-edit-project]').forEach(b=>b.onclick=()=>openProjectDialog(b.dataset.editProject));
+  $$('[data-project-task-edit]').forEach(b=>b.onclick=()=>openTaskDialog(b.dataset.projectTaskEdit));
+  $$('[data-project-task-del]').forEach(b=>b.onclick=()=>deleteTaskById(b.dataset.projectTaskDel));
+  $$('[data-project-task-check]').forEach(c=>c.onchange=()=>{const t=db.tasks.find(t=>t.id===c.dataset.projectTaskCheck);if(t){t.done=c.checked;t.status=c.checked?'done':'backlog';save();renderProjects();renderToday();renderTasks();renderCalendarSide();}});
+}
+function openProjectDialog(id=''){
+  const f=$('#projectForm'); f.reset(); const p=id?db.projects.find(x=>x.id===id):null;
+  f.elements.id.value=p?.id||''; f.elements.name.value=p?.name||''; f.elements.color.value=p?.color||'#6366f1'; f.elements.description.value=p?.description||''; f.elements.archived.checked=!!p?.archived;
+  $('#projectDialogTitle').textContent=p?'Редактировать проект':'Новый проект'; $('#deleteProject').style.display=p?'inline-flex':'none'; $('#projectDialog').showModal(); setTimeout(()=>f.elements.name.focus(),0);
+}
+$('#projectForm').addEventListener('submit',e=>{
+  e.preventDefault(); const f=e.currentTarget,id=f.elements.id.value,name=f.elements.name.value.trim(); if(!name)return;
+  const obj={id:id||uid(),name,color:f.elements.color.value||'#6366f1',description:f.elements.description.value.trim(),archived:f.elements.archived.checked,createdAt:id?(db.projects.find(p=>p.id===id)?.createdAt||Date.now()):Date.now()};
+  if(id){const i=db.projects.findIndex(p=>p.id===id);if(i>=0)db.projects[i]=obj}else db.projects.push(obj);
+  save(); $('#projectDialog').close(); renderProjects(); fillProjectSelect();
+});
+$('#deleteProject').onclick=()=>{
+  const id=$('#projectForm').elements.id.value;if(!id)return;if(!confirm('Удалить проект? Задачи останутся без проекта.'))return;
+  db.projects=db.projects.filter(p=>p.id!==id);db.tasks.forEach(t=>{if(t.projectId===id)t.projectId=''});save();$('#projectDialog').close();renderProjects();renderToday();fillProjectSelect();
+};
+$('#newProject').onclick=()=>openProjectDialog(); $('#newProjectTask').onclick=()=>openTaskDialog(); $('#toggleArchivedProjects').onclick=()=>{showArchivedProjects=!showArchivedProjects;$('#toggleArchivedProjects').textContent=showArchivedProjects?'Скрыть архив':'Архив';renderProjects()};
+
+const categoryEmoji={work:'💼',commute:'🚇',food:'🍽',freelance:'🎬',project:'🧠',together:'♥',personal:'👤',home:'🧹',rest:'☕',sport:'🏃',other:'•'};
+function mins(v){const [h,m]=String(v).split(':').map(Number);return h*60+m}
+function eventEndMins(e){let end=mins(e.end);const start=mins(e.start);if(end<=start)end+=1440;return end}
+function hhmm(m){m=(m+1440)%1440;return String(Math.floor(m/60)).padStart(2,'0')+':'+String(m%60).padStart(2,'0')}
+function eventHours(e){return Math.max(0,(eventEndMins(e)-mins(e.start))/60)}
+function weekDates(){return Array.from({length:7},(_,i)=>{const d=new Date(calendarWeekStart);d.setDate(d.getDate()+i);return d})}
+function inViewedWeek(date){const a=iso(calendarWeekStart), end=new Date(calendarWeekStart);end.setDate(end.getDate()+7);return date>=a&&date<iso(end)}
+function calendarRangeText(){const dates=weekDates();const f=new Intl.DateTimeFormat('ru-RU',{day:'numeric',month:'short'});return `${f.format(dates[0])} — ${f.format(dates[6])}`}
+function openEventDialog(pref={}){
+  const form=$('#eventForm'); form.reset();
+  const existing=pref.id ? db.calendar.find(x=>x.id===pref.id) : null;
+  const data=existing||pref;
+  form.elements.id.value=existing?.id||'';
+  form.elements.title.value=data.title||'';
+  form.elements.date.value=data.date||iso(calendarWeekStart);
+  form.elements.category.value=data.category||'project'; fillProjectSelect(); $('#eventProjectSelect').value=data.projectId||''; $('#eventTaskSelect').innerHTML='<option value="">Без задачи</option>'+db.tasks.filter(t=>!t.done||t.id===data.taskId).map(t=>`<option value="${t.id}">${escapeHTML(t.title)}</option>`).join(''); $('#eventTaskSelect').value=data.taskId||''; form.elements.repeat.value='none'; form.elements.repeatUntil.value='';
+  form.elements.start.value=data.start||'19:00';
+  form.elements.end.value=data.end||'20:00';
+  form.elements.note.value=data.note||'';
+  $('#eventDialogTitle').textContent=existing?'Редактировать событие':'Новое событие';
+  $('#deleteEvent').style.display=existing?'inline-flex':'none';
+  $('#eventDialog').showModal();
+  setTimeout(()=>form.elements.title.focus(),0);
+}
+function renderCalendar(){
+  const grid=$('#weekGrid'); if(!grid)return;
+  const dates=weekDates(), dayNames=['Пн','Вт','Ср','Чт','Пт','Сб','Вс'];
+  $('#calendarWeekLabel').textContent=calendarRangeText();
+  let html='<div class="week-head" style="grid-column:1;grid-row:1"></div>';
+  dates.forEach((d,i)=>{const isToday=iso(d)===todayISO;html+=`<div class="week-head ${isToday?'today':''}" style="grid-column:${i+2};grid-row:1"><strong>${dayNames[i]}</strong><span>${d.getDate()} ${new Intl.DateTimeFormat('ru-RU',{month:'short'}).format(d)}</span></div>`});
+  for(let half=0;half<34;half++){
+    const minute=420+half*30, row=half+2;
+    if(half%2===0) html+=`<div class="time-cell" style="grid-column:1;grid-row:${row}/span 2">${hhmm(minute)}</div>`;
+    dates.forEach((d,day)=>{
+      const weekday=day<5, open=weekday ? minute>=420&&minute<1380 : minute>=480&&minute<1440;
+      html+=`<button type="button" class="calendar-slot ${open?'':'closed'} ${half%2===1?'hour':''}" ${open?'':'disabled'} data-slot-date="${iso(d)}" data-slot-time="${hhmm(minute)}" style="grid-column:${day+2};grid-row:${row}" aria-label="${iso(d)} ${hhmm(minute)}"></button>`;
+    });
+  }
+  const weekEvents=db.calendar.filter(e=>inViewedWeek(e.date));
+  weekEvents.forEach(e=>{
+    const day=dates.findIndex(d=>iso(d)===e.date); if(day<0)return;
+    const start=Math.max(420,mins(e.start)), end=Math.min(1440,eventEndMins(e));
+    const rowStart=2+Math.floor((start-420)/30), span=Math.max(1,Math.ceil((end-start)/30));
+    html+=`<button type="button" draggable="true" class="calendar-event ${e.category||'other'}" data-calendar-event="${e.id}" style="grid-column:${day+2};grid-row:${rowStart}/span ${span}" title="${escapeHTML(e.title)}"><strong>${escapeHTML(e.title)}</strong><span>${e.start}–${e.end}${e.note?' · '+escapeHTML(e.note):''}</span></button>`;
+  });
+  grid.innerHTML=html;
+  $$('[data-slot-date]',grid).forEach(b=>b.onclick=()=>{const sm=mins(b.dataset.slotTime), dow=new Date(b.dataset.slotDate+'T12:00:00').getDay(), close=(dow===0||dow===6)?1440:1380;openEventDialog({date:b.dataset.slotDate,start:b.dataset.slotTime,end:hhmm(Math.min(sm+60,close)),category:'project'})});
+  $$('[data-calendar-event]',grid).forEach(b=>{b.onclick=e=>{e.stopPropagation();openEventDialog({id:b.dataset.calendarEvent})};b.ondragstart=e=>{b.classList.add('dragging');e.dataTransfer.setData('text/event-id',b.dataset.calendarEvent);e.dataTransfer.effectAllowed='move'};b.ondragend=()=>b.classList.remove('dragging')});
+  $$('[data-slot-date]',grid).forEach(slot=>{slot.ondragover=e=>{if(slot.disabled)return;e.preventDefault();slot.classList.add('drop-active')};slot.ondragleave=()=>slot.classList.remove('drop-active');slot.ondrop=e=>{e.preventDefault();slot.classList.remove('drop-active');const eventId=e.dataTransfer.getData('text/event-id'),taskId=e.dataTransfer.getData('text/task-id');if(eventId){const ev=db.calendar.find(x=>x.id===eventId);if(ev){const dur=eventEndMins(ev)-mins(ev.start),start=mins(slot.dataset.slotTime),dow=new Date(slot.dataset.slotDate+'T12:00:00').getDay(),close=(dow===0||dow===6)?1440:1380;if(start+dur<=close){ev.date=slot.dataset.slotDate;ev.start=hhmm(start);ev.end=hhmm(start+dur);save();renderCalendar();renderToday()}}}else if(taskId){scheduleTaskDialog(taskId,{date:slot.dataset.slotDate,start:slot.dataset.slotTime})}}});
+  renderCalendarSide();
+}
+function renderCalendarSide(){
+  const events=db.calendar.filter(e=>inViewedWeek(e.date));
+  const total=events.reduce((a,e)=>a+eventHours(e),0), available=112;
+  $('#plannedHours').textContent=`${total.toLocaleString('ru-RU',{maximumFractionDigits:1})} ч`;
+  $('#freeHours').textContent=`${Math.max(0,available-total).toLocaleString('ru-RU',{maximumFractionDigits:1})} ч`;
+  const groups=[['work','Работа','#a1a1aa'],['freelance','Фриланс','#a78bfa'],['project','Свои проекты','#6366f1'],['together','Вместе','#f472b6'],['personal','Личное','#38bdf8'],['rest','Отдых','#facc15']];
+  $('#calendarBalance').innerHTML=groups.map(([key,label,color])=>{const h=events.filter(e=>e.category===key).reduce((a,e)=>a+eventHours(e),0);return `<div class="bar-row"><div class="bar-head"><span>${label}</span><span>${h.toLocaleString('ru-RU',{maximumFractionDigits:1})} ч</span></div><div class="bar"><span style="width:${Math.min(100,h/20*100)}%;background:${color}"></span></div></div>`}).join('');
+  const tasks=db.tasks.filter(t=>!t.done);
+  $('#unscheduledTasks').innerHTML=tasks.length?tasks.map(t=>`<div class="calendar-task" draggable="true" data-drag-task="${t.id}"><span class="task-text">${escapeHTML(t.title)}</span><button class="schedule-btn" data-schedule-task="${t.id}">В календарь</button></div>`).join(''):'<div class="empty">Все задачи закрыты.</div>';
+  $$('[data-schedule-task]').forEach(b=>b.onclick=()=>scheduleTaskDialog(b.dataset.scheduleTask));$$('[data-drag-task]',$('#unscheduledTasks')).forEach(el=>el.ondragstart=e=>{e.dataTransfer.setData('text/task-id',el.dataset.dragTask);e.dataTransfer.effectAllowed='move'});
+}
+function scheduleTaskDialog(taskId,pref={}){const t=db.tasks.find(x=>x.id===taskId);if(!t)return;const date=pref.date||(inViewedWeek(todayISO)?todayISO:iso(calendarWeekStart)),start=pref.start||'19:00',duration=Math.max(30,Number(t.estimateMinutes||60)),end=hhmm(mins(start)+Math.min(duration,240));openEventDialog({title:t.title,date,start,end,category:t.projectId?'project':'personal',note:t.notes||'',taskId:t.id,projectId:t.projectId||''})}
+function seedViewedWorkWeek(){
+  const templates=[['Дорога на работу','commute','08:00','09:00'],['Работа','work','09:00','14:00'],['Обед','food','14:00','15:00'],['Работа','work','15:00','18:00'],['Дорога домой','commute','18:00','19:00']];
+  weekDates().slice(0,5).forEach(d=>templates.forEach(([title,category,start,end])=>{const date=iso(d);if(!db.calendar.some(e=>e.date===date&&e.start===start&&e.end===end&&e.title===title))db.calendar.push({id:uid(),title,category,date,start,end,note:''})}));
+  save();renderCalendar();renderToday();
+}
+function saveCurrentWeekTemplate(){const dates=weekDates();db.weekTemplate=db.calendar.filter(e=>inViewedWeek(e.date)).map(e=>({dayIndex:dates.findIndex(d=>iso(d)===e.date),title:e.title,category:e.category,start:e.start,end:e.end,note:e.note||'',projectId:e.projectId||''})).filter(x=>x.dayIndex>=0);save();renderTemplateStatus();alert('Шаблон недели сохранён.')}
+function applyCurrentWeekTemplate(){if(!db.weekTemplate.length){alert('Сначала сохрани шаблон недели.');return}const dates=weekDates();db.weekTemplate.forEach(t=>{const date=iso(dates[t.dayIndex]);if(!db.calendar.some(e=>e.date===date&&e.start===t.start&&e.title===t.title))db.calendar.push({id:uid(),date,title:t.title,category:t.category,start:t.start,end:t.end,note:t.note||'',projectId:t.projectId||'',taskId:''})});save();renderCalendar();renderToday()}
+function renderTemplateStatus(){const el=$('#templateStatus');if(el)el.textContent=db.weekTemplate.length?`Шаблон сохранён: ${db.weekTemplate.length} блоков`:'Шаблон недели ещё не сохранён.'}
+function clearViewedWeek(){
+  if(!confirm('Удалить все события этой недели?'))return;
+  db.calendar=db.calendar.filter(e=>!inViewedWeek(e.date));save();renderCalendar();renderToday();
+}
+function renderTodaySchedule(){
+  const box=$('#todaySchedule'); if(!box)return;
+  const events=db.calendar.filter(e=>e.date===todayISO).sort((a,b)=>mins(a.start)-mins(b.start));
+  box.innerHTML=events.length?events.map(e=>`<button class="mini-item" data-today-event="${e.id}" style="width:100%;text-align:left"><div class="left"><span>${categoryEmoji[e.category]||'•'}</span><div><strong>${escapeHTML(e.title)}</strong><div class="meta">${e.start}–${e.end}${e.note?' · '+escapeHTML(e.note):''}</div></div></div><span class="muted">${eventHours(e).toLocaleString('ru-RU',{maximumFractionDigits:1})} ч</span></button>`).join(''):'<div class="empty">На сегодня ничего не запланировано. Открой календарь и распланируй день.</div>';
+  $$('[data-today-event]',box).forEach(b=>b.onclick=()=>openEventDialog({id:b.dataset.todayEvent}));
+}
+$('#eventForm').addEventListener('submit',e=>{
+  e.preventDefault(); const f=e.currentTarget, id=f.elements.id.value, title=f.elements.title.value.trim(), date=f.elements.date.value, category=f.elements.category.value, start=f.elements.start.value, end=f.elements.end.value, note=f.elements.note.value.trim();
+  if(!title||!date||!start||!end)return;
+  const dow=new Date(date+'T12:00:00').getDay(), weekend=dow===0||dow===6, open=weekend?480:420, close=weekend?1440:1380, startM=mins(start), endM=eventEndMins({start,end});
+  if(endM-startM<=0){alert('Проверь время окончания.');return}
+  if(startM<open||endM>close){alert(weekend?'На выходных план доступен с 08:00 до 00:00.':'В будни план доступен с 07:00 до 23:00.');return}
+  const taskId=f.elements.taskId.value||'',projectId=f.elements.projectId.value||'';const obj={id:id||uid(),title,date,category,start,end,note,taskId,projectId};
+  if(id){const i=db.calendar.findIndex(x=>x.id===id);if(i>=0)db.calendar[i]=obj}else{db.calendar.push(obj);const repeat=f.elements.repeat.value,until=f.elements.repeatUntil.value;if(repeat!=='none'&&until){let d=new Date(date+'T12:00:00');const limit=new Date(until+'T12:00:00');while(true){d.setDate(d.getDate()+(repeat==='daily'?1:7));if(d>limit)break;db.calendar.push({...obj,id:uid(),date:iso(d)})}}}
+  if(taskId){const t=db.tasks.find(t=>t.id===taskId);if(t&&!t.done)t.status='planned'}
+  save();$('#eventDialog').close();renderCalendar();renderToday();renderTasks();
+});
+$('#deleteEvent').onclick=()=>{const id=$('#eventForm').elements.id.value;if(!id)return;if(confirm('Удалить событие?')){db.calendar=db.calendar.filter(e=>e.id!==id);save();$('#eventDialog').close();renderCalendar();renderToday()}};
+$('#prevWeek').onclick=()=>{calendarWeekStart.setDate(calendarWeekStart.getDate()-7);renderCalendar()};
+$('#nextWeek').onclick=()=>{calendarWeekStart.setDate(calendarWeekStart.getDate()+7);renderCalendar()};
+$('#currentWeek').onclick=()=>{calendarWeekStart=startOfWeek(new Date());renderCalendar()};
+$('#seedWorkWeek').onclick=seedViewedWorkWeek;$('#saveWeekTemplate').onclick=saveCurrentWeekTemplate;$('#applyWeekTemplate').onclick=applyCurrentWeekTemplate;
+$('#clearWeek').onclick=clearViewedWeek;
+$('#newCalendarEvent').onclick=()=>openEventDialog({date:iso(calendarWeekStart),start:'19:00',end:'20:00',category:'project'});
+renderCalendar();renderTemplateStatus();
+
+// Надёжное закрытие окон для Safari: крестик, «Отмена», клик по фону и Escape.
+$$('[data-dialog-close]').forEach(b=>b.onclick=()=>document.getElementById(b.dataset.dialogClose)?.close());
+$$('dialog').forEach(d=>{
+  d.addEventListener('click',e=>{if(e.target===d)d.close()});
+  d.addEventListener('cancel',()=>{});
+});
+
+$('#budgetDay').value=db.budgets.day; $('#budgetWeek').value=db.budgets.week; $('#budgetMonth').value=db.budgets.month;
+$('#saveBudgets').onclick=()=>{ db.budgets.day=Number($('#budgetDay').value)||0; db.budgets.week=Number($('#budgetWeek').value)||0; db.budgets.month=Number($('#budgetMonth').value)||0; save(); renderFood(); alert('Бюджеты сохранены'); };
+$('#exportData').onclick=()=>{
+  const blob=new Blob([JSON.stringify(db,null,2)],{type:'application/json'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='artem-planner-backup.json'; a.click(); URL.revokeObjectURL(a.href);
+};
+$('#importData').onclick=()=>$('#importFile').click();$('#importFile').onchange=async e=>{const file=e.target.files?.[0];if(!file)return;try{const parsed=JSON.parse(await file.text());if(!parsed||typeof parsed!=='object')throw new Error();if(!confirm('Импорт заменит текущие локальные данные. Продолжить?'))return;db=normalizeCloudData(parsed);persistLocal(true);cloudDirty=true;scheduleCloudPush();location.reload()}catch{alert('Не удалось прочитать JSON-файл.')}};
+$('#resetData').onclick=()=>{ if(confirm('Сбросить данные на этом устройстве? Если синхронизация включена, пустое состояние затем будет отправлено в облако.')){db=structuredClone(defaults);persistLocal(true);cloudDirty=true;if(cloudUser){pushCloudState(true).finally(()=>location.reload())}else location.reload();} };
+
+function stopActiveTimer(reason='finish'){
+  if(!db.timer.running||!db.timer.activeTaskId||!db.timer.startedAt)return;
+  const end=Date.now(),ms=Math.max(0,end-db.timer.startedAt),task=db.tasks.find(t=>t.id===db.timer.activeTaskId);
+  db.timeEntries.push({id:uid(),taskId:db.timer.activeTaskId,projectId:task?.projectId||'',date:todayISO,startedAt:db.timer.startedAt,endedAt:end,ms,reason});
+  db.timer.running=false;db.timer.startedAt=null;save();
+}
+function startTaskTimer(taskId){
+  const t=db.tasks.find(x=>x.id===taskId);if(!t)return;if(db.timer.running)stopActiveTimer('switch');db.timer.activeTaskId=taskId;db.timer.running=true;db.timer.startedAt=Date.now();if(!t.done)t.status='in_progress';save();drawTimer();renderTasks();renderProjects();
+}
+function timerMs(){const id=db.timer.activeTaskId;if(!id)return 0;return trackedTaskMs(id)}
+function clock(ms){const s=Math.floor(ms/1000);return [Math.floor(s/3600),Math.floor(s/60)%60,s%60].map(v=>String(v).padStart(2,'0')).join(':')}
+function drawTimer(){const t=db.tasks.find(x=>x.id===db.timer.activeTaskId);$('#timerTitle').textContent=t?.title||'Фокус';$('#timerTime').textContent=clock(timerMs());$('#timerToggle').textContent=db.timer.running?'Ⅱ':'▶';$('#timerState').textContent=db.timer.running?'Идёт работа':(t?'На паузе':'Выбери задачу');$('#timerStop').disabled=!t}
+$('#timerToggle').onclick=()=>{if(db.timer.running){stopActiveTimer('pause')}else if(db.timer.activeTaskId){db.timer.running=true;db.timer.startedAt=Date.now();save()}else{showPage('tasks')}drawTimer();renderTasks();renderProjects();renderToday()};
+$('#timerStop').onclick=()=>{if(db.timer.running)stopActiveTimer('finish');db.timer.activeTaskId='';save();drawTimer();renderTasks();renderProjects();renderToday()};
+setInterval(()=>{drawTimer();if($('#page-tasks').classList.contains('active'))renderTasks()},1000);drawTimer();
+
+fillProjectSelect();renderToday(); renderMoney(); renderFood(); renderProjects(); renderTasks();
+
+if('serviceWorker' in navigator && location.protocol.startsWith('http')){
+  navigator.serviceWorker.register('./service-worker.js').catch(()=>{});
+}
+</script>
+</body>
+</html>
