@@ -1,4 +1,4 @@
-const CACHE='artem-planner-v064';
+const CACHE='artem-planner-v068';
 const ASSETS=['./','./index.html','./manifest.webmanifest','./icon-192.png','./icon-512.png'];
 
 self.addEventListener('install',event=>{

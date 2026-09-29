@@ -9,7 +9,7 @@
   <meta name="apple-mobile-web-app-title" content="Artem Planner" />
   <link rel="manifest" href="./manifest.webmanifest" />
   <link rel="apple-touch-icon" href="./icon-192.png" />
-  <title>Artem Planner v0.6.4</title>
+  <title>Artem Planner v0.6.8</title>
   <style>
     :root{
       --bg:#f7f7f8;
@@ -41,6 +41,10 @@
     }
 
     *{box-sizing:border-box}
+    html,body,.sidebar,.card,.btn,.nav button,.project-chip,.mini-item,.today-task-row,.quick-link,.hero-mini{transition:background-color .18s ease,border-color .18s ease,color .18s ease,box-shadow .18s ease}
+    @media (prefers-reduced-motion: reduce){
+      html,body,.sidebar,.card,.btn,.nav button,.project-chip,.mini-item,.today-task-row,.quick-link,.hero-mini{transition:none!important}
+    }
     html{color-scheme:light}
     html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",sans-serif}
     button,input,select,textarea{font:inherit}
@@ -60,7 +64,8 @@
     .nav button{border:0;background:transparent;padding:10px 11px;border-radius:10px;display:flex;gap:10px;align-items:center;color:#303036;text-align:left}
     .nav button:hover{background:#f0f0f3}
     .nav button.active{background:#e9edff;color:#4f46e5;font-weight:600}
-    .nav-icon{width:18px;text-align:center;opacity:.92}
+    .nav-icon{width:22px;height:22px;display:grid;place-items:center;opacity:.92;flex:0 0 auto}
+.nav-icon svg,.mi svg{width:15px;height:15px;display:block;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
     .sidebar-section{font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted-2);padding:4px 10px}
     .project-list{display:flex;flex-direction:column;gap:3px}
     .project-chip{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:9px;color:#3f3f46}
@@ -463,9 +468,149 @@
     html[data-theme="dark"] input[type="date"]::-webkit-calendar-picker-indicator{filter:invert(1);opacity:.75}
     html[data-theme="dark"] ::-webkit-scrollbar-thumb{background:#3f4148;border-radius:999px}
     html[data-theme="dark"] ::selection{background:#4f46e5;color:#fff}
+
+
+    /* ===== v0.6.6 redesign: sidebar + today dashboard ===== */
+    .sidebar-v2{padding:18px 16px 18px;background:linear-gradient(180deg,rgba(255,255,255,.92),rgba(248,249,255,.95));border-right:1px solid rgba(99,102,241,.12)}
+    .brand-v2{padding:8px 10px 4px}
+    .brand-copy{display:flex;flex-direction:column;min-width:0}
+    .brand-copy strong{font-size:15px;line-height:1.1}
+    .brand-copy small{margin-top:4px;font-size:12px;color:var(--muted)}
+    .search-v2{margin-top:2px}
+    .search-v2 input{padding-right:52px;background:rgba(99,102,241,.05);border-color:rgba(99,102,241,.09)}
+    .search-shortcut{position:absolute;right:10px;top:50%;transform:translateY(-50%);font-style:normal;font-size:11px;color:var(--muted);padding:4px 6px;border-radius:8px;border:1px solid rgba(99,102,241,.12);background:rgba(255,255,255,.85)}
+    .nav-v2{gap:7px;margin-top:2px}
+    .nav-v2 button{padding:12px 12px;border-radius:14px;font-weight:500;position:relative;transition:transform .18s ease, background .18s ease, box-shadow .18s ease}
+    .nav-v2 button:hover{background:rgba(99,102,241,.08);transform:translateX(2px)}
+    .nav-v2 button.active{background:linear-gradient(135deg,rgba(99,102,241,.92),rgba(115,126,255,.95));color:#fff;box-shadow:0 12px 28px rgba(99,102,241,.28), inset 0 1px 0 rgba(255,255,255,.18)}
+    .nav-v2 button.active .nav-icon{background:rgba(255,255,255,.18);color:#fff}
+    .nav-v2 .nav-icon{width:22px;height:22px;border-radius:8px;display:grid;place-items:center;background:rgba(99,102,241,.08);color:var(--accent);font-size:13px;flex:0 0 auto}
+    .sidebar-section-row{display:flex;align-items:center;justify-content:space-between;margin-top:6px}
+    .sidebar-add-project{border:1px solid rgba(99,102,241,.12);background:rgba(99,102,241,.06);color:var(--accent);width:28px;height:28px;border-radius:10px;display:grid;place-items:center;padding:0}
+    .project-list-v2{gap:6px}
+    .project-list-v2 .project-chip{padding:10px 11px;border:1px solid transparent;border-radius:12px;background:rgba(99,102,241,.03);transition:background .18s ease,border-color .18s ease}
+    .project-list-v2 .project-chip:hover{background:rgba(99,102,241,.07);border-color:rgba(99,102,241,.1)}
+    .sidebar-footer-v2{display:flex;flex-direction:column;gap:10px}
+    .cloud-indicator-v2{padding:12px 12px;border-radius:14px;background:linear-gradient(135deg,rgba(99,102,241,.07),rgba(139,92,246,.04));border:1px solid rgba(99,102,241,.12);box-shadow:0 10px 26px rgba(99,102,241,.06)}
+    .sidebar-settings-btn{border:1px solid rgba(99,102,241,.12)!important;background:rgba(255,255,255,.88)!important;border-radius:14px!important;padding:12px 12px!important;font-weight:600;color:var(--text)!important;box-shadow:0 8px 22px rgba(15,23,42,.04)}
+    .sidebar-settings-btn:hover{background:#fff!important;box-shadow:0 10px 26px rgba(99,102,241,.09)}
+
+    .btn.soft{background:rgba(99,102,241,.06);border-color:rgba(99,102,241,.1);color:var(--accent)}
+    .btn.soft:hover{background:rgba(99,102,241,.11)}
+    .btn.full{width:100%;justify-content:center}
+    .btn.glow{box-shadow:0 12px 28px rgba(99,102,241,.26), inset 0 1px 0 rgba(255,255,255,.18)}
+    .glow-card{position:relative;overflow:hidden;isolation:isolate}
+    .glow-card::before{content:"";position:absolute;z-index:-1;inset:auto -8% 62% auto;width:260px;height:260px;border-radius:50%;background:radial-gradient(circle,rgba(99,102,241,.18) 0%,rgba(99,102,241,.07) 34%,rgba(99,102,241,0) 72%);pointer-events:none}
+    .glow-card::after{content:"";position:absolute;z-index:-1;left:-120px;bottom:-180px;width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,rgba(59,130,246,.08),rgba(59,130,246,0) 70%);pointer-events:none}
+    .today-page .topbar{margin-bottom:14px}
+    .topbar-today{align-items:center}
+    .today-top-actions{gap:10px}
+    .today-hero{padding:18px 18px 16px;margin-bottom:14px}
+    .today-summary-hero{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;margin:0}
+    .hero-mini{padding:16px 16px 14px;border:1px solid rgba(99,102,241,.12);border-radius:16px;background:linear-gradient(180deg,rgba(255,255,255,.88),rgba(246,247,255,.9));box-shadow:inset 0 1px 0 rgba(255,255,255,.75)}
+    .hero-mini span{font-size:12px;color:var(--muted);display:block}
+    .hero-mini strong{display:block;font-size:18px;line-height:1.15;margin-top:6px;letter-spacing:-.03em}
+    .hero-mini em{display:block;margin-top:7px;font-style:normal;font-size:12px;color:var(--muted)}
+    .progress-mini .mini-progress{height:8px;background:#eceef8;border-radius:999px;overflow:hidden;margin-top:11px}
+    .progress-mini .mini-progress span{display:block;height:100%;width:0%;background:linear-gradient(90deg,#6366f1,#8b5cf6);border-radius:inherit;transition:width .2s ease}
+    .today-main-grid{display:grid;grid-template-columns:minmax(0,1.65fr) minmax(280px,.55fr);gap:14px;margin-bottom:14px}
+    .today-right-rail{display:flex;flex-direction:column;gap:14px}
+    .section-title-rich{align-items:flex-start}
+    .section-actions{display:flex;align-items:center;gap:8px}
+    .icon-btn{border:1px solid rgba(99,102,241,.12);background:rgba(99,102,241,.05);color:var(--accent);border-radius:12px;padding:8px 11px}
+    .today-tasks-card{padding:18px}
+    .today-task-list{display:flex;flex-direction:column;gap:10px}
+    .today-task-group{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);padding:4px 2px 0}
+    .today-task-row{display:grid;grid-template-columns:auto minmax(0,1fr) auto auto;gap:14px;align-items:center;padding:16px;border:1px solid rgba(99,102,241,.1);border-radius:18px;background:linear-gradient(180deg,rgba(255,255,255,.92),rgba(247,248,255,.94));box-shadow:0 10px 24px rgba(15,23,42,.04)}
+    .today-task-row.is-secondary{background:linear-gradient(180deg,rgba(255,255,255,.78),rgba(249,250,252,.9))}
+    .today-task-row input[type="checkbox"]{width:21px;height:21px;accent-color:var(--accent)}
+    .today-task-main{min-width:0}
+    .today-task-title{appearance:none;border:0;background:none;padding:0;font-size:20px;line-height:1.2;font-weight:700;color:var(--text);display:flex;align-items:center;gap:10px;text-align:left}
+    .today-task-title:hover{color:var(--accent)}
+    .today-task-meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:9px;align-items:center;color:var(--muted);font-size:12px}
+    .today-task-badge{display:inline-flex;align-items:center;gap:6px;padding:7px 10px;border-radius:999px;border:1px solid rgba(99,102,241,.12);background:rgba(99,102,241,.05);color:#4b5563}
+    .today-task-badge.overdue{background:#fff1f2;border-color:#fecdd3;color:#be123c}
+    .today-task-badge.scheduled{background:#eef2ff;border-color:#c7d2fe;color:#4338ca}
+    .today-task-time{min-width:126px;padding:10px 12px;border-radius:14px;background:rgba(99,102,241,.04);border:1px solid rgba(99,102,241,.08);text-align:left}
+    .today-task-time strong{display:block;font-size:15px;letter-spacing:-.02em}
+    .today-task-time span{display:block;margin-top:4px;font-size:12px;color:var(--muted)}
+    .today-task-actions{display:flex;gap:8px}
+    .today-task-actions button{min-width:40px;height:40px;border:1px solid rgba(99,102,241,.12);background:rgba(255,255,255,.92);border-radius:12px;color:#52525b;font-size:15px;display:grid;place-items:center}
+    .today-task-actions button.play{background:linear-gradient(135deg,#6366f1,#7c83ff);color:#fff;border-color:transparent;box-shadow:0 10px 20px rgba(99,102,241,.22)}
+    .today-task-actions button:hover{transform:translateY(-1px)}
+    .today-task-actions .danger:hover{background:#fff1f2;color:#dc2626;border-color:#fecdd3}
+    .today-focus-card,.quick-actions-card,.schedule-card,.money-card-today{padding:18px}
+    .focus-side-layout{display:flex;align-items:center;gap:16px;margin:6px 0 16px}
+    .focus-ring{--focus-pct:0;position:relative;width:104px;height:104px;border-radius:50%;background:conic-gradient(#7c83ff calc(var(--focus-pct)*1%), rgba(99,102,241,.15) 0);display:grid;place-items:center;box-shadow:0 10px 26px rgba(99,102,241,.16)}
+    .focus-ring::before{content:"";position:absolute;inset:11px;border-radius:50%;background:var(--surface)}
+    .focus-ring-inner{position:relative;z-index:1;display:grid;place-items:center;text-align:center}
+    .focus-ring-inner strong{font-size:21px;letter-spacing:-.03em}
+    .focus-big{font-size:34px;font-weight:800;line-height:1;letter-spacing:-.04em}
+    .focus-small{margin-top:6px;font-size:12px;color:var(--muted)}
+    .quick-links{display:flex;flex-direction:column;gap:9px}
+    .quick-link{width:100%;display:grid;grid-template-columns:28px minmax(0,1fr) auto;align-items:center;gap:12px;padding:12px 12px;border-radius:14px;border:1px solid rgba(99,102,241,.1);background:rgba(99,102,241,.04);color:var(--text);text-align:left}
+    .quick-link span{width:28px;height:28px;border-radius:10px;display:grid;place-items:center;background:rgba(99,102,241,.12);color:var(--accent);font-weight:700}
+    .quick-link b{font-size:14px}
+    .quick-link em{font-style:normal;font-size:11px;color:var(--muted);padding:4px 6px;border-radius:8px;background:rgba(255,255,255,.72);border:1px solid rgba(99,102,241,.1)}
+    .quick-link:hover{background:rgba(99,102,241,.08)}
+    .quick-link:active{transform:translateY(1px)}
+    .today-lower-grid.v2{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(280px,.65fr);gap:14px}
+    .mini-list{display:flex;flex-direction:column;gap:9px}
+    .schedule-card .mini-item,.money-summary-list .mini-item{background:linear-gradient(180deg,rgba(255,255,255,.9),rgba(247,248,255,.94));border:1px solid rgba(99,102,241,.09);border-radius:15px;padding:12px 14px}
+    .money-summary-list{display:flex;flex-direction:column;gap:10px}
+    .schedule-card .empty{padding:34px 16px;border:1px dashed rgba(99,102,241,.14);border-radius:18px;background:rgba(99,102,241,.03)}
+    .today-page .empty{color:var(--muted)}
+
+    html[data-theme="dark"] .sidebar-v2{background:linear-gradient(180deg,#10111a,#0b0c13);border-right-color:#202238;box-shadow:inset -1px 0 0 rgba(255,255,255,.03)}
+    html[data-theme="dark"] .brand-copy small{color:#8f95ab}
+    html[data-theme="dark"] .search-v2 input{background:#141624;border-color:#22263f;color:#f4f4f5}
+    html[data-theme="dark"] .search-shortcut{background:#16182a;border-color:#2b3156;color:#a8aed3}
+    html[data-theme="dark"] .nav-v2 button{color:#d7d9e4}
+    html[data-theme="dark"] .nav-v2 button:hover{background:#15192b}
+    html[data-theme="dark"] .nav-v2 button.active{background:linear-gradient(135deg,#4f46e5,#6d75ff);box-shadow:0 14px 34px rgba(76,83,255,.34), inset 0 1px 0 rgba(255,255,255,.15)}
+    html[data-theme="dark"] .nav-v2 .nav-icon{background:#161a2f;color:#c7d2fe}
+    html[data-theme="dark"] .project-list-v2 .project-chip{background:#10131e;color:#d8d9df}
+    html[data-theme="dark"] .project-list-v2 .project-chip:hover{background:#161a2b;border-color:#252b49}
+    html[data-theme="dark"] .cloud-indicator-v2{background:#111527;border-color:#20274b;color:#d9ddf9}
+    html[data-theme="dark"] .sidebar-settings-btn{background:#11131f!important;border-color:#242840!important;color:#ececf2!important}
+    html[data-theme="dark"] .glow-card{background:linear-gradient(180deg,rgba(13,16,26,.95),rgba(11,13,21,.98));border-color:#20243a;box-shadow:0 16px 40px rgba(0,0,0,.32), inset 0 1px 0 rgba(255,255,255,.04)}
+    html[data-theme="dark"] .glow-card::before{background:radial-gradient(circle,rgba(99,102,241,.30) 0%,rgba(99,102,241,.10) 36%,rgba(99,102,241,0) 72%)}
+    html[data-theme="dark"] .glow-card::after{background:radial-gradient(circle,rgba(59,130,246,.14),rgba(59,130,246,0) 70%)}
+    html[data-theme="dark"] .btn.soft{background:#15192c;border-color:#252b49;color:#c7d2fe}
+    html[data-theme="dark"] .btn.soft:hover{background:#1a2040}
+    html[data-theme="dark"] .hero-mini{background:linear-gradient(180deg,rgba(17,20,31,.95),rgba(13,16,26,.96));border-color:#252b47;box-shadow:inset 0 1px 0 rgba(255,255,255,.03)}
+    html[data-theme="dark"] .hero-mini span,html[data-theme="dark"] .hero-mini em{color:#9aa0b5}
+    html[data-theme="dark"] .progress-mini .mini-progress{background:#1b2040}
+    html[data-theme="dark"] .today-task-row{background:linear-gradient(180deg,rgba(15,18,29,.96),rgba(11,14,24,.98));border-color:#232845;box-shadow:0 12px 28px rgba(0,0,0,.2)}
+    html[data-theme="dark"] .today-task-row.is-secondary{background:linear-gradient(180deg,rgba(13,16,27,.94),rgba(10,12,20,.96))}
+    html[data-theme="dark"] .today-task-title{color:#f3f4f6}
+    html[data-theme="dark"] .today-task-title:hover{color:#c7d2fe}
+    html[data-theme="dark"] .today-task-meta{color:#a5adc0}
+    html[data-theme="dark"] .today-task-badge{background:#141a2c;border-color:#272f52;color:#c3cae8}
+    html[data-theme="dark"] .today-task-badge.overdue{background:#32161f;border-color:#5d2433;color:#fda4af}
+    html[data-theme="dark"] .today-task-badge.scheduled{background:#192042;border-color:#303b72;color:#bac6ff}
+    html[data-theme="dark"] .today-task-time{background:#12162a;border-color:#232b4e}
+    html[data-theme="dark"] .today-task-time span{color:#9da3b9}
+    html[data-theme="dark"] .today-task-actions button{background:#121524;border-color:#252c4d;color:#ececf2}
+    html[data-theme="dark"] .today-task-actions button.play{background:linear-gradient(135deg,#4f46e5,#6e76ff);box-shadow:0 14px 26px rgba(79,70,229,.3)}
+    html[data-theme="dark"] .icon-btn{background:#14192e;border-color:#252c4c;color:#c7d2fe}
+    html[data-theme="dark"] .focus-ring{background:conic-gradient(#7b84ff calc(var(--focus-pct)*1%), rgba(123,132,255,.12) 0);box-shadow:0 16px 34px rgba(79,70,229,.24)}
+    html[data-theme="dark"] .focus-ring::before{background:#0f1321}
+    html[data-theme="dark"] .focus-small{color:#99a2ba}
+    html[data-theme="dark"] .quick-link{background:#111628;border-color:#232b49;color:#ececf2}
+    html[data-theme="dark"] .quick-link span{background:#1b2142;color:#c7d2fe}
+    html[data-theme="dark"] .quick-link em{background:#121629;border-color:#252d4f;color:#a8afcb}
+    html[data-theme="dark"] .schedule-card .mini-item,
+    html[data-theme="dark"] .money-summary-list .mini-item{background:linear-gradient(180deg,rgba(15,18,29,.96),rgba(11,14,24,.98));border-color:#232845}
+    html[data-theme="dark"] .schedule-card .empty{background:#0f1321;border-color:#252b48}
+
+
     @media(max-width:1100px){
       .cards{grid-template-columns:repeat(2,1fr)}
       .grid-2,.calendar-shell{grid-template-columns:1fr}
+
+      .today-summary-hero{grid-template-columns:repeat(3,minmax(0,1fr))}
+      .today-main-grid,.today-lower-grid.v2{grid-template-columns:1fr}
     }
     @media(max-width:780px){
       :root{--sidebar:0px}
@@ -498,12 +643,17 @@
       .mobile-nav{display:grid;grid-template-columns:repeat(6,1fr);position:fixed;left:0;right:0;bottom:0;z-index:40;background:rgba(255,255,255,.95);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-top:1px solid var(--border);padding:7px 8px calc(7px + env(safe-area-inset-bottom))}
       .mobile-nav button{border:0;background:transparent;border-radius:10px;padding:7px 2px;color:#71717a;font-size:10px}
       .mobile-nav button.active{color:var(--accent)}
-      .mobile-nav .mi{display:block;font-size:18px;margin-bottom:2px}
+      .mobile-nav .mi{display:grid;place-items:center;width:20px;height:20px;margin:0 auto 2px;color:inherit}
       .form-grid{grid-template-columns:1fr}
-      .today-summary-4{grid-template-columns:repeat(2,1fr)}
+      .today-summary-4,.today-summary-hero{grid-template-columns:repeat(2,1fr)}
       .today-task-row{grid-template-columns:auto minmax(0,1fr) auto;gap:9px}
-      .today-task-time{grid-column:2;grid-row:2;text-align:left}
+      .today-task-time{grid-column:2;grid-row:2;text-align:left;min-width:0}
       .today-task-actions{grid-column:3;grid-row:1 / span 2;flex-direction:column}
+      .topbar-today{align-items:flex-start}
+      .today-top-actions{width:100%}
+      .today-top-actions .btn{flex:1 1 auto;justify-content:center}
+      .focus-side-layout{justify-content:flex-start}
+      .today-task-title{font-size:17px}
       .calendar-view-switch{order:5;width:100%}
       .calendar-toolbar .left{flex-wrap:wrap}
       .month-grid{grid-template-columns:repeat(7,90px)}
@@ -518,56 +668,113 @@
 </head>
 <body>
 <div class="app">
-  <aside class="sidebar">
-    <div class="brand"><div class="brand-mark">M</div><span>Artem Planner</span></div>
-    <div class="search"><span>⌕</span><input id="globalSearch" placeholder="Поиск по планировщику…" autocomplete="off" /><div class="global-search-results" id="globalSearchResults"></div></div>
-    <div class="nav" id="desktopNav">
-      <button data-page="today" class="active"><span class="nav-icon">◫</span>Сегодня</button>
-      <button data-page="focus"><span class="nav-icon">◉</span>Фокус</button>
-      <button data-page="calendar"><span class="nav-icon">□</span>Календарь</button>
-      <button data-page="tasks"><span class="nav-icon">☑</span>Задачи</button>
-      <button data-page="projects"><span class="nav-icon">✓</span>Проекты</button>
-      <button data-page="money"><span class="nav-icon">▣</span>Деньги</button>
-      <button data-page="food"><span class="nav-icon">⌁</span>Траты</button>
-      <button data-page="analytics"><span class="nav-icon">⌁</span>Аналитика</button>
-      <button data-page="archive"><span class="nav-icon">⌫</span>Архив</button>
+  <aside class="sidebar sidebar-v2">
+    <div class="brand brand-v2">
+      <div class="brand-mark">M</div>
+      <div class="brand-copy">
+        <strong>Artem Planner</strong>
+        <small>Планируй. Делай. Развивайся.</small>
+      </div>
     </div>
-    <div class="sidebar-section">Проекты</div>
-    <div class="project-list" id="sidebarProjects"></div>
-    <div class="sidebar-footer"><div class="cloud-indicator"><span class="sync-dot" id="sidebarSyncDot"></span><span id="sidebarSyncText">Только локально</span></div><button data-page="settings">⚙ Настройки</button></div>
+    <div class="search search-v2">
+      <span>⌕</span>
+      <input id="globalSearch" placeholder="Поиск по планировщику…" autocomplete="off" />
+      <em class="search-shortcut">⌘K</em>
+      <div class="global-search-results" id="globalSearchResults"></div>
+    </div>
+    <div class="nav nav-v2" id="desktopNav">
+      <button data-page="today" class="active"><span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6.5A2.5 2.5 0 0 1 6.5 4h11A2.5 2.5 0 0 1 20 6.5v11a2.5 2.5 0 0 1-2.5 2.5h-11A2.5 2.5 0 0 1 4 17.5z"/><path d="M8 4v16"/><path d="M4 10h16"/></svg></span>Сегодня</button>
+      <button data-page="focus"><span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="2.5"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22"/></svg></span>Фокус</button>
+      <button data-page="calendar"><span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2.5"/><path d="M8 3v4M16 3v4M3 10h18"/></svg></span>Календарь</button>
+      <button data-page="tasks"><span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="m8 12 2.5 2.5L16 9"/></svg></span>Задачи</button>
+      <button data-page="projects"><span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7.5A2.5 2.5 0 0 1 5.5 5h4l2 2h7A2.5 2.5 0 0 1 21 9.5v8A2.5 2.5 0 0 1 18.5 20h-13A2.5 2.5 0 0 1 3 17.5z"/><path d="M3 9h18"/></svg></span>Проекты</button>
+      <button data-page="money"><span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7.5A2.5 2.5 0 0 1 6.5 5h11A2.5 2.5 0 0 1 20 7.5v9a2.5 2.5 0 0 1-2.5 2.5h-11A2.5 2.5 0 0 1 4 16.5z"/><path d="M4 9h16"/><circle cx="15.5" cy="13.5" r="1.5"/></svg></span>Деньги</button>
+      <button data-page="food"><span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4v7"/><path d="M10 4v7"/><path d="M7 8h3"/><path d="M8.5 11v9"/><path d="M15 4c2 2 2 5.5 0 7.5l-1 1v7.5"/><path d="M15 4v16"/></svg></span>Траты</button>
+      <button data-page="analytics"><span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19V9"/><path d="M12 19V5"/><path d="M19 19v-7"/><path d="M3 19h18"/></svg></span>Аналитика</button>
+      <button data-page="archive"><span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16"/><path d="M6 7v10.5A2.5 2.5 0 0 0 8.5 20h7a2.5 2.5 0 0 0 2.5-2.5V7"/><rect x="3" y="4" width="18" height="4" rx="1.5"/><path d="M10 12h4"/></svg></span>Архив</button>
+    </div>
+    <div class="sidebar-section sidebar-section-row"><span>Проекты</span><button class="sidebar-add-project" data-page="projects" title="Открыть проекты">＋</button></div>
+    <div class="project-list project-list-v2" id="sidebarProjects"></div>
+    <div class="sidebar-footer sidebar-footer-v2">
+      <div class="cloud-indicator cloud-indicator-v2"><span class="sync-dot" id="sidebarSyncDot"></span><span id="sidebarSyncText">Только локально</span></div>
+      <button data-page="settings" class="sidebar-settings-btn">⚙ Настройки</button>
+    </div>
   </aside>
 
   <main class="content">
-    <section class="page active" id="page-today">
-      <div class="topbar">
-        <div class="title-wrap"><h1>Сегодня</h1><div class="subtitle" id="todayDate"></div></div>
-        <div class="actions"><button class="btn primary" data-open="quickTask">＋ Добавить задачу</button></div>
+    <section class="page active today-page" id="page-today">
+      <div class="topbar topbar-today">
+        <div class="title-wrap">
+          <h1>Сегодня</h1>
+          <div class="subtitle" id="todayDate"></div>
+        </div>
+        <div class="actions today-top-actions">
+          <button class="btn soft" data-page="tasks">Все задачи</button>
+          <button class="btn primary glow" data-open="quickTask">＋ Добавить задачу</button>
+        </div>
       </div>
 
-      <div class="card today-tasks-card">
-        <div class="section-title">
-          <div><h2>Задачи дня</h2><span class="small">Сначала то, что нужно сделать; расписание дня — ниже</span></div>
-          <button class="btn" data-page="tasks">Все задачи</button>
+      <div class="today-hero card glow-card">
+        <div class="today-summary today-summary-hero">
+          <div class="mini hero-mini"><span>Задач сегодня</span><strong id="todayTasksCount">0</strong><em id="todayTasksCaption">в работе сейчас</em></div>
+          <div class="mini hero-mini"><span>Запланировано</span><strong id="todayPlanned">0 ч</strong><em>на задачи сегодня</em></div>
+          <div class="mini hero-mini"><span>Свободно</span><strong id="todayFree">0 ч</strong><em>из 24 часов</em></div>
+          <div class="mini hero-mini"><span>Фокус</span><strong id="todayTracked">0 ч</strong><em>уже наработал</em></div>
+          <div class="mini hero-mini progress-mini"><span>Прогресс дня</span><strong id="todayProgressPercent">0%</strong><div class="mini-progress"><span id="todayProgressBar"></span></div><em id="todayProgressCaption">0 из 0 задач</em></div>
         </div>
-        <div class="today-summary today-summary-4">
-          <div class="mini"><span>Задач</span><strong id="todayTasksCount">0</strong></div>
-          <div class="mini"><span>Запланировано</span><strong id="todayPlanned">0 ч</strong></div>
-          <div class="mini"><span>Свободно</span><strong id="todayFree">0 ч</strong></div>
-          <div class="mini"><span>Фокус</span><strong id="todayTracked">0 ч</strong></div>
-        </div>
-        <div id="quickTasks" class="today-task-list"></div>
       </div>
 
-      <div class="grid-2 today-lower-grid">
-        <div class="card">
-          <div class="section-title"><h2>Расписание дня</h2><span class="small">Полная лента по времени</span></div>
+      <div class="today-main-grid">
+        <div class="card today-tasks-card glow-card">
+          <div class="section-title section-title-rich">
+            <div>
+              <h2>Задачи дня</h2>
+              <span class="small">Сначала то, что нужно сделать; расписание дня — ниже</span>
+            </div>
+            <div class="section-actions">
+              <button class="btn soft" data-page="tasks">Все задачи</button>
+            </div>
+          </div>
+          <div id="quickTasks" class="today-task-list"></div>
+        </div>
+
+        <div class="today-right-rail">
+          <div class="card today-focus-card glow-card">
+            <div class="section-title"><h2>Фокус сегодня</h2><span class="small">выполнение плана</span></div>
+            <div class="focus-side-layout">
+              <div class="focus-ring" id="todayFocusRing"><div class="focus-ring-inner"><strong id="todayFocusPercent">0%</strong></div></div>
+              <div class="focus-side-copy">
+                <div class="focus-big" id="todayFocusTime">0 ч</div>
+                <div class="focus-small" id="todayFocusHint">из запланированных 0 ч</div>
+              </div>
+            </div>
+            <button class="btn primary full glow" data-page="focus">▶ Запустить фокус</button>
+          </div>
+
+          <div class="card quick-actions-card glow-card">
+            <div class="section-title"><h2>Быстрые действия</h2><span class="small">частые сценарии</span></div>
+            <div class="quick-links">
+              <button class="quick-link" data-open="quickTask"><span>＋</span><b>Новая задача</b><em>⌘N</em></button>
+              <button class="quick-link" data-page="focus"><span>◉</span><b>Запустить фокус</b><em>⌘P</em></button>
+              <button class="quick-link" data-page="calendar"><span>□</span><b>Открыть календарь</b><em>⌘C</em></button>
+              <button class="quick-link" data-page="analytics"><span>▤</span><b>Перейти к аналитике</b><em>⌘A</em></button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="today-lower-grid v2">
+        <div class="card glow-card schedule-card">
+          <div class="section-title"><h2>Расписание дня</h2><button class="btn soft" data-page="calendar">Открыть календарь →</button></div>
           <div class="mini-list" id="todaySchedule"></div>
         </div>
-        <div class="card">
+        <div class="card glow-card money-card-today">
           <div class="section-title"><h2>Сводка денег</h2><span class="small">Текущий месяц</span></div>
-          <div class="mini-item"><span>Доходы месяца</span><strong id="todayIncome">0 ₽</strong></div>
-          <div class="mini-item"><span>Расходы месяца</span><strong id="todayExpense">0 ₽</strong></div>
-          <div class="mini-item"><span>Траты месяца</span><strong id="todayFood">0 ₽</strong></div>
+          <div class="money-summary-list">
+            <div class="mini-item"><span>Доходы месяца</span><strong id="todayIncome">0 ₽</strong></div>
+            <div class="mini-item"><span>Расходы месяца</span><strong id="todayExpense">0 ₽</strong></div>
+            <div class="mini-item"><span>Траты месяца</span><strong id="todayFood">0 ₽</strong></div>
+          </div>
         </div>
       </div>
     </section>
@@ -911,11 +1118,11 @@
 </div>
 
 <nav class="mobile-nav" id="mobileNav">
-  <button data-page="today" class="active"><span class="mi">◫</span>Сегодня</button>
-  <button data-page="focus"><span class="mi">◉</span>Фокус</button>
-  <button data-page="calendar"><span class="mi">□</span>Календарь</button>
-  <button data-page="tasks"><span class="mi">☑</span>Задачи</button>
-  <button data-page="money"><span class="mi">▣</span>Деньги</button>
+  <button data-page="today" class="active"><span class="mi"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6.5A2.5 2.5 0 0 1 6.5 4h11A2.5 2.5 0 0 1 20 6.5v11a2.5 2.5 0 0 1-2.5 2.5h-11A2.5 2.5 0 0 1 4 17.5z"/><path d="M8 4v16"/><path d="M4 10h16"/></svg></span>Сегодня</button>
+  <button data-page="focus"><span class="mi"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="2.5"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22"/></svg></span>Фокус</button>
+  <button data-page="calendar"><span class="mi"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2.5"/><path d="M8 3v4M16 3v4M3 10h18"/></svg></span>Календарь</button>
+  <button data-page="tasks"><span class="mi"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="m8 12 2.5 2.5L16 9"/></svg></span>Задачи</button>
+  <button data-page="money"><span class="mi"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7.5A2.5 2.5 0 0 1 6.5 5h11A2.5 2.5 0 0 1 20 7.5v9a2.5 2.5 0 0 1-2.5 2.5h-11A2.5 2.5 0 0 1 4 16.5z"/><path d="M4 9h16"/><circle cx="15.5" cy="13.5" r="1.5"/></svg></span>Деньги</button>
   <button data-page="more"><span class="mi">•••</span>Ещё</button>
 </nav>
 
@@ -1232,8 +1439,21 @@ function scheduleCloudPush(){
   clearTimeout(cloudPushTimer); if(!cloudClient||!cloudUser||cloudMode==='conflict')return;
   cloudPushTimer=setTimeout(()=>pushCloudState(false),700);
 }
+function stableCloudValue(value){
+  if(Array.isArray(value))return value.map(stableCloudValue);
+  if(value&&typeof value==='object'){
+    return Object.keys(value).sort().reduce((out,key)=>{
+      out[key]=stableCloudValue(value[key]);
+      return out;
+    },{});
+  }
+  return value;
+}
 function cloudComparable(value){
-  const x=normalizeCloudData(value);const copy=structuredClone(x);copy.meta={...(copy.meta||{}),updatedAt:null};return JSON.stringify(copy);
+  const x=normalizeCloudData(value);
+  const copy=structuredClone(x);
+  copy.meta={...(copy.meta||{}),updatedAt:null};
+  return JSON.stringify(stableCloudValue(copy));
 }
 async function reconcileCloud(){
   if(!cloudClient||!cloudUser||cloudBusy)return;
@@ -1242,15 +1462,22 @@ async function reconcileCloud(){
     const row=await fetchCloudRow(); cloudLastRemote=row;
     if(!row){cloudMode='ready';cloudBusy=false;await pushCloudState(true);return}
     const remote=normalizeCloudData(row.data),localHas=dataHasContent(db),remoteHas=dataHasContent(remote),lt=Date.parse(db.meta?.updatedAt||''),rt=Date.parse(row.updated_at||remote.meta?.updatedAt||'');
-    if(cloudDirty&&localHas&&remoteHas&&cloudComparable(db)!==cloudComparable(remote)){cloudLastRemote=row;cloudMode='conflict';updateCloudUI();return}
+    const sameData=cloudComparable(db)===cloudComparable(remote);
+
+    // JSONB in Supabase may return object keys in a different order.
+    // Compare canonical values first so a normal page reload never becomes a false conflict.
+    if(sameData){
+      cloudDirty=false;cloudLastSync=new Date();cloudMode='ready';updateCloudUI();return;
+    }
+
+    if(cloudDirty&&localHas&&remoteHas){cloudLastRemote=row;cloudMode='conflict';updateCloudUI();return}
     if(!localHas&&remoteHas){applyCloudState(row);return}
     if(localHas&&!remoteHas){cloudMode='ready';cloudBusy=false;await pushCloudState(true);return}
     if(!localHas&&!remoteHas){applyCloudState(row);return}
     if(Number.isFinite(lt)&&Number.isFinite(rt)){
       if(rt>lt+250){applyCloudState(row);return}
       if(lt>rt+250){cloudMode='ready';cloudBusy=false;cloudDirty=true;await pushCloudState(true);return}
-      if(cloudComparable(db)!==cloudComparable(remote)){cloudMode='conflict';updateCloudUI();return}
-      cloudDirty=false;cloudLastSync=new Date();cloudMode='ready';updateCloudUI();return;
+      cloudMode='conflict';updateCloudUI();return;
     }
     cloudMode='conflict';updateCloudUI();
   }catch(err){console.error(err);cloudMode='error';updateCloudUI('Проверь таблицу, RLS и подключение')}
@@ -1325,6 +1552,7 @@ function renderToday(){
   });
 
   const open=db.tasks.filter(t=>!t.done);
+  const done=db.tasks.filter(t=>t.done);
   const primary=open.filter(t=>scheduledByTask.has(t.id)||(t.due&&t.due<=todayISO));
   const undated=open.filter(t=>!scheduledByTask.has(t.id)&&!t.due);
   primary.sort((a,b)=>{
@@ -1347,7 +1575,7 @@ function renderToday(){
           ${t.notes?`<span>${escapeHTML(t.notes)}</span>`:''}
         </div>
       </div>
-      <div class="today-task-time"><strong>${minutesText(Number(t.estimateMinutes||0))}</strong><span>факт ${msHoursText(tracked)}</span></div>
+      <div class="today-task-time"><strong>План ${minutesText(Number(t.estimateMinutes||0))}</strong><span>Факт ${msHoursText(tracked)}</span></div>
       <div class="today-task-actions">
         <button class="play" data-today-task-start="${t.id}" title="Запустить таймер">▶</button>
         <button data-today-task-calendar="${t.id}" title="Запланировать">▦</button>
@@ -1364,7 +1592,6 @@ function renderToday(){
     taskHTML+=`<div class="today-task-group">Без даты</div>${undated.map(t=>taskRow(t,true)).join('')}`;
   }
   $('#quickTasks').innerHTML=taskHTML||'<div class="empty">На сегодня задач нет. Можно спокойно планировать следующий блок.</div>';
-  $('#todayTasksCount').textContent=primary.length;
 
   renderTodaySchedule();
 
@@ -1374,10 +1601,30 @@ function renderToday(){
   $$('[data-today-task-start]').forEach(b=>b.onclick=()=>startTaskTimer(b.dataset.todayTaskStart));
   $$('[data-today-task-calendar]').forEach(b=>b.onclick=()=>scheduleTaskDialog(b.dataset.todayTaskCalendar,{date:todayISO}));
 
-  const planned=todayEvents.reduce((a,e)=>a+eventHours(e),0),occupied=occupiedHours(todayEvents),dow=new Date(todayISO+'T12:00:00').getDay(),available=16;
+  const shownCount=primary.length+undated.length;
+  const planned=todayEvents.reduce((a,e)=>a+eventHours(e),0),occupied=occupiedHours(todayEvents),available=16;
+  $('#todayTasksCount').textContent=primary.length;
+  const taskCaption=$('#todayTasksCaption'); if(taskCaption) taskCaption.textContent=primary.length?`на сегодня ${primary.length}`:(undated.length?`без даты ${undated.length}`:'задач нет');
   $('#todayPlanned').textContent=planned.toLocaleString('ru-RU',{maximumFractionDigits:1})+' ч';
   $('#todayFree').textContent=Math.max(0,available-occupied).toLocaleString('ru-RU',{maximumFractionDigits:1})+' ч';
-  $('#todayTracked').textContent=msHoursText(entryMsOnDate(todayISO));
+  const trackedToday=entryMsOnDate(todayISO);
+  $('#todayTracked').textContent=msHoursText(trackedToday);
+
+  const relevantTotalTasks=db.tasks.filter(t=>scheduledByTask.has(t.id)||(t.due===todayISO)).length;
+  const relevantDoneTasks=done.filter(t=>scheduledByTask.has(t.id)||(t.due===todayISO)||(t.completedAt===todayISO)).length;
+  const progressPct=relevantTotalTasks?Math.min(100,Math.round((relevantDoneTasks/relevantTotalTasks)*100)):0;
+  const progressText=`${relevantDoneTasks} из ${relevantTotalTasks||shownCount||0} задач`;
+  const progressBar=$('#todayProgressBar'); if(progressBar) progressBar.style.width=progressPct+'%';
+  const progressPercent=$('#todayProgressPercent'); if(progressPercent) progressPercent.textContent=progressPct+'%';
+  const progressCaption=$('#todayProgressCaption'); if(progressCaption) progressCaption.textContent=progressText;
+
+  const focusPlannedMinutes=(primary.concat(undated)).reduce((a,t)=>a+Number(t.estimateMinutes||0),0);
+  const trackedMinutes=Math.round(trackedToday/60000);
+  const focusPct=focusPlannedMinutes?Math.min(100,Math.round((trackedMinutes/focusPlannedMinutes)*100)):0;
+  const focusRing=$('#todayFocusRing'); if(focusRing) focusRing.style.setProperty('--focus-pct', focusPct);
+  const focusPercent=$('#todayFocusPercent'); if(focusPercent) focusPercent.textContent=focusPct+'%';
+  const focusTime=$('#todayFocusTime'); if(focusTime) focusTime.textContent=msHoursText(trackedToday);
+  const focusHint=$('#todayFocusHint'); if(focusHint) focusHint.textContent=`из запланированных ${minutesText(focusPlannedMinutes)}`;
 
   const m=monthKey(todayISO);
   const income=db.money.filter(x=>monthKey(x.date)===m&&x.type==='income').reduce((a,b)=>a+b.amount,0);
@@ -1814,6 +2061,40 @@ function renderGlobalSearch(){
 }
 $('#globalSearch')?.addEventListener('input',renderGlobalSearch);
 $('#globalSearch')?.addEventListener('keydown',e=>{if(e.key==='Escape')$('#globalSearchResults')?.classList.remove('show');if(e.key==='Enter')$('#globalSearchResults .search-result')?.click()});
+document.addEventListener('keydown',e=>{
+  const editable=e.target?.matches?.('input,textarea,select,[contenteditable="true"]');
+  const mod=e.metaKey||e.ctrlKey;
+  if(!mod||editable)return;
+  const key=String(e.key||'').toLowerCase();
+
+  if(key==='k'){
+    e.preventDefault();
+    const input=$('#globalSearch');
+    input?.focus();
+    input?.select();
+    return;
+  }
+  if(key==='n'){
+    e.preventDefault();
+    document.querySelector('[data-open="quickTask"]')?.click();
+    return;
+  }
+  if(key==='p'){
+    e.preventDefault();
+    showPage('focus');
+    return;
+  }
+  if(key==='c'){
+    e.preventDefault();
+    showPage('calendar');
+    return;
+  }
+  if(key==='a'){
+    e.preventDefault();
+    showPage('analytics');
+  }
+});
+
 document.addEventListener('click',e=>{if(!e.target.closest('.search'))$('#globalSearchResults')?.classList.remove('show')});
 
 let calendarWeekStart = startOfWeek(new Date());
