@@ -9,7 +9,7 @@
   <meta name="apple-mobile-web-app-title" content="Planner" />
   <link rel="manifest" href="./manifest.webmanifest" />
   <link rel="apple-touch-icon" href="./icon-192.png" />
-  <title>Planner v0.7.5</title>
+  <title>Planner v0.7.9</title>
   <style>
     :root{
       --bg:#f7f7f8;
@@ -173,7 +173,7 @@
     .food-entry-actions{display:flex;gap:3px;position:absolute;right:5px;top:5px}
     .food-entry-action{border:0;background:rgba(255,255,255,.76);border-radius:7px;width:23px;height:23px;padding:0;color:#52525b}
     .calendar-view-switch{margin-left:2px}
-    .month-grid{display:grid;grid-template-columns:repeat(7,minmax(110px,1fr));border:1px solid var(--border);border-radius:14px;overflow:auto;background:var(--surface)}
+    .month-grid{display:grid;grid-template-columns:repeat(7,minmax(110px,1fr));grid-auto-rows:minmax(116px,auto);align-items:stretch;border:1px solid var(--border);border-radius:14px;overflow:auto;background:var(--surface)}
     .month-weekday{padding:9px;text-align:center;font-size:11px;font-weight:650;color:var(--muted);background:var(--surface-2);border-right:1px solid var(--border);border-bottom:1px solid var(--border)}
     .month-day{min-height:116px;padding:7px;border:0;border-right:1px solid var(--border);border-bottom:1px solid var(--border);background:var(--surface);color:var(--text);text-align:left;overflow:hidden}
     .month-day.outside{opacity:.42}.month-day.today{box-shadow:inset 0 0 0 2px var(--accent)}
@@ -191,6 +191,23 @@
     .calendar-shell{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:14px}
     .calendar-main{min-width:0}
     .calendar-toolbar{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px;flex-wrap:wrap}
+    .calendar-preset-panel{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:0 0 10px;padding:10px;border:1px solid var(--border);border-radius:14px;background:var(--surface)}
+    .calendar-preset-label{font-size:11px;color:var(--muted);font-weight:650;white-space:nowrap}
+    .calendar-preset-tray{display:flex;gap:8px;flex-wrap:wrap;min-width:0;flex:1}
+    .calendar-preset{display:inline-flex;align-items:center;gap:7px;min-height:34px;padding:7px 10px;border:1px solid var(--border);border-radius:10px;background:var(--surface-2);color:var(--text);font-size:12px;font-weight:650;cursor:grab;user-select:none}
+    .calendar-preset:active{cursor:grabbing}
+    .calendar-preset:hover{border-color:rgba(99,102,241,.32);background:var(--accent-2)}
+    .calendar-preset i{width:8px;height:8px;border-radius:50%;display:block;flex:0 0 auto}
+    .calendar-preset small{font-size:10px;color:var(--muted);font-weight:500}
+    .calendar-preset.dragging{opacity:.48}
+    .calendar-preset-hint{font-size:10px;color:var(--muted);white-space:nowrap}
+    @media (max-width:760px){
+      .calendar-preset-panel{align-items:flex-start}
+      .calendar-preset-label{width:100%}
+      .calendar-preset-tray{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));width:100%}
+      .calendar-preset{justify-content:flex-start;min-width:0}
+      .calendar-preset-hint{width:100%;white-space:normal}
+    }
     .calendar-toolbar .left,.calendar-toolbar .right{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
     .week-label{font-weight:700;letter-spacing:-.015em;min-width:180px;text-align:center}
     .week-scroll{overflow:auto;border:1px solid var(--border);border-radius:16px;background:#fff;box-shadow:var(--shadow)}
@@ -664,8 +681,8 @@
       .focus-layout{grid-template-columns:1fr}
       .focus-session{grid-template-columns:82px minmax(0,1fr) auto}.focus-session .delete-row{grid-column:3}.focus-session-duration{grid-column:3;grid-row:1}.focus-session .delete-row{grid-row:2}
       .focus-chart{gap:4px}.focus-bar-track{width:min(30px,82%)}
-      .mobile-nav{display:grid;grid-template-columns:repeat(6,1fr);position:fixed;left:0;right:0;bottom:0;z-index:40;background:rgba(255,255,255,.95);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-top:1px solid var(--border);padding:7px 8px calc(7px + env(safe-area-inset-bottom))}
-      .mobile-nav button{border:0;background:transparent;border-radius:10px;padding:7px 2px;color:#71717a;font-size:10px}
+      .mobile-nav{display:grid;grid-template-columns:repeat(7,1fr);position:fixed;left:0;right:0;bottom:0;z-index:40;background:rgba(255,255,255,.95);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-top:1px solid var(--border);padding:7px 8px calc(7px + env(safe-area-inset-bottom))}
+      .mobile-nav button{border:0;background:transparent;border-radius:10px;padding:7px 1px;color:#71717a;font-size:9px}
       .mobile-nav button.active{color:var(--accent)}
       .mobile-nav .mi{display:grid;place-items:center;width:20px;height:20px;margin:0 auto 2px;color:inherit}
       .form-grid{grid-template-columns:1fr}
@@ -760,6 +777,14 @@
       .workout-row,.calorie-row,.weight-row{grid-template-columns:1fr}
       .row-actions{justify-content:flex-start}
     }
+
+  
+    .undo-toast{position:fixed;right:22px;bottom:22px;z-index:1200;display:none;align-items:center;gap:10px;max-width:min(520px,calc(100vw - 32px));padding:10px 12px;border:1px solid var(--border);border-radius:14px;background:var(--surface);color:var(--text);box-shadow:0 18px 50px rgba(0,0,0,.18)}
+    .undo-toast.show{display:flex}
+    .undo-toast-copy{min-width:0;flex:1;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .undo-toast-actions{display:flex;gap:6px;flex:0 0 auto}
+    .undo-toast .btn{padding:7px 10px;font-size:12px}
+    @media (max-width:760px){.undo-toast{left:12px;right:12px;bottom:82px;max-width:none}.undo-toast-copy{white-space:normal}}
 
   </style>
 </head>
@@ -951,11 +976,21 @@
               <div class="week-label" id="calendarWeekLabel"></div>
             </div>
             <div class="right">
-              <button class="btn" id="seedWorkWeek">Базовые будни</button>
-              <button class="btn" id="saveWeekTemplate">Сохранить шаблон</button>
-              <button class="btn" id="applyWeekTemplate">Применить шаблон</button>
               <button class="btn" id="clearWeek">Очистить неделю</button>
             </div>
+          </div>
+          <div class="calendar-preset-panel" id="calendarPresetPanel">
+            <span class="calendar-preset-label">Быстрые блоки</span>
+            <div class="calendar-preset-tray" id="calendarPresetTray">
+              <button type="button" draggable="true" class="calendar-preset" data-calendar-preset="lunch"><i style="background:#4ade80"></i><span>Обед</span><small>14:00–15:00</small></button>
+              <button type="button" draggable="true" class="calendar-preset" data-calendar-preset="to-work"><i style="background:#60a5fa"></i><span>Путь до работы</span><small>08:00–09:00</small></button>
+              <button type="button" draggable="true" class="calendar-preset" data-calendar-preset="to-home"><i style="background:#60a5fa"></i><span>Путь до дома</span><small>18:00–19:00</small></button>
+              <button type="button" draggable="true" class="calendar-preset" data-calendar-preset="training"><i style="background:#10b981"></i><span>Тренировка</span><small>1 ч 30 мин</small></button>
+              <button type="button" draggable="true" class="calendar-preset" data-calendar-preset="work"><i style="background:#a1a1aa"></i><span>Работа</span><small>1 ч</small></button>
+              <button type="button" draggable="true" class="calendar-preset" data-calendar-preset="sleep"><i style="background:#818cf8"></i><span>Сон</span><small>8 ч</small></button>
+              <button type="button" draggable="true" class="calendar-preset" data-calendar-preset="project"><i style="background:#6366f1"></i><span>Проект</span><small>1 ч</small></button>
+            </div>
+            <span class="calendar-preset-hint">Хватай плашку и бросай на нужное время · потом блок можно двигать или открыть для деталей</span>
           </div>
           <div class="week-scroll"><div class="week-grid" id="weekGrid"></div></div>
           <div class="legend">
@@ -975,7 +1010,7 @@
           </div>
           <div class="today-block">
             <h3>Как пользоваться</h3>
-            <div class="note">Открытые задачи автоматически получают место в календаре по оценке времени. Перетащи блок, если хочешь изменить время вручную. Клик по сетке создаёт отдельное событие.</div><div class="template-status" id="templateStatus"></div>
+            <div class="note">Задачи появляются в календаре автоматически. Для повторяющихся вещей используй быстрые плашки сверху: перетащи их на нужный день и время. Любой созданный блок можно дальше двигать мышкой или открыть кликом и дописать детали.</div>
           </div>
         </div>
       </div>
@@ -1289,6 +1324,15 @@
   <button class="btn" id="timerStop" style="padding:7px 10px" title="Завершить">■</button>
 </div>
 
+
+<div class="undo-toast" id="undoToast" role="status" aria-live="polite">
+  <div class="undo-toast-copy" id="undoToastText">Изменение сохранено</div>
+  <div class="undo-toast-actions">
+    <button class="btn" id="undoAction" type="button">↶ Отменить</button>
+    <button class="btn" id="redoAction" type="button" style="display:none">↷ Повторить</button>
+  </div>
+</div>
+
 <nav class="mobile-nav" id="mobileNav">
   <button data-page="today" class="active"><span class="mi"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6.5A2.5 2.5 0 0 1 6.5 4h11A2.5 2.5 0 0 1 20 6.5v11a2.5 2.5 0 0 1-2.5 2.5h-11A2.5 2.5 0 0 1 4 17.5z"/><path d="M8 4v16"/><path d="M4 10h16"/></svg></span>Сегодня</button>
   <button data-page="focus"><span class="mi"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="2.5"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22"/></svg></span>Фокус</button>
@@ -1296,6 +1340,7 @@
   <button data-page="tasks"><span class="mi"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="m8 12 2.5 2.5L16 9"/></svg></span>Задачи</button>
   <button data-page="money"><span class="mi"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7.5A2.5 2.5 0 0 1 6.5 5h11A2.5 2.5 0 0 1 20 7.5v9a2.5 2.5 0 0 1-2.5 2.5h-11A2.5 2.5 0 0 1 4 16.5z"/><path d="M4 9h16"/><circle cx="15.5" cy="13.5" r="1.5"/></svg></span>Деньги</button>
   <button data-page="workouts"><span class="mi"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 9v6"/><path d="M19 9v6"/><path d="M8 7v10"/><path d="M16 7v10"/><path d="M5 12h14"/></svg></span>Трен.</button>
+  <button data-page="more"><span class="mi"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="5" cy="12" r="1.3"/><circle cx="12" cy="12" r="1.3"/><circle cx="19" cy="12" r="1.3"/></svg></span>Ещё</button>
 </nav>
 
 
@@ -1591,11 +1636,127 @@ function persistLocal(touch=true){
   if(touch) db.meta.updatedAt=new Date().toISOString();
   localStorage.setItem('artemPlanner.v01',JSON.stringify(db));
 }
-function save(){
+
+const UNDO_HISTORY_KEY='planner.undoHistory.v1';
+const REDO_HISTORY_KEY='planner.redoHistory.v1';
+const HISTORY_LIMIT=15;
+let undoToastTimer=null;
+
+function readStateHistory(key){
+  try{
+    const rows=JSON.parse(localStorage.getItem(key)||'[]');
+    return Array.isArray(rows)?rows:[];
+  }catch{return []}
+}
+function writeStateHistory(key,rows){
+  let list=rows.slice(-HISTORY_LIMIT);
+  try{
+    localStorage.setItem(key,JSON.stringify(list));
+  }catch{
+    // If Safari storage is tight, keep fewer snapshots rather than disabling undo.
+    list=list.slice(-5);
+    try{localStorage.setItem(key,JSON.stringify(list))}catch{}
+  }
+}
+function historyComparable(value){
+  try{
+    const x=typeof value==='string'?JSON.parse(value):structuredClone(value);
+    x.meta={...(x.meta||{}),updatedAt:null};
+    return JSON.stringify(x);
+  }catch{return ''}
+}
+function captureUndoSnapshot(){
+  const previousRaw=localStorage.getItem('artemPlanner.v01');
+  if(!previousRaw)return false;
+  if(historyComparable(previousRaw)===historyComparable(db))return false;
+  const undo=readStateHistory(UNDO_HISTORY_KEY);
+  if(!undo.length || historyComparable(undo[undo.length-1])!==historyComparable(previousRaw)){
+    undo.push(previousRaw);
+    writeStateHistory(UNDO_HISTORY_KEY,undo);
+  }
+  writeStateHistory(REDO_HISTORY_KEY,[]);
+  return true;
+}
+function historyAvailable(){return readStateHistory(UNDO_HISTORY_KEY).length>0}
+function redoAvailable(){return readStateHistory(REDO_HISTORY_KEY).length>0}
+function pushCurrentStateToUndo(){
+  const raw=JSON.stringify(db);
+  const undo=readStateHistory(UNDO_HISTORY_KEY);
+  if(!undo.length||historyComparable(undo[undo.length-1])!==historyComparable(raw)){
+    undo.push(raw);
+    writeStateHistory(UNDO_HISTORY_KEY,undo);
+  }
+  writeStateHistory(REDO_HISTORY_KEY,[]);
+}
+function showUndoToast(label='Изменение сохранено'){
+  const toast=$('#undoToast'),text=$('#undoToastText'),undo=$('#undoAction'),redo=$('#redoAction');
+  if(!toast)return;
+  text.textContent=label;
+  undo.style.display=historyAvailable()?'inline-flex':'none';
+  redo.style.display=redoAvailable()?'inline-flex':'none';
+  toast.classList.add('show');
+  clearTimeout(undoToastTimer);
+  undoToastTimer=setTimeout(()=>toast.classList.remove('show'),8000);
+}
+function refreshAfterHistoryRestore(){
+  reconcileTaskPlanning();
+  persistLocal(false);
+  cloudDirty=true;
+  scheduleCloudPush();
+  updateCloudUI();
+  renderToday();renderMoney();renderFood();renderProjects();renderTasks();renderCalendar();
+  renderWorkouts();renderAnalytics();renderArchive();renderFocusPage();
+  drawTimer();fillProjectSelect();
+}
+function undoLastAction(){
+  const undo=readStateHistory(UNDO_HISTORY_KEY);
+  if(!undo.length){showUndoToast('Нечего отменять');return false}
+  const currentRaw=JSON.stringify(db);
+  const previousRaw=undo.pop();
+  writeStateHistory(UNDO_HISTORY_KEY,undo);
+  const redo=readStateHistory(REDO_HISTORY_KEY);
+  redo.push(currentRaw);
+  writeStateHistory(REDO_HISTORY_KEY,redo);
+  try{
+    db=normalizeCloudData(JSON.parse(previousRaw));
+    db.meta.updatedAt=new Date().toISOString();
+    refreshAfterHistoryRestore();
+    showUndoToast('Действие отменено');
+    return true;
+  }catch(err){
+    console.error('undo',err);
+    showUndoToast('Не удалось отменить действие');
+    return false;
+  }
+}
+function redoLastAction(){
+  const redo=readStateHistory(REDO_HISTORY_KEY);
+  if(!redo.length){showUndoToast('Нечего повторять');return false}
+  const currentRaw=JSON.stringify(db);
+  const nextRaw=redo.pop();
+  writeStateHistory(REDO_HISTORY_KEY,redo);
+  const undo=readStateHistory(UNDO_HISTORY_KEY);
+  undo.push(currentRaw);
+  writeStateHistory(UNDO_HISTORY_KEY,undo);
+  try{
+    db=normalizeCloudData(JSON.parse(nextRaw));
+    db.meta.updatedAt=new Date().toISOString();
+    refreshAfterHistoryRestore();
+    showUndoToast('Действие повторено');
+    return true;
+  }catch(err){
+    console.error('redo',err);
+    showUndoToast('Не удалось повторить действие');
+    return false;
+  }
+}
+function save(label='Изменение сохранено'){
+  const changed=captureUndoSnapshot();
   persistLocal(true);
   cloudDirty=true;
   scheduleCloudPush();
   updateCloudUI();
+  if(changed)showUndoToast(label);
 }
 persistLocal(false);
 
@@ -1644,7 +1805,7 @@ function updateCloudUI(message=''){
   const meta=$('#cloudMeta'); if(meta){const email=cloudUser?.email||loadCloudConfig().email||'';const stamp=cloudLastSync?new Intl.DateTimeFormat('ru-RU',{hour:'2-digit',minute:'2-digit',second:'2-digit'}).format(cloudLastSync):'—';meta.textContent=signed?`Аккаунт: ${email||cloudUser.id} · устройство ${DEVICE_ID.slice(0,8)} · последняя синхронизация ${stamp}`:(cloudConfigValid()?'Подключение настроено. Войди в аккаунт, чтобы включить синхронизацию.':'Укажи Project URL и Publishable/anon key, затем сохрани подключение.')}
 }
 function renderAfterRemote(){
-  try{reconcileTaskPlanning();persistLocal(false);renderToday();renderMoney();renderFood();renderProjects();renderTasks();renderCalendar();renderTemplateStatus();renderWorkouts();renderAnalytics();renderArchive();renderFocusPage();drawTimer();fillProjectSelect();}catch(err){console.error('renderAfterRemote',err)}
+  try{reconcileTaskPlanning();persistLocal(false);renderToday();renderMoney();renderFood();renderProjects();renderTasks();renderCalendar();renderWorkouts();renderAnalytics();renderArchive();renderFocusPage();drawTimer();fillProjectSelect();}catch(err){console.error('renderAfterRemote',err)}
   if($('#budgetDay'))$('#budgetDay').value=db.budgets.day;if($('#budgetWeek'))$('#budgetWeek').value=(Number(db.budgets.day)||1000)*7;if($('#budgetMonth'))$('#budgetMonth').value=db.budgets.month;
 }
 function applyCloudState(row){
@@ -1744,7 +1905,7 @@ $('#supabaseSignIn')?.addEventListener('click',async()=>{storeCloudConfig();if(!
 $('#supabaseSignOut')?.addEventListener('click',async()=>{if(cloudClient)await cloudClient.auth.signOut();cloudUser=null;stopCloudRealtime();cloudMode='local';updateCloudUI()});
 $('#syncNow')?.addEventListener('click',reconcileCloud);
 $('#uploadLocalCloud')?.addEventListener('click',async()=>{if(!confirm('Заменить облачную версию данными с этого устройства?'))return;db.meta.updatedAt=new Date().toISOString();persistLocal(false);cloudMode='ready';cloudDirty=true;await pushCloudState(true)});
-$('#downloadCloudLocal')?.addEventListener('click',async()=>{if(!confirm('Заменить локальные данные версией из облака?'))return;try{const row=cloudLastRemote||await fetchCloudRow();if(row)applyCloudState(row)}catch(err){alert('Не удалось загрузить данные из облака.')}});
+$('#downloadCloudLocal')?.addEventListener('click',async()=>{if(!confirm('Заменить локальные данные версией из облака? Текущее состояние можно будет вернуть через ⌘Z.'))return;try{const row=cloudLastRemote||await fetchCloudRow();if(row){pushCurrentStateToUndo();applyCloudState(row)}}catch(err){alert('Не удалось загрузить данные из облака.')}});
 window.addEventListener('online',()=>{if(cloudUser)reconcileCloud()});
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&cloudUser)reconcileCloud()});
 setInterval(()=>{if(cloudUser&&navigator.onLine&&(cloudDirty||cloudMode==='error'))reconcileCloud()},30000);
@@ -2471,7 +2632,8 @@ function globalSearchItems(q){
   db.calendar.filter(e=>hit(e.title)||hit(e.note)||hit(categoryLabels[e.category])).slice(0,6).forEach(e=>out.push({type:'event',id:e.id,title:e.title,meta:`Календарь · ${e.date} ${e.start}`}));
   db.money.filter(m=>hit(m.category)||hit(m.note)).slice(0,5).forEach(m=>out.push({type:'money',id:m.id,title:m.category,meta:`Деньги · ${m.date} · ${fmt(m.amount)}`}));
   db.food.filter(f=>hit(foodTitle(f))||hit(f.note)||hit(f.category)).slice(0,5).forEach(f=>out.push({type:'food',id:f.id,title:foodTitle(f),meta:`Траты · ${f.date} · ${fmt(f.amount)}`}));
-  return out.slice(0,18);
+  db.workouts.filter(w=>hit(w.title)||hit(w.note)||hit(workoutTypeLabel(w.type))).slice(0,5).forEach(w=>out.push({type:'workout',id:w.id,title:w.title,meta:`Тренировка · ${w.date} · ${workoutTypeLabel(w.type)}`}));
+  return out.slice(0,20);
 }
 function renderGlobalSearch(){
   const input=$('#globalSearch'),box=$('#globalSearchResults');if(!input||!box)return;const items=globalSearchItems(input.value);
@@ -2483,7 +2645,8 @@ function renderGlobalSearch(){
     if(type==='project'){selectedProjectId=id;showPage('projects');return}
     if(type==='event'){const e=db.calendar.find(x=>x.id===id);if(e){const d=new Date(e.date+'T12:00:00');calendarWeekStart=startOfWeek(d);calendarDay=new Date(d);calendarMonth=new Date(d.getFullYear(),d.getMonth(),1);showPage('calendar');openEventDialog({id})}return}
     if(type==='money'){const m=db.money.find(x=>x.id===id);if(!m)return;if(m.source==='food'){const f=db.food.find(x=>x.id===m.sourceId||x.moneyId===m.id);if(f){foodWeekStart=startOfWeek(new Date(f.date+'T12:00:00'));showPage('food');openFoodDialog(f.date,f.id);return}}if(m.source==='food_week_saving'){foodWeekStart=startOfWeek(new Date(m.date+'T12:00:00'));showPage('food');return}moneyCursor=new Date(m.date+'T12:00:00');showPage('money');openMoneyDialog(id);return}
-    if(type==='food'){const f=db.food.find(x=>x.id===id);if(f){foodWeekStart=startOfWeek(new Date(f.date+'T12:00:00'));showPage('food');openFoodDialog(f.date,id)}}
+    if(type==='food'){const f=db.food.find(x=>x.id===id);if(f){foodWeekStart=startOfWeek(new Date(f.date+'T12:00:00'));showPage('food');openFoodDialog(f.date,id)}return}
+    if(type==='workout'){const w=db.workouts.find(x=>x.id===id);if(w){workoutSelectedDate=w.date;workoutWeekStart=startOfWeek(new Date(w.date+'T12:00:00'));showPage('workouts');openWorkoutDialog(w.date,w.id)}}
   });
 }
 $('#globalSearch')?.addEventListener('input',renderGlobalSearch);
@@ -2493,6 +2656,12 @@ document.addEventListener('keydown',e=>{
   const mod=e.metaKey||e.ctrlKey;
   if(!mod||editable)return;
   const key=String(e.key||'').toLowerCase();
+
+  if(key==='z'){
+    e.preventDefault();
+    if(e.shiftKey)redoLastAction(); else undoLastAction();
+    return;
+  }
 
   if(key==='k'){
     e.preventDefault();
@@ -2522,10 +2691,59 @@ document.addEventListener('keydown',e=>{
   }
 });
 
+$('#undoAction')?.addEventListener('click',undoLastAction);
+$('#redoAction')?.addEventListener('click',redoLastAction);
 document.addEventListener('click',e=>{if(!e.target.closest('.search'))$('#globalSearchResults')?.classList.remove('show')});
 
 let calendarWeekStart = startOfWeek(new Date());
 const categoryLabels={work:'Работа',commute:'Дорога',food:'Еда',freelance:'Фриланс',project:'Свой проект',together:'Вместе',personal:'Личное',home:'Быт',rest:'Отдых',sport:'Спорт',other:'Другое'};
+const CALENDAR_PRESETS={
+  lunch:{title:'Обед',category:'food',duration:60,defaultStart:'14:00',defaultEnd:'15:00'},
+  'to-work':{title:'Путь до работы',category:'commute',duration:60,defaultStart:'08:00',defaultEnd:'09:00'},
+  'to-home':{title:'Путь до дома',category:'commute',duration:60,defaultStart:'18:00',defaultEnd:'19:00'},
+  training:{title:'Тренировка',category:'sport',duration:90,defaultStart:'19:00',defaultEnd:'20:30'},
+  work:{title:'Работа',category:'work',duration:60,defaultStart:'09:00',defaultEnd:'10:00'},
+  sleep:{title:'Сон',category:'rest',duration:480,defaultStart:'23:00',defaultEnd:'07:00',allowOvernight:true},
+  project:{title:'Проект',category:'project',duration:60,defaultStart:'19:00',defaultEnd:'20:00'}
+};
+function calendarPresetFallbackDate(){
+  if(calendarView==='day')return iso(calendarDay);
+  if(calendarView==='month'){
+    const now=new Date();
+    return (calendarMonth.getFullYear()===now.getFullYear()&&calendarMonth.getMonth()===now.getMonth())?todayISO:iso(new Date(calendarMonth.getFullYear(),calendarMonth.getMonth(),1));
+  }
+  return inViewedWeek(todayISO)?todayISO:iso(calendarWeekStart);
+}
+function createCalendarPresetAt(presetId,date,start,openEditor=false){
+  const preset=CALENDAR_PRESETS[presetId];
+  if(!preset)return false;
+  const st=mins(start||preset.defaultStart);
+  const dow=new Date(date+'T12:00:00').getDay();
+  const close=[0,6].includes(dow)?1440:1380;
+  const endMinute=st+Number(preset.duration||60);
+  if(!preset.allowOvernight && endMinute>close){
+    alert(`Блок «${preset.title}» не помещается до конца доступного времени этого дня.`);
+    return false;
+  }
+  const event={
+    id:uid(),
+    title:preset.title,
+    category:preset.category,
+    date,
+    start:hhmm(st),
+    end:hhmm(endMinute),
+    note:'',
+    projectId:'',
+    taskId:'',
+    presetId
+  };
+  db.calendar.push(event);
+  save(`Добавлен блок «${preset.title}»`);
+  renderCalendar();
+  renderToday();
+  if(openEditor)setTimeout(()=>openEventDialog({id:event.id}),0);
+  return true;
+}
 function projectName(id){return db.projects.find(p=>p.id===id)?.name||'Без проекта'}
 function renderSidebarProjects(){
   const box=$('#sidebarProjects'); if(!box)return;
@@ -2730,7 +2948,7 @@ function renderCalendar(){
   const page=$('#page-calendar'); if(page) page.classList.toggle('day-mode', calendarView==='day');
   $$('[data-calendar-view]').forEach(b=>b.classList.toggle('active',b.dataset.calendarView===calendarView));
   const right=$('.calendar-toolbar .right');if(right)right.style.display=calendarView==='week'?'flex':'none';
-  if(calendarView==='month'){renderCalendarMonth();renderCalendarSide();return}
+  if(calendarView==='month'){renderCalendarMonth();bindCalendarPresets();renderCalendarSide();return}
   const dates=calendarView==='day'?[new Date(calendarDay)]:weekDates(),dayNames=['Пн','Вт','Ср','Чт','Пт','Сб','Вс'];
   $('#calendarWeekLabel').textContent=calendarView==='day'?new Intl.DateTimeFormat('ru-RU',{day:'numeric',month:'long',year:'numeric'}).format(dates[0]):calendarRangeText();
   grid.className=calendarView==='day'?'day-grid':'week-grid';grid.style.gridTemplateColumns=calendarView==='day'?'72px minmax(720px,1fr)':'';grid.style.gridTemplateRows=calendarView==='day'?'58px repeat(34,34px)':'54px repeat(34,28px)';
@@ -2739,17 +2957,87 @@ function renderCalendar(){
   for(let half=0;half<34;half++){const minute=420+half*30,row=half+2;if(half%2===0)html+=`<div class="time-cell" style="grid-column:1;grid-row:${row}/span 2">${hhmm(minute)}</div>`;dates.forEach((d,day)=>{const weekend=[0,6].includes(d.getDay()),open=weekend?minute>=480&&minute<1440:minute>=420&&minute<1380;html+=`<button type="button" class="calendar-slot ${open?'':'closed'} ${half%2===1?'hour':''}" ${open?'':'disabled'} data-slot-date="${iso(d)}" data-slot-time="${hhmm(minute)}" style="grid-column:${day+2};grid-row:${row}"></button>`})}
   const bounds=calendarVisibleBounds(),events=db.calendar.filter(e=>e.date>=bounds.start&&e.date<bounds.end);events.forEach(e=>{const day=dates.findIndex(d=>iso(d)===e.date);if(day<0)return;const sm=Math.max(420,mins(e.start)),em=Math.min(1440,eventEndMins(e)),row=2+Math.floor((sm-420)/30),span=Math.max(1,Math.ceil((em-sm)/30));html+=`<button type="button" draggable="true" class="calendar-event ${e.category||'other'}" data-calendar-event="${e.id}" style="grid-column:${day+2};grid-row:${row}/span ${span}"><strong>${escapeHTML(e.title)}</strong><span>${e.start}–${e.end}${e.note?' · '+escapeHTML(e.note):''}</span></button>`});
   const now=new Date(),ti=dates.findIndex(d=>iso(d)===iso(now)),nm=now.getHours()*60+now.getMinutes();if(ti>=0&&nm>=420&&nm<=1440){const row=2+Math.floor((nm-420)/30),off=((nm-420)%30)/30*28;html+=`<div class="calendar-now-line" style="grid-column:${ti+2};grid-row:${row};transform:translateY(${off}px)"></div><div class="calendar-now-label" style="grid-column:1;grid-row:${row};transform:translateY(${off-1}px)">${hhmm(nm)}</div>`}
-  grid.innerHTML=html;bindCalendarGrid(grid);renderCalendarSide();
+  grid.innerHTML=html;bindCalendarGrid(grid);bindCalendarPresets();renderCalendarSide();
+}
+function bindCalendarPresets(){
+  $$('[data-calendar-preset]').forEach(chip=>{
+    if(chip.dataset.boundPreset==='1')return;
+    chip.dataset.boundPreset='1';
+    chip.ondragstart=e=>{
+      chip.classList.add('dragging');
+      e.dataTransfer.setData('text/calendar-preset',chip.dataset.calendarPreset);
+      e.dataTransfer.effectAllowed='copy';
+    };
+    chip.ondragend=()=>chip.classList.remove('dragging');
+    chip.onclick=()=>{
+      const preset=CALENDAR_PRESETS[chip.dataset.calendarPreset];
+      if(!preset)return;
+      const date=calendarPresetFallbackDate();
+      openEventDialog({
+        title:preset.title,
+        category:preset.category,
+        date,
+        start:preset.defaultStart,
+        end:preset.defaultEnd,
+        note:'',
+        projectId:'',
+        taskId:''
+      });
+    };
+  });
 }
 function bindCalendarGrid(grid){
   $$('[data-slot-date]',grid).forEach(b=>b.onclick=()=>{const sm=mins(b.dataset.slotTime),dow=new Date(b.dataset.slotDate+'T12:00:00').getDay(),close=[0,6].includes(dow)?1440:1380;openEventDialog({date:b.dataset.slotDate,start:b.dataset.slotTime,end:hhmm(Math.min(sm+60,close)),category:'project'})});
-  $$('[data-calendar-event]',grid).forEach(b=>{b.onclick=e=>{e.stopPropagation();openEventDialog({id:b.dataset.calendarEvent})};b.ondragstart=e=>{e.dataTransfer.setData('text/event-id',b.dataset.calendarEvent);e.dataTransfer.effectAllowed='move'}});
-  $$('[data-slot-date]',grid).forEach(slot=>{slot.ondragover=e=>{if(slot.disabled)return;e.preventDefault()};slot.ondrop=e=>{e.preventDefault();const eventId=e.dataTransfer.getData('text/event-id'),taskId=e.dataTransfer.getData('text/task-id');if(eventId){const ev=db.calendar.find(x=>x.id===eventId);if(ev){const dur=eventEndMins(ev)-mins(ev.start),st=mins(slot.dataset.slotTime),dow=new Date(slot.dataset.slotDate+'T12:00:00').getDay(),close=[0,6].includes(dow)?1440:1380;if(st+dur<=close){ev.date=slot.dataset.slotDate;ev.start=hhmm(st);ev.end=hhmm(st+dur);ev.autoFromTask=false;save();renderCalendar();renderToday()}}}else if(taskId)scheduleTaskDialog(taskId,{date:slot.dataset.slotDate,start:slot.dataset.slotTime})}})
+  $$('[data-calendar-event]',grid).forEach(b=>{b.onclick=e=>{e.stopPropagation();openEventDialog({id:b.dataset.calendarEvent})};b.ondragstart=e=>{b.classList.add('dragging');e.dataTransfer.setData('text/event-id',b.dataset.calendarEvent);e.dataTransfer.effectAllowed='move'};b.ondragend=()=>b.classList.remove('dragging')});
+  $$('[data-slot-date]',grid).forEach(slot=>{
+    slot.ondragover=e=>{if(slot.disabled)return;e.preventDefault();slot.classList.add('drop-active')};
+    slot.ondragleave=()=>slot.classList.remove('drop-active');
+    slot.ondrop=e=>{
+      e.preventDefault();
+      slot.classList.remove('drop-active');
+      const eventId=e.dataTransfer.getData('text/event-id'),
+            taskId=e.dataTransfer.getData('text/task-id'),
+            presetId=e.dataTransfer.getData('text/calendar-preset');
+      if(eventId){
+        const ev=db.calendar.find(x=>x.id===eventId);
+        if(ev){
+          const dur=eventEndMins(ev)-mins(ev.start),st=mins(slot.dataset.slotTime),dow=new Date(slot.dataset.slotDate+'T12:00:00').getDay(),close=[0,6].includes(dow)?1440:1380;
+          const canCrossMidnight=ev.presetId==='sleep'||String(ev.end)<String(ev.start);
+          if(st+dur<=close||canCrossMidnight){
+            ev.date=slot.dataset.slotDate;
+            ev.start=hhmm(st);
+            ev.end=hhmm(st+dur);
+            ev.autoFromTask=false;
+            save(`Блок «${ev.title}» перенесён`);
+            renderCalendar();
+            renderToday();
+          }else{
+            alert('Блок не помещается до конца доступного времени этого дня.');
+          }
+        }
+      }else if(presetId){
+        createCalendarPresetAt(presetId,slot.dataset.slotDate,slot.dataset.slotTime,false);
+      }else if(taskId){
+        scheduleTaskDialog(taskId,{date:slot.dataset.slotDate,start:slot.dataset.slotTime});
+      }
+    };
+  })
 }
 function renderCalendarMonth(){
-  const grid=$('#weekGrid');grid.className='month-grid';grid.style.gridTemplateColumns='';const names=['Пн','Вт','Ср','Чт','Пт','Сб','Вс'];let html=names.map(x=>`<div class="month-weekday">${x}</div>`).join('');const first=new Date(calendarMonth.getFullYear(),calendarMonth.getMonth(),1),start=startOfWeek(first),end=new Date(start);end.setDate(end.getDate()+42);$('#calendarWeekLabel').textContent=new Intl.DateTimeFormat('ru-RU',{month:'long',year:'numeric'}).format(first);
+  const grid=$('#weekGrid');
+  grid.className='month-grid';
+  // Day/week views set explicit inline grid tracks. Reset them before month view,
+  // otherwise the month inherits 30-minute calendar rows and collapses.
+  grid.style.gridTemplateColumns='';
+  grid.style.gridTemplateRows='';
+  grid.style.gridAutoRows='';
+  const names=['Пн','Вт','Ср','Чт','Пт','Сб','Вс'];let html=names.map(x=>`<div class="month-weekday">${x}</div>`).join('');const first=new Date(calendarMonth.getFullYear(),calendarMonth.getMonth(),1),start=startOfWeek(first),end=new Date(start);end.setDate(end.getDate()+42);$('#calendarWeekLabel').textContent=new Intl.DateTimeFormat('ru-RU',{month:'long',year:'numeric'}).format(first);
   for(let d=new Date(start);d<end;d.setDate(d.getDate()+1)){const key=iso(d),outside=d.getMonth()!==calendarMonth.getMonth(),today=key===todayISO,events=db.calendar.filter(e=>e.date===key).sort((a,b)=>mins(a.start)-mins(b.start));html+=`<button class="month-day ${outside?'outside':''} ${today?'today':''}" data-month-day="${key}"><div class="month-day-num">${d.getDate()}</div>${events.slice(0,4).map(e=>`<span class="month-event" data-month-event="${e.id}">${e.start} ${escapeHTML(e.title)}</span>`).join('')}${events.length>4?`<span class="muted" style="font-size:10px">+ ещё ${events.length-4}</span>`:''}</button>`}
-  grid.innerHTML=html;$$('[data-month-day]',grid).forEach(b=>b.onclick=e=>{const ev=e.target.closest('[data-month-event]');if(ev){e.stopPropagation();openEventDialog({id:ev.dataset.monthEvent})}else openEventDialog({date:b.dataset.monthDay,start:'19:00',end:'20:00',category:'project'})});
+  grid.innerHTML=html;$$('[data-month-day]',grid).forEach(b=>{
+    b.onclick=e=>{const ev=e.target.closest('[data-month-event]');if(ev){e.stopPropagation();openEventDialog({id:ev.dataset.monthEvent})}else openEventDialog({date:b.dataset.monthDay,start:'19:00',end:'20:00',category:'project'})};
+    b.ondragover=e=>{if(e.dataTransfer.types.includes('text/calendar-preset'))e.preventDefault()};
+    b.ondrop=e=>{const presetId=e.dataTransfer.getData('text/calendar-preset');if(!presetId)return;e.preventDefault();e.stopPropagation();const preset=CALENDAR_PRESETS[presetId];if(preset)createCalendarPresetAt(presetId,b.dataset.monthDay,preset.defaultStart,false)};
+  });
 }
 
 function renderCalendarSide(){
@@ -2760,16 +3048,17 @@ function renderCalendarSide(){
 }
 function scheduleTaskDialog(taskId,pref={}){const t=db.tasks.find(x=>x.id===taskId);if(!t)return;let fallback;if(calendarView==='day')fallback=iso(calendarDay);else if(calendarView==='month'){const now=new Date();fallback=(calendarMonth.getFullYear()===now.getFullYear()&&calendarMonth.getMonth()===now.getMonth())?todayISO:iso(calendarMonth)}else fallback=inViewedWeek(todayISO)?todayISO:iso(calendarWeekStart);const date=pref.date||fallback,start=pref.start||'19:00',duration=Math.max(30,Math.min(240,Number(t.estimateMinutes||60))),dow=new Date(date+'T12:00:00').getDay(),close=[0,6].includes(dow)?1440:1380,st=mins(start),end=hhmm(Math.min(st+duration,close));if(st>=close){alert('Для этого дня нет свободного времени после выбранного часа.');return}openEventDialog({title:t.title,date,start,end,category:t.projectId?'project':'personal',note:t.notes||'',taskId:t.id,projectId:t.projectId||''})}
 function seedViewedWorkWeek(){
+  if(!confirm('Добавить базовые будни в эту неделю? Текущие события не удалятся. После добавления действие можно отменить через ⌘Z.'))return;
   const templates=[['Дорога на работу','commute','08:00','09:00'],['Работа','work','09:00','14:00'],['Обед','food','14:00','15:00'],['Работа','work','15:00','18:00'],['Дорога домой','commute','18:00','19:00']];
   weekDates().slice(0,5).forEach(d=>templates.forEach(([title,category,start,end])=>{const date=iso(d);if(!db.calendar.some(e=>e.date===date&&e.start===start&&e.end===end&&e.title===title))db.calendar.push({id:uid(),title,category,date,start,end,note:''})}));
-  save();renderCalendar();renderToday();
+  save('Базовые будни добавлены');renderCalendar();renderToday();
 }
 function saveCurrentWeekTemplate(){const dates=weekDates();db.weekTemplate=db.calendar.filter(e=>inViewedWeek(e.date)).map(e=>({dayIndex:dates.findIndex(d=>iso(d)===e.date),title:e.title,category:e.category,start:e.start,end:e.end,note:e.note||'',projectId:e.projectId||''})).filter(x=>x.dayIndex>=0);save();renderTemplateStatus();alert('Шаблон недели сохранён.')}
-function applyCurrentWeekTemplate(){if(!db.weekTemplate.length){alert('Сначала сохрани шаблон недели.');return}const dates=weekDates();db.weekTemplate.forEach(t=>{const date=iso(dates[t.dayIndex]);if(!db.calendar.some(e=>e.date===date&&e.start===t.start&&e.title===t.title))db.calendar.push({id:uid(),date,title:t.title,category:t.category,start:t.start,end:t.end,note:t.note||'',projectId:t.projectId||'',taskId:''})});save();renderCalendar();renderToday()}
+function applyCurrentWeekTemplate(){if(!db.weekTemplate.length){alert('Сначала сохрани шаблон недели.');return}if(!confirm('Применить сохранённый шаблон к этой неделе? Существующие события останутся, действие можно отменить через ⌘Z.'))return;const dates=weekDates();db.weekTemplate.forEach(t=>{const date=iso(dates[t.dayIndex]);if(!db.calendar.some(e=>e.date===date&&e.start===t.start&&e.title===t.title))db.calendar.push({id:uid(),date,title:t.title,category:t.category,start:t.start,end:t.end,note:t.note||'',projectId:t.projectId||'',taskId:''})});save('Шаблон недели применён');renderCalendar();renderToday()}
 function renderTemplateStatus(){const el=$('#templateStatus');if(el)el.textContent=db.weekTemplate.length?`Шаблон сохранён: ${db.weekTemplate.length} блоков`:'Шаблон недели ещё не сохранён.'}
 function clearViewedWeek(){
   if(!confirm('Удалить все события этой недели?'))return;
-  db.calendar=db.calendar.filter(e=>!inViewedWeek(e.date));reconcileTaskPlanning();save();renderCalendar();renderToday();renderTasks();
+  db.calendar=db.calendar.filter(e=>!inViewedWeek(e.date));reconcileTaskPlanning();save('Неделя очищена');renderCalendar();renderToday();renderTasks();
 }
 function renderTodaySchedule(){
   const box=$('#todaySchedule'); if(!box)return;
@@ -2783,9 +3072,10 @@ $('#eventForm').addEventListener('submit',e=>{
   const title=f.elements.title.value.trim(),date=f.elements.date.value,category=f.elements.category.value,start=f.elements.start.value,end=f.elements.end.value,note=f.elements.note.value.trim();
   if(!title||!date||!start||!end)return;
 
-  const dow=new Date(date+'T12:00:00').getDay(),weekend=dow===0||dow===6,open=weekend?480:420,close=weekend?1440:1380,startM=mins(start),endM=eventEndMins({start,end});
+  const dow=new Date(date+'T12:00:00').getDay(),weekend=dow===0||dow===6,open=weekend?480:420,close=weekend?1440:1380,startM=mins(start),endM=eventEndMins({start,end}),overnight=mins(end)<=startM;
   if(endM-startM<=0){alert('Проверь время окончания.');return}
-  if(startM<open||endM>close){alert(weekend?'На выходных план доступен с 08:00 до 00:00.':'В будни план доступен с 07:00 до 23:00.');return}
+  if(startM<open||(!overnight&&endM>close)||(overnight&&startM>close)){alert(weekend?'На выходных начало должно быть между 08:00 и 00:00.':'В будни начало должно быть между 07:00 и 23:00.');return}
+  if(overnight&&endM-startM>720){alert('Ночной блок не может быть длиннее 12 часов.');return}
 
   const taskId=f.elements.taskId.value||'',projectId=f.elements.projectId.value||'',existing=id?db.calendar.find(x=>x.id===id):null;
   if(!existing&&f.elements.repeat.value!=='none'&&!f.elements.repeatUntil.value){alert('Для повторяющегося события укажи дату «Повторять до».');return}
@@ -2840,7 +3130,7 @@ $('#prevWeek').onclick=()=>{if(calendarView==='day')calendarDay.setDate(calendar
 $('#nextWeek').onclick=()=>{if(calendarView==='day')calendarDay.setDate(calendarDay.getDate()+1);else if(calendarView==='month')calendarMonth=new Date(calendarMonth.getFullYear(),calendarMonth.getMonth()+1,1);else calendarWeekStart.setDate(calendarWeekStart.getDate()+7);renderCalendar()};
 $('#currentWeek').onclick=()=>{calendarWeekStart=startOfWeek(new Date());calendarDay=new Date();calendarMonth=new Date(new Date().getFullYear(),new Date().getMonth(),1);renderCalendar()};
 $$('[data-calendar-view]').forEach(b=>b.onclick=()=>{calendarView=b.dataset.calendarView;renderCalendar()});
-$('#seedWorkWeek').onclick=seedViewedWorkWeek;$('#saveWeekTemplate').onclick=saveCurrentWeekTemplate;$('#applyWeekTemplate').onclick=applyCurrentWeekTemplate;
+
 $('#clearWeek').onclick=clearViewedWeek;
 $('#newCalendarEvent').onclick=()=>{let date=iso(calendarWeekStart);if(calendarView==='day')date=iso(calendarDay);if(calendarView==='month'){const now=new Date();date=(calendarMonth.getFullYear()===now.getFullYear()&&calendarMonth.getMonth()===now.getMonth())?todayISO:iso(calendarMonth)}openEventDialog({date,start:'19:00',end:'20:00',category:'project'})};
 renderCalendar();renderTemplateStatus();
@@ -2863,8 +3153,8 @@ $('#exportData').onclick=()=>{
   const blob=new Blob([JSON.stringify(db,null,2)],{type:'application/json'});
   const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='planner-backup.json'; a.click(); setTimeout(()=>URL.revokeObjectURL(a.href),1000);
 };
-$('#importData').onclick=()=>$('#importFile').click();$('#importFile').onchange=async e=>{const file=e.target.files?.[0];if(!file)return;try{const parsed=JSON.parse(await file.text());if(!parsed||typeof parsed!=='object')throw new Error();if(!confirm('Импорт заменит текущие данные. Продолжить?'))return;db=normalizeCloudData(parsed);reconcileTaskPlanning();persistLocal(true);cloudDirty=true;if(cloudUser&&navigator.onLine)await pushCloudState(true);location.reload()}catch(err){console.error(err);alert('Не удалось прочитать или импортировать JSON-файл.')}};
-$('#resetData').onclick=()=>{ if(confirm('Сбросить данные на этом устройстве? Если синхронизация включена, пустое состояние затем будет отправлено в облако.')){db=structuredClone(defaults);persistLocal(true);cloudDirty=true;if(cloudUser){pushCloudState(true).finally(()=>location.reload())}else location.reload();} };
+$('#importData').onclick=()=>$('#importFile').click();$('#importFile').onchange=async e=>{const file=e.target.files?.[0];if(!file)return;try{const parsed=JSON.parse(await file.text());if(!parsed||typeof parsed!=='object')throw new Error();if(!confirm('Импорт заменит текущие данные. Продолжить? Текущее состояние можно будет вернуть через ⌘Z.'))return;pushCurrentStateToUndo();db=normalizeCloudData(parsed);reconcileTaskPlanning();persistLocal(true);cloudDirty=true;if(cloudUser&&navigator.onLine)await pushCloudState(true);location.reload()}catch(err){console.error(err);alert('Не удалось прочитать или импортировать JSON-файл.')}};
+$('#resetData').onclick=()=>{ if(confirm('Сбросить данные на этом устройстве? Текущее состояние сохранится в истории отмены.')){pushCurrentStateToUndo();db=structuredClone(defaults);persistLocal(true);cloudDirty=true;if(cloudUser){pushCloudState(true).finally(()=>location.reload())}else location.reload();} };
 
 const FREE_FOCUS_ID='__free_focus__';
 let focusStatsPeriod='week';
