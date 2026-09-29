@@ -6,10 +6,10 @@
   <meta id="themeColorMeta" name="theme-color" content="#f7f7f8" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-  <meta name="apple-mobile-web-app-title" content="Artem Planner" />
+  <meta name="apple-mobile-web-app-title" content="Planner" />
   <link rel="manifest" href="./manifest.webmanifest" />
   <link rel="apple-touch-icon" href="./icon-192.png" />
-  <title>Artem Planner v0.6.8</title>
+  <title>Planner v0.7.5</title>
   <style>
     :root{
       --bg:#f7f7f8;
@@ -98,6 +98,28 @@
     .metric.purple{background:linear-gradient(180deg,#fefcff,#f8f5ff)}
     .grid-2{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(280px,.7fr);gap:14px}
     .grid-equal{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    .analytics-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;align-items:start}
+    .analytics-grid .card{padding:20px;min-height:220px}
+    .analytics-grid .section-title{margin-bottom:18px}
+    .analytics-stat{display:flex;flex-direction:column;gap:9px;padding:10px 0}
+    .analytics-stat + .analytics-stat{border-top:1px solid var(--border)}
+    .analytics-stat-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px}
+    .analytics-stat-head span{line-height:1.4;max-width:72%}
+    .analytics-stat-head strong{white-space:nowrap}
+    #analyticsProjects,#analyticsBalance{display:flex;flex-direction:column;gap:12px}
+    #analyticsProjects .mini-item,#analyticsBalance .mini-item{padding:14px 15px}
+    #foodSecondaryPanels{display:none}
+    #timerDock{display:none!important}
+    #page-calendar.day-mode .calendar-shell{grid-template-columns:1fr}
+    #page-calendar.day-mode .calendar-shell > .today-panel{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+    #page-calendar.day-mode .day-grid{min-width:100%;grid-template-columns:72px minmax(720px,1fr)!important;grid-template-rows:58px repeat(34,34px)!important}
+    #page-calendar.day-mode .week-head{padding:12px 8px}
+    #page-calendar.day-mode .week-head strong{font-size:15px}
+    #page-calendar.day-mode .week-head span{font-size:12px}
+    #page-calendar.day-mode .time-cell{font-size:11px;padding:7px 8px}
+    #page-calendar.day-mode .calendar-event{margin:3px 6px;padding:9px 10px;font-size:12px}
+    #page-calendar.day-mode .calendar-event strong{font-size:12px}
+    #page-calendar.day-mode .calendar-event span{font-size:11px;margin-top:4px}
     .section-title{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:13px}
     .section-title h2{font-size:17px;margin:0;letter-spacing:-.015em}
     .section-title .small{color:var(--muted);font-size:12px}
@@ -541,7 +563,7 @@
     .today-task-actions .danger:hover{background:#fff1f2;color:#dc2626;border-color:#fecdd3}
     .today-focus-card,.quick-actions-card,.schedule-card,.money-card-today{padding:18px}
     .focus-side-layout{display:flex;align-items:center;gap:16px;margin:6px 0 16px}
-    .focus-ring{--focus-pct:0;position:relative;width:104px;height:104px;border-radius:50%;background:conic-gradient(#7c83ff calc(var(--focus-pct)*1%), rgba(99,102,241,.15) 0);display:grid;place-items:center;box-shadow:0 10px 26px rgba(99,102,241,.16)}
+    .focus-ring{position:relative;width:104px;height:104px;min-width:104px;max-width:104px;flex:0 0 104px;aspect-ratio:1/1;border-radius:50%;background:linear-gradient(145deg,rgba(124,131,255,.28),rgba(99,102,241,.08));border:1px solid rgba(99,102,241,.22);display:grid;place-items:center;box-shadow:0 10px 26px rgba(99,102,241,.16)}
     .focus-ring::before{content:"";position:absolute;inset:11px;border-radius:50%;background:var(--surface)}
     .focus-ring-inner{position:relative;z-index:1;display:grid;place-items:center;text-align:center}
     .focus-ring-inner strong{font-size:21px;letter-spacing:-.03em}
@@ -594,7 +616,7 @@
     html[data-theme="dark"] .today-task-actions button{background:#121524;border-color:#252c4d;color:#ececf2}
     html[data-theme="dark"] .today-task-actions button.play{background:linear-gradient(135deg,#4f46e5,#6e76ff);box-shadow:0 14px 26px rgba(79,70,229,.3)}
     html[data-theme="dark"] .icon-btn{background:#14192e;border-color:#252c4c;color:#c7d2fe}
-    html[data-theme="dark"] .focus-ring{background:conic-gradient(#7b84ff calc(var(--focus-pct)*1%), rgba(123,132,255,.12) 0);box-shadow:0 16px 34px rgba(79,70,229,.24)}
+    html[data-theme="dark"] .focus-ring{background:linear-gradient(145deg,rgba(123,132,255,.26),rgba(79,70,229,.08));border-color:rgba(123,132,255,.28);box-shadow:0 16px 34px rgba(79,70,229,.24)}
     html[data-theme="dark"] .focus-ring::before{background:#0f1321}
     html[data-theme="dark"] .focus-small{color:#99a2ba}
     html[data-theme="dark"] .quick-link{background:#111628;border-color:#232b49;color:#ececf2}
@@ -626,6 +648,8 @@
       .card{padding:13px;border-radius:14px;box-shadow:none}
       .metric .value{font-size:21px}
       .grid-2,.grid-equal,.settings-grid{grid-template-columns:1fr}
+      .analytics-grid{grid-template-columns:1fr}
+      #page-calendar.day-mode .calendar-shell > .today-panel{grid-template-columns:1fr}
       .food-week{grid-template-columns:repeat(7,144px)}
       .food-review{grid-template-columns:1fr}
       .food-review-kpis{grid-template-columns:1fr 1fr 1fr}
@@ -664,15 +688,88 @@
       .dialog-inner{padding:16px}
       .dialog-actions{position:sticky;bottom:0;background:var(--surface);padding-top:10px}
     }
+  
+
+    .workout-shell{display:grid;grid-template-columns:1fr;gap:14px;align-items:start}
+    .workout-side{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+    .workout-week-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:10px;min-width:0}
+    .workout-day-card{min-width:0;border:1px solid var(--border);border-radius:18px;background:var(--surface-2);padding:12px;display:flex;flex-direction:column;gap:9px;min-height:238px;cursor:pointer;box-shadow:0 1px 0 rgba(0,0,0,.03)}
+    .workout-day-card.active{border-color:var(--accent);box-shadow:0 0 0 1px rgba(99,102,241,.18),0 12px 28px rgba(99,102,241,.12)}
+    .workout-day-card.today{background:linear-gradient(180deg,var(--surface-2),rgba(99,102,241,.05))}
+    .workout-day-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+    .workout-day-head strong{display:block;font-size:15px}
+    .workout-day-head span{display:block;font-size:12px;color:var(--muted);margin-top:2px}
+    .weight-badge{padding:5px 8px;border-radius:999px;background:var(--accent-2);color:var(--accent);font-size:12px;font-weight:700;white-space:nowrap}
+    .weight-zone-green{color:#22c55e!important}
+    .weight-zone-yellow{color:#eab308!important}
+    .weight-zone-red{color:#ef4444!important}
+    .weight-badge.weight-zone-green{background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.2)}
+    .weight-badge.weight-zone-yellow{background:rgba(234,179,8,.12);border:1px solid rgba(234,179,8,.22)}
+    .weight-badge.weight-zone-red{background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.22)}
+    .body-metric-card{position:relative}
+    .body-metric-card .value{padding-right:72px}
+    .metric-edit{position:absolute;right:12px;top:12px;border:1px solid var(--border);background:var(--surface);color:var(--muted);border-radius:9px;padding:6px 8px;font-size:11px}
+    .metric-edit:hover{color:var(--text);background:var(--surface-2)}
+    .weight-zone-legend{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+    .zone-dot-label{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--muted)}
+    .zone-dot-label i{width:8px;height:8px;border-radius:50%;display:inline-block}
+    .workout-day-metrics{display:grid;gap:8px}
+    .workout-day-card .mini-item{padding:9px 10px;display:flex;flex-direction:column;align-items:flex-start;justify-content:flex-start;gap:3px;min-width:0}
+    .workout-day-card .mini-item span{font-size:11px;color:var(--muted)}
+    .workout-day-card .mini-item strong{font-size:12px;line-height:1.25;white-space:normal;overflow-wrap:anywhere}
+    .workout-day-metrics .mini-item{padding:10px 12px}
+    .workout-chips{display:flex;flex-direction:column;gap:8px;min-height:54px}
+    .workout-chip{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 10px;border-radius:12px;background:var(--surface);border:1px solid var(--border);font-size:12px}
+    .workout-chip-title{display:flex;align-items:center;gap:8px;min-width:0}
+    .workout-chip-title b{font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+    .type-dot{width:8px;height:8px;border-radius:50%;flex:0 0 auto}
+    .type-home{background:#8b5cf6}
+    .type-outdoor{background:#22c55e}
+    .type-gym{background:#f59e0b}
+    .status-pill{padding:4px 8px;border-radius:999px;font-size:11px;font-weight:650;background:#eef2ff;color:#4f46e5;white-space:nowrap}
+    .status-pill.done{background:#ecfdf3;color:#16a34a}
+    .status-pill.missed{background:#fff1f2;color:#dc2626}
+    .workout-day-actions{margin-top:auto;display:grid;grid-template-columns:1fr 1fr;gap:7px}
+    .workout-day-actions .btn{padding:8px 7px;justify-content:center;min-width:0;font-size:12px}
+    .workout-summary{display:grid;gap:10px}
+    .workout-summary .mini-item{padding:12px 14px}
+    .list-stack{display:flex;flex-direction:column;gap:10px}
+    .workout-row,.calorie-row,.weight-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;align-items:center;padding:14px 15px;border:1px solid var(--border);background:var(--surface-2);border-radius:14px}
+    .workout-row-main,.calorie-row-main,.weight-row-main{display:flex;flex-direction:column;gap:5px;min-width:0}
+    .workout-row-meta,.calorie-row-meta,.weight-row-meta{font-size:12px;color:var(--muted);display:flex;gap:10px;flex-wrap:wrap}
+    .row-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
+    .tiny-chip{padding:6px 9px;border-radius:999px;border:1px solid var(--border);background:var(--surface);font-size:12px;color:var(--text)}
+    .tiny-chip.active{border-color:var(--accent);background:var(--accent-2);color:var(--accent)}
+    .calorie-total-pill{padding:8px 12px;border-radius:999px;background:var(--accent-2);color:var(--accent);font-weight:700;font-size:13px}
+    .weight-big{font-size:30px;font-weight:800;letter-spacing:-.03em}
+    .workout-types-grid{display:grid;gap:10px}
+    .workout-type-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 14px;border:1px solid var(--border);border-radius:14px;background:var(--surface-2)}
+    .workout-type-row .left{display:flex;align-items:center;gap:10px}
+    .workout-goal-box{display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap}
+    .workout-goal-box .field{margin:0;min-width:160px;flex:1}
+    .section-title .section-inline{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+    @media (max-width:1200px){
+      .workout-side{grid-template-columns:1fr}
+      .workout-week-grid{grid-template-columns:repeat(4,minmax(0,1fr))}
+    }
+    @media (max-width:860px){
+      .workout-week-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+    }
+    @media (max-width:760px){
+      .workout-week-grid{grid-template-columns:1fr}
+      .workout-row,.calorie-row,.weight-row{grid-template-columns:1fr}
+      .row-actions{justify-content:flex-start}
+    }
+
   </style>
 </head>
 <body>
 <div class="app">
   <aside class="sidebar sidebar-v2">
     <div class="brand brand-v2">
-      <div class="brand-mark">M</div>
+      <div class="brand-mark">P</div>
       <div class="brand-copy">
-        <strong>Artem Planner</strong>
+        <strong>Planner</strong>
         <small>Планируй. Делай. Развивайся.</small>
       </div>
     </div>
@@ -690,6 +787,7 @@
       <button data-page="projects"><span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7.5A2.5 2.5 0 0 1 5.5 5h4l2 2h7A2.5 2.5 0 0 1 21 9.5v8A2.5 2.5 0 0 1 18.5 20h-13A2.5 2.5 0 0 1 3 17.5z"/><path d="M3 9h18"/></svg></span>Проекты</button>
       <button data-page="money"><span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7.5A2.5 2.5 0 0 1 6.5 5h11A2.5 2.5 0 0 1 20 7.5v9a2.5 2.5 0 0 1-2.5 2.5h-11A2.5 2.5 0 0 1 4 16.5z"/><path d="M4 9h16"/><circle cx="15.5" cy="13.5" r="1.5"/></svg></span>Деньги</button>
       <button data-page="food"><span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4v7"/><path d="M10 4v7"/><path d="M7 8h3"/><path d="M8.5 11v9"/><path d="M15 4c2 2 2 5.5 0 7.5l-1 1v7.5"/><path d="M15 4v16"/></svg></span>Траты</button>
+      <button data-page="workouts"><span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 9v6"/><path d="M19 9v6"/><path d="M8 7v10"/><path d="M16 7v10"/><path d="M5 12h14"/></svg></span>Тренировки</button>
       <button data-page="analytics"><span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19V9"/><path d="M12 19V5"/><path d="M19 19v-7"/><path d="M3 19h18"/></svg></span>Аналитика</button>
       <button data-page="archive"><span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16"/><path d="M6 7v10.5A2.5 2.5 0 0 0 8.5 20h7a2.5 2.5 0 0 0 2.5-2.5V7"/><rect x="3" y="4" width="18" height="4" rx="1.5"/><path d="M10 12h4"/></svg></span>Архив</button>
     </div>
@@ -740,12 +838,12 @@
 
         <div class="today-right-rail">
           <div class="card today-focus-card glow-card">
-            <div class="section-title"><h2>Фокус сегодня</h2><span class="small">выполнение плана</span></div>
+            <div class="section-title"><h2>Фокус сегодня</h2><span class="small">фактическое время</span></div>
             <div class="focus-side-layout">
-              <div class="focus-ring" id="todayFocusRing"><div class="focus-ring-inner"><strong id="todayFocusPercent">0%</strong></div></div>
+              <div class="focus-ring" id="todayFocusRing"><div class="focus-ring-inner"><strong id="todayFocusPercent">0 сесс.</strong></div></div>
               <div class="focus-side-copy">
                 <div class="focus-big" id="todayFocusTime">0 ч</div>
-                <div class="focus-small" id="todayFocusHint">из запланированных 0 ч</div>
+                <div class="focus-small" id="todayFocusHint">оценка задач: 0 ч · это не обязательная норма</div>
               </div>
             </div>
             <button class="btn primary full glow" data-page="focus">▶ Запустить фокус</button>
@@ -800,7 +898,7 @@
           </div>
           <div class="focus-main-actions">
             <button class="btn primary focus-primary-action" id="focusToggle">▶ Начать</button>
-            <button class="btn" id="focusFinish">■ Завершить</button>
+            <button class="btn" id="focusFinish">✓ Завершить задачу</button>
           </div>
           <div class="focus-hint" id="focusSessionHint">Можно выбрать «Свободный фокус», если работа не привязана к задаче.</div>
         </div>
@@ -872,12 +970,12 @@
             <div id="calendarBalance"></div>
           </div>
           <div class="today-block">
-            <h3>Задачи без времени</h3>
+            <h3>Не удалось разместить автоматически</h3>
             <div id="unscheduledTasks"></div>
           </div>
           <div class="today-block">
             <h3>Как пользоваться</h3>
-            <div class="note">В «Неделе» и «Дне» клик по сетке создаёт событие, а блоки можно перетаскивать. В «Месяце» нажми на день или событие. Задачи можно отправлять в календарь. Шаблоны применяются к недельному виду.</div><div class="template-status" id="templateStatus"></div>
+            <div class="note">Открытые задачи автоматически получают место в календаре по оценке времени. Перетащи блок, если хочешь изменить время вручную. Клик по сетке создаёт отдельное событие.</div><div class="template-status" id="templateStatus"></div>
           </div>
         </div>
       </div>
@@ -997,7 +1095,7 @@
 
       <div id="foodWeekReview"></div>
 
-      <div class="grid-equal" style="margin-top:14px">
+      <div class="grid-equal" id="foodSecondaryPanels" style="margin-top:14px">
         <div class="card">
           <div class="section-title"><h2>Последние записи</h2><span class="small">Каждая запись уже учтена в «Деньгах»</span></div>
           <div class="mini-list" id="foodRecent"></div>
@@ -1010,6 +1108,80 @@
     </section>
 
 
+    <section class="page" id="page-workouts">
+      <div class="topbar">
+        <div class="title-wrap"><h1>Тренировки</h1><div class="subtitle">Календарь активности, калории и вес — всё в одном рабочем экране</div></div>
+        <div class="actions">
+          <button class="btn" id="workoutPrevWeek">←</button>
+          <button class="btn" id="workoutCurrentWeek">Текущая</button>
+          <button class="btn" id="workoutNextWeek">→</button>
+          <span class="subtitle" id="workoutRange"></span>
+          <button class="btn" id="addCaloriesGlobal">＋ Калории</button>
+          <button class="btn" id="addWeightGlobal">＋ Вес</button>
+          <button class="btn primary" id="addWorkoutGlobal">＋ Тренировка</button>
+        </div>
+      </div>
+
+      <div class="cards">
+        <div class="card metric green"><div class="label">Калории сегодня</div><div class="value" id="workoutCaloriesToday">0 ккал</div><div class="hint" id="workoutCaloriesHint">0 записей за день</div></div>
+        <div class="card metric blue"><div class="label">Выполнено за неделю</div><div class="value" id="workoutDoneWeek">0</div><div class="hint" id="workoutDoneWeekHint">0 из 0 тренировок</div></div>
+        <div class="card metric body-metric-card"><button class="metric-edit" id="editHeightTop" type="button">Изм.</button><div class="label">Рост</div><div class="value" id="workoutHeight">— см</div><div class="hint">постоянный параметр</div></div>
+        <div class="card metric body-metric-card"><button class="metric-edit" id="editWeightTop" type="button">Изм.</button><div class="label">Текущий вес</div><div class="value weight-zone-green" id="workoutCurrentWeight">— кг</div><div class="hint" id="workoutWeightHint">цвет зоны выбираешь сам</div></div>
+      </div>
+
+      <div class="workout-shell">
+        <div class="card">
+          <div class="section-title"><div><h2>Неделя тренировок</h2><span class="small" id="workoutWeekHint">Планируй, отмечай выполнение и держи калории рядом</span></div><span class="small">Клик по дню открывает детали</span></div>
+          <div class="workout-week-grid" id="workoutWeekBoard"></div>
+        </div>
+        <div class="workout-side">
+          <div class="card">
+            <div class="section-title"><div><h2 id="workoutSelectedDayTitle">Выбранный день</h2><span class="small" id="workoutSelectedDaySubtitle">—</span></div><span class="calorie-total-pill" id="selectedCaloriesTotal">0 ккал</span></div>
+            <div class="workout-summary" id="workoutSelectedSummary"></div>
+          </div>
+          <div class="card">
+            <div class="section-title"><h2>Настройка недели</h2><span class="small">для понятного плана, а не жёсткой обязаловки</span></div>
+            <div class="workout-goal-box">
+              <div class="field"><label>Рост, см</label><input id="trainingHeightCm" type="number" min="100" max="250" step="1" placeholder="Например, 182"></div>
+              <div class="field"><label>Цель тренировок в неделю</label><input id="trainingWeeklyGoal" type="number" min="1" max="14"></div>
+              <button class="btn primary" id="saveTrainingSettings">Сохранить</button>
+            </div>
+            <div class="mini-item" style="margin-top:12px"><span>Прогресс недельной цели</span><strong id="workoutGoalInline">0 из 4 · 0%</strong></div>
+            <div class="weight-zone-legend">
+              <span class="zone-dot-label"><i style="background:#22c55e"></i>зелёная зона</span>
+              <span class="zone-dot-label"><i style="background:#eab308"></i>жёлтая зона</span>
+              <span class="zone-dot-label"><i style="background:#ef4444"></i>красная зона</span>
+            </div>
+            <div class="note" style="margin-top:10px">Цвет веса — твоя ручная зона для ориентира. Planner не определяет её автоматически и не трактует как медицинскую оценку.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid-equal" style="margin-top:14px">
+        <div class="card">
+          <div class="section-title"><div><h2>Тренировки дня</h2><span class="small" id="workoutListHint">запланированные, выполненные и пропущенные</span></div><button class="btn soft" id="addWorkoutSelected">＋ Добавить</button></div>
+          <div id="workoutList" class="list-stack"></div>
+        </div>
+        <div class="card">
+          <div class="section-title"><div><h2>Калории дня</h2><span class="small">что и сколько съел за выбранную дату</span></div><button class="btn soft" id="addCaloriesSelected">＋ Добавить</button></div>
+          <div id="calorieList" class="list-stack"></div>
+        </div>
+      </div>
+
+      <div class="grid-equal" style="margin-top:14px">
+        <div class="card">
+          <div class="section-title"><div><h2>Вес</h2><span class="small">последние записи и динамика</span></div><button class="btn soft" id="addWeightSelected">＋ Добавить</button></div>
+          <div class="weight-big" id="weightBigValue">—</div>
+          <div class="subtitle" id="weightBigHint" style="margin:4px 0 14px">Добавь первую запись веса</div>
+          <div id="weightList" class="list-stack"></div>
+        </div>
+        <div class="card">
+          <div class="section-title"><div><h2>Виды тренировок</h2><span class="small">срез по текущей неделе</span></div><span class="small" id="workoutTypeHint">дом · улица · спортзал</span></div>
+          <div id="workoutTypesStats" class="workout-types-grid"></div>
+        </div>
+      </div>
+    </section>
+
     <section class="page" id="page-analytics">
       <div class="topbar">
         <div class="title-wrap"><h1>Аналитика</h1><div class="subtitle">Только реальные данные из календаря, задач, денег, еды и таймера</div></div>
@@ -1021,7 +1193,7 @@
         <div class="card metric blue"><div class="label">Фокус</div><div class="value" id="analyticsFocus">0 ч</div><div class="hint">по таймеру</div></div>
         <div class="card metric purple"><div class="label">Завершено задач</div><div class="value" id="analyticsDone">0</div><div class="hint">за выбранный период</div></div>
       </div>
-      <div class="grid-equal">
+      <div class="analytics-grid">
         <div class="card"><div class="section-title"><h2>Расходы по категориям</h2><span class="small" id="analyticsFoodTotal"></span></div><div id="analyticsExpenseCategories"></div></div>
         <div class="card"><div class="section-title"><h2>Время по категориям календаря</h2><span class="small">план</span></div><div id="analyticsCalendarCategories"></div></div>
         <div class="card"><div class="section-title"><h2>Проекты</h2><span class="small">время · доход · ₽/ч</span></div><div id="analyticsProjects"></div></div>
@@ -1123,7 +1295,7 @@
   <button data-page="calendar"><span class="mi"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2.5"/><path d="M8 3v4M16 3v4M3 10h18"/></svg></span>Календарь</button>
   <button data-page="tasks"><span class="mi"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="m8 12 2.5 2.5L16 9"/></svg></span>Задачи</button>
   <button data-page="money"><span class="mi"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7.5A2.5 2.5 0 0 1 6.5 5h11A2.5 2.5 0 0 1 20 7.5v9a2.5 2.5 0 0 1-2.5 2.5h-11A2.5 2.5 0 0 1 4 16.5z"/><path d="M4 9h16"/><circle cx="15.5" cy="13.5" r="1.5"/></svg></span>Деньги</button>
-  <button data-page="more"><span class="mi">•••</span>Ещё</button>
+  <button data-page="workouts"><span class="mi"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 9v6"/><path d="M19 9v6"/><path d="M8 7v10"/><path d="M16 7v10"/><path d="M5 12h14"/></svg></span>Трен.</button>
 </nav>
 
 
@@ -1250,6 +1422,51 @@
     <div class="dialog-actions"><button type="button" class="btn danger" id="deleteEvent" style="margin-right:auto;display:none">Удалить</button><button type="button" class="btn danger" id="deleteEventSeries" style="display:none">Удалить серию</button><button type="button" class="btn" data-dialog-close="eventDialog">Отмена</button><button type="submit" class="btn primary">Сохранить</button></div>
   </form>
 </dialog>
+<dialog id="workoutDialog">
+  <form id="workoutForm" class="dialog-inner">
+    <div class="dialog-head"><h3 id="workoutDialogTitle">Новая тренировка</h3><button type="button" class="icon-btn" data-dialog-close="workoutDialog" aria-label="Закрыть">×</button></div>
+    <input type="hidden" name="id">
+    <div class="form-grid">
+      <div class="field full"><label>Название</label><input name="title" required placeholder="Например, Ноги + пресс"></div>
+      <div class="field"><label>Дата</label><input name="date" type="date" required></div>
+      <div class="field"><label>Тип</label><select name="type"><option value="home">Дом</option><option value="outdoor">Улица</option><option value="gym">Спортзал</option></select></div>
+      <div class="field"><label>Статус</label><select name="status"><option value="planned">Запланирована</option><option value="done">Выполнена</option><option value="missed">Пропущена</option></select></div>
+      <div class="field"><label>Длительность, мин</label><input name="duration" type="number" min="0" step="5" placeholder="60"></div>
+      <div class="field"><label>Сожжено, ккал</label><input name="caloriesBurned" type="number" min="0" step="1" placeholder="300"></div>
+      <div class="field full"><label>Комментарий</label><input name="note" placeholder="Например, спина + турник"></div>
+    </div>
+    <div class="dialog-actions"><button type="button" class="btn danger" id="deleteWorkout" style="margin-right:auto;display:none">Удалить</button><button type="button" class="btn" data-dialog-close="workoutDialog">Отмена</button><button type="submit" class="btn primary">Сохранить</button></div>
+  </form>
+</dialog>
+
+<dialog id="calorieDialog">
+  <form id="calorieForm" class="dialog-inner">
+    <div class="dialog-head"><h3 id="calorieDialogTitle">Запись калорий</h3><button type="button" class="icon-btn" data-dialog-close="calorieDialog" aria-label="Закрыть">×</button></div>
+    <input type="hidden" name="id">
+    <div class="form-grid">
+      <div class="field"><label>Дата</label><input name="date" type="date" required></div>
+      <div class="field"><label>Приём пищи / запись</label><input name="title" required placeholder="Завтрак, ужин, перекус"></div>
+      <div class="field"><label>Калории</label><input name="calories" type="number" min="0" step="1" required placeholder="650"></div>
+      <div class="field full"><label>Комментарий</label><input name="note" placeholder="Например, паста с курицей"></div>
+    </div>
+    <div class="dialog-actions"><button type="button" class="btn danger" id="deleteCalorie" style="margin-right:auto;display:none">Удалить</button><button type="button" class="btn" data-dialog-close="calorieDialog">Отмена</button><button type="submit" class="btn primary">Сохранить</button></div>
+  </form>
+</dialog>
+
+<dialog id="weightDialog">
+  <form id="weightForm" class="dialog-inner">
+    <div class="dialog-head"><h3 id="weightDialogTitle">Запись веса</h3><button type="button" class="icon-btn" data-dialog-close="weightDialog" aria-label="Закрыть">×</button></div>
+    <input type="hidden" name="id">
+    <div class="form-grid">
+      <div class="field"><label>Дата</label><input name="date" type="date" required></div>
+      <div class="field"><label>Вес, кг</label><input name="value" type="number" min="0" step="0.1" required placeholder="75.4"></div>
+      <div class="field"><label>Цвет зоны</label><select name="zone"><option value="green">Зелёная</option><option value="yellow">Жёлтая</option><option value="red">Красная</option></select></div>
+      <div class="field full"><label>Комментарий</label><input name="note" placeholder="Утром натощак и т. п."></div>
+    </div>
+    <div class="dialog-actions"><button type="button" class="btn danger" id="deleteWeight" style="margin-right:auto;display:none">Удалить</button><button type="button" class="btn" data-dialog-close="weightDialog">Отмена</button><button type="submit" class="btn primary">Сохранить</button></div>
+  </form>
+</dialog>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 const $ = (s, root=document) => root.querySelector(s);
@@ -1285,6 +1502,10 @@ const monthKey = d => d.slice(0,7);
 const defaults = {
   money: [],
   food: [],
+  calories: [],
+  workouts: [],
+  weights: [],
+  trainingSettings:{weeklyGoal:4,heightCm:0},
   foodWeekDecisions:{},
   goals:[],
   budgets:{day:1000,week:7000,month:30000},
@@ -1294,7 +1515,7 @@ const defaults = {
   timer:{activeTaskId:'',running:false,startedAt:null,sessionAccumulatedMs:0},
   timeEntries:[],
   weekTemplate:[],
-  meta:{schema:10,updatedAt:null}
+  meta:{schema:12,updatedAt:null}
 };
 
 function load(){
@@ -1304,7 +1525,7 @@ function load(){
   }catch(e){ return structuredClone(defaults); }
 }
 let db=load();
-db.calendar ??= []; db.tasks ??= []; db.projects ??= []; db.money ??= []; db.food ??= []; db.foodWeekDecisions ??= {}; db.goals ??= []; db.budgets ??= structuredClone(defaults.budgets); db.meta ??= {}; db.timeEntries ??=[]; db.weekTemplate ??=[];
+db.calendar ??= []; db.tasks ??= []; db.projects ??= []; db.money ??= []; db.food ??= []; db.calories ??=[]; db.workouts ??=[]; db.weights ??=[]; db.trainingSettings ??= structuredClone(defaults.trainingSettings); db.foodWeekDecisions ??= {}; db.goals ??= []; db.budgets ??= structuredClone(defaults.budgets); db.meta ??= {}; db.timeEntries ??=[]; db.weekTemplate ??=[];
 // v0.3: удаляем только старые демонстрационные быстрые задачи из прототипа.
 if((db.meta.schema||0)<3){
   const legacy=new Set(['Монтаж ролика','Ответить клиенту','План на неделю']);
@@ -1352,9 +1573,21 @@ if((db.meta.schema||0)<10){
   });
   db.meta.schema=10;
 }
+if((db.meta.schema||0)<11){
+  db.calories=Array.isArray(db.calories)?db.calories:[];
+  db.workouts=Array.isArray(db.workouts)?db.workouts:[];
+  db.weights=Array.isArray(db.weights)?db.weights:[];
+  db.trainingSettings={...structuredClone(defaults.trainingSettings),...(db.trainingSettings||{})};
+  db.meta.schema=11;
+}
+if((db.meta.schema||0)<12){
+  db.trainingSettings={...structuredClone(defaults.trainingSettings),...(db.trainingSettings||{})};
+  db.weights=(Array.isArray(db.weights)?db.weights:[]).map(x=>({...x,zone:x.zone||'green'}));
+  db.meta.schema=12;
+}
 function persistLocal(touch=true){
   db.meta??={};
-  db.meta.schema=10;
+  db.meta.schema=12;
   if(touch) db.meta.updatedAt=new Date().toISOString();
   localStorage.setItem('artemPlanner.v01',JSON.stringify(db));
 }
@@ -1385,11 +1618,11 @@ function storeCloudConfig(){
   localStorage.setItem(CLOUD_CONFIG_KEY,JSON.stringify(cfg)); return cfg;
 }
 function cloudConfigValid(cfg=loadCloudConfig()){return /^https:\/\/.+/.test(cfg.url||'')&&String(cfg.key||'').length>20}
-function dataHasContent(x){const listCount=(x?.tasks?.length||0)+(x?.projects?.length||0)+(x?.calendar?.length||0)+(x?.money?.length||0)+(x?.food?.length||0)+(x?.timeEntries?.length||0)+(x?.weekTemplate?.length||0)+(x?.goals?.length||0);const decisions=Object.keys(x?.foodWeekDecisions||{}).length,b=x?.budgets||{},customBudget=Number(b.day??1000)!==1000||Number(b.month??30000)!==30000;return !!(listCount+decisions)||customBudget}
+function dataHasContent(x){const listCount=(x?.tasks?.length||0)+(x?.projects?.length||0)+(x?.calendar?.length||0)+(x?.money?.length||0)+(x?.food?.length||0)+(x?.calories?.length||0)+(x?.workouts?.length||0)+(x?.weights?.length||0)+(x?.timeEntries?.length||0)+(x?.weekTemplate?.length||0)+(x?.goals?.length||0);const decisions=Object.keys(x?.foodWeekDecisions||{}).length,b=x?.budgets||{},customBudget=Number(b.day??1000)!==1000||Number(b.month??30000)!==30000;return !!(listCount+decisions)||customBudget}
 function normalizeCloudData(raw){
   const next={...structuredClone(defaults),...(raw&&typeof raw==='object'?raw:{})};
-  for(const k of ['money','food','tasks','projects','calendar','timeEntries','weekTemplate','goals']) if(!Array.isArray(next[k])) next[k]=[];
-  next.budgets={...defaults.budgets,...(next.budgets||{})}; next.budgets.week=(Number(next.budgets.day)||1000)*7; next.foodWeekDecisions=(next.foodWeekDecisions&&typeof next.foodWeekDecisions==='object')?next.foodWeekDecisions:{}; next.timer={...defaults.timer,...(next.timer||{})}; next.meta={...defaults.meta,...(next.meta||{}),schema:10}; next.timer={...defaults.timer,...(next.timer||{}),sessionAccumulatedMs:Number(next.timer?.sessionAccumulatedMs||0)}; next.timeEntries=next.timeEntries.map(x=>({...x,taskTitle:x.taskTitle||'',projectName:x.projectName||''})); next.money=next.money.map(x=>({...x,goalId:x.goalId||'',seriesId:x.seriesId||''})); return next;
+  for(const k of ['money','food','calories','workouts','weights','tasks','projects','calendar','timeEntries','weekTemplate','goals']) if(!Array.isArray(next[k])) next[k]=[];
+  next.budgets={...defaults.budgets,...(next.budgets||{})}; next.budgets.week=(Number(next.budgets.day)||1000)*7; next.foodWeekDecisions=(next.foodWeekDecisions&&typeof next.foodWeekDecisions==='object')?next.foodWeekDecisions:{}; next.timer={...defaults.timer,...(next.timer||{})}; next.trainingSettings={...defaults.trainingSettings,...(next.trainingSettings||{})}; next.weights=next.weights.map(x=>({...x,zone:x.zone||'green'})); next.meta={...defaults.meta,...(next.meta||{}),schema:12}; next.timer={...defaults.timer,...(next.timer||{}),sessionAccumulatedMs:Number(next.timer?.sessionAccumulatedMs||0)}; next.timeEntries=next.timeEntries.map(x=>({...x,taskTitle:x.taskTitle||'',projectName:x.projectName||''})); next.money=next.money.map(x=>({...x,goalId:x.goalId||'',seriesId:x.seriesId||''})); return next;
 }
 function dotClass(mode){return mode==='ready'?'ok':mode==='syncing'?'busy':mode==='conflict'?'warn':mode==='error'?'err':''}
 function cloudStatusCopy(){
@@ -1411,7 +1644,7 @@ function updateCloudUI(message=''){
   const meta=$('#cloudMeta'); if(meta){const email=cloudUser?.email||loadCloudConfig().email||'';const stamp=cloudLastSync?new Intl.DateTimeFormat('ru-RU',{hour:'2-digit',minute:'2-digit',second:'2-digit'}).format(cloudLastSync):'—';meta.textContent=signed?`Аккаунт: ${email||cloudUser.id} · устройство ${DEVICE_ID.slice(0,8)} · последняя синхронизация ${stamp}`:(cloudConfigValid()?'Подключение настроено. Войди в аккаунт, чтобы включить синхронизацию.':'Укажи Project URL и Publishable/anon key, затем сохрани подключение.')}
 }
 function renderAfterRemote(){
-  try{reconcileTaskPlanning();persistLocal(false);renderToday();renderMoney();renderFood();renderProjects();renderTasks();renderCalendar();renderTemplateStatus();renderAnalytics();renderArchive();renderFocusPage();drawTimer();fillProjectSelect();}catch(err){console.error('renderAfterRemote',err)}
+  try{reconcileTaskPlanning();persistLocal(false);renderToday();renderMoney();renderFood();renderProjects();renderTasks();renderCalendar();renderTemplateStatus();renderWorkouts();renderAnalytics();renderArchive();renderFocusPage();drawTimer();fillProjectSelect();}catch(err){console.error('renderAfterRemote',err)}
   if($('#budgetDay'))$('#budgetDay').value=db.budgets.day;if($('#budgetWeek'))$('#budgetWeek').value=(Number(db.budgets.day)||1000)*7;if($('#budgetMonth'))$('#budgetMonth').value=db.budgets.month;
 }
 function applyCloudState(row){
@@ -1529,6 +1762,7 @@ function showPage(name){
   if(name==='tasks') renderTasks();
   if(name==='focus') renderFocusPage();
   if(name==='analytics') renderAnalytics();
+  if(name==='workouts') renderWorkouts();
   if(name==='archive') renderArchive();
   if(name==='settings') updateCloudUI();
   $('#globalSearchResults')?.classList.remove('show');
@@ -1541,7 +1775,49 @@ $$('[data-open]').forEach(b=>b.addEventListener('click',()=>{
   if(t==='quickTask'){ openTaskDialog(); }
 }));
 
+function setTaskDoneState(taskId,done){
+  const t=db.tasks.find(x=>x.id===taskId); if(!t)return false;
+
+  if(done){
+    if(db.timer.activeTaskId===taskId){
+      if(db.timer.running)stopActiveTimer('task_done');
+      db.timer.activeTaskId='';
+      db.timer.sessionAccumulatedMs=0;
+      db.timer.startedAt=null;
+      db.timer.running=false;
+    }
+    t.done=true;
+    t.status='done';
+    t.completedAt=t.completedAt||todayISO;
+  }else{
+    t.done=false;
+    t.status='backlog';
+    delete t.completedAt;
+  }
+
+  syncTasksToCalendar();
+  reconcileTaskPlanning();
+  save();
+  return true;
+}
+
+function taskPlanFactSummary(taskId){
+  const t=db.tasks.find(x=>x.id===taskId);
+  if(!t)return '';
+  const plan=Math.max(0,Number(t.estimateMinutes||0));
+  const actual=Math.round(trackedTaskMs(taskId)/60000);
+  if(!plan)return `Факт ${minutesText(actual)}`;
+  const delta=plan-actual;
+  if(t.done){
+    if(delta>0)return `План ${minutesText(plan)} · факт ${minutesText(actual)} · быстрее на ${minutesText(delta)}`;
+    if(delta<0)return `План ${minutesText(plan)} · факт ${minutesText(actual)} · +${minutesText(Math.abs(delta))}`;
+    return `План ${minutesText(plan)} · факт ровно ${minutesText(actual)}`;
+  }
+  return `План-оценка ${minutesText(plan)} · факт ${minutesText(actual)}`;
+}
+
 function renderToday(){
+  if(syncTasksToCalendar()) save();
   $('#todayDate').textContent = new Intl.DateTimeFormat('ru-RU',{weekday:'long',day:'numeric',month:'long'}).format(new Date());
 
   const todayEvents=db.calendar.filter(e=>e.date===todayISO);
@@ -1595,7 +1871,7 @@ function renderToday(){
 
   renderTodaySchedule();
 
-  $$('[data-task]').forEach(c=>c.onchange=()=>{ const t=db.tasks.find(x=>x.id===c.dataset.task); if(t){t.done=c.checked;t.status=t.done?'done':'backlog';if(t.done)t.completedAt=new Date().toISOString().slice(0,10);else delete t.completedAt;save();renderToday();renderTasks();renderProjects();renderCalendarSide();}});
+  $$('[data-task]').forEach(c=>c.onchange=()=>{if(setTaskDoneState(c.dataset.task,c.checked)){renderToday();renderTasks();renderProjects();renderCalendar();renderFocusPage();}});
   $$('[data-edit-task]').forEach(b=>b.onclick=()=>openTaskDialog(b.dataset.editTask));
   $$('[data-delete-task]').forEach(b=>b.onclick=()=>deleteTaskById(b.dataset.deleteTask));
   $$('[data-today-task-start]').forEach(b=>b.onclick=()=>startTaskTimer(b.dataset.todayTaskStart));
@@ -1619,12 +1895,10 @@ function renderToday(){
   const progressCaption=$('#todayProgressCaption'); if(progressCaption) progressCaption.textContent=progressText;
 
   const focusPlannedMinutes=(primary.concat(undated)).reduce((a,t)=>a+Number(t.estimateMinutes||0),0);
-  const trackedMinutes=Math.round(trackedToday/60000);
-  const focusPct=focusPlannedMinutes?Math.min(100,Math.round((trackedMinutes/focusPlannedMinutes)*100)):0;
-  const focusRing=$('#todayFocusRing'); if(focusRing) focusRing.style.setProperty('--focus-pct', focusPct);
-  const focusPercent=$('#todayFocusPercent'); if(focusPercent) focusPercent.textContent=focusPct+'%';
+  const focusSessions=entryCountOnDate(todayISO);
+  const focusPercent=$('#todayFocusPercent'); if(focusPercent) focusPercent.textContent=`${focusSessions} ${focusSessions===1?'сесс.':'сесс.'}`;
   const focusTime=$('#todayFocusTime'); if(focusTime) focusTime.textContent=msHoursText(trackedToday);
-  const focusHint=$('#todayFocusHint'); if(focusHint) focusHint.textContent=`из запланированных ${minutesText(focusPlannedMinutes)}`;
+  const focusHint=$('#todayFocusHint'); if(focusHint) focusHint.textContent=`оценка задач: ${minutesText(focusPlannedMinutes)} · это не обязательная норма`;
 
   const m=monthKey(todayISO);
   const income=db.money.filter(x=>monthKey(x.date)===m&&x.type==='income').reduce((a,b)=>a+b.amount,0);
@@ -1657,7 +1931,7 @@ function deleteTaskById(id){
   if(db.timer.activeTaskId===id){if(db.timer.running)stopActiveTimer('task_deleted');db.timer.activeTaskId='';db.timer.sessionAccumulatedMs=0;}
   const p=db.projects.find(x=>x.id===task.projectId);
   db.timeEntries.forEach(x=>{if(x.taskId===id){x.taskTitle=x.taskTitle||task.title;x.projectName=x.projectName||p?.name||''}});
-  db.tasks=db.tasks.filter(t=>t.id!==id); db.calendar=db.calendar.map(e=>e.taskId===id?{...e,taskId:''}:e);
+  db.tasks=db.tasks.filter(t=>t.id!==id); db.calendar=db.calendar.filter(e=>!(e.taskId===id&&e.autoFromTask)).map(e=>e.taskId===id?{...e,taskId:''}:e);
   save(); renderToday(); renderProjects(); renderTasks(); renderCalendar(); renderFocusPage(); renderAnalytics(); renderArchive();
   if($('#taskDialog').open) $('#taskDialog').close();
 }
@@ -1665,7 +1939,11 @@ $('#taskForm').addEventListener('submit',e=>{
   e.preventDefault(); const f=e.currentTarget; const id=f.elements.id.value; const title=f.elements.title.value.trim(); if(!title)return;
   const status=f.elements.status.value||'backlog'; const prev=id?db.tasks.find(t=>t.id===id):null; const obj={id:id||uid(),title,projectId:f.elements.projectId.value||'',due:f.elements.due.value||'',priority:f.elements.priority.value||'normal',estimateMinutes:Number(f.elements.estimateMinutes.value||0),status,notes:f.elements.notes.value.trim(),done:status==='done',createdAt:prev?.createdAt||Date.now()}; if(obj.done)obj.completedAt=prev?.completedAt||todayISO;
   if(id){const i=db.tasks.findIndex(t=>t.id===id);if(i>=0)db.tasks[i]=obj;db.calendar.forEach(ev=>{if(ev.taskId===id){ev.projectId=obj.projectId;if(prev?.title&&ev.title===prev.title)ev.title=obj.title}})}else db.tasks.push(obj);
-  reconcileTaskPlanning();save(); $('#taskDialog').close(); renderToday(); renderProjects(); renderTasks(); renderCalendarSide();renderArchive();renderAnalytics();
+  if(obj.done&&db.timer.activeTaskId===obj.id){
+    if(db.timer.running)stopActiveTimer('task_done');
+    db.timer.activeTaskId='';db.timer.sessionAccumulatedMs=0;db.timer.startedAt=null;db.timer.running=false;
+  }
+  syncTasksToCalendar();reconcileTaskPlanning();save(); $('#taskDialog').close(); renderToday(); renderProjects(); renderTasks(); renderCalendar();renderArchive();renderAnalytics();renderFocusPage();
 });
 $('#deleteTask').onclick=()=>deleteTaskById($('#taskForm').elements.id.value);
 
@@ -1678,6 +1956,17 @@ function trackedProjectMs(projectId){
 }
 function minutesText(min){const h=Math.floor(min/60),m=Math.round(min%60);return h?`${h} ч${m?' '+m+' м':''}`:`${m} мин`}
 function msHoursText(ms){const h=ms/3600000;return `${h.toLocaleString('ru-RU',{maximumFractionDigits:1})} ч`}
+function kcalText(n){return `${new Intl.NumberFormat('ru-RU',{maximumFractionDigits:0}).format(Number(n)||0)} ккал`}
+function kgText(n){return `${Number(n||0).toLocaleString('ru-RU',{minimumFractionDigits:1,maximumFractionDigits:1})} кг`}
+function workoutTypeLabel(type){return type==='gym'?'Спортзал':type==='outdoor'?'Улица':'Дом'}
+function workoutStatusLabel(status){return status==='done'?'Выполнена':status==='missed'?'Пропущена':'Запланирована'}
+function workoutsForDate(date){return db.workouts.filter(x=>x.date===date).sort((a,b)=>String(a.status).localeCompare(String(b.status))||String(a.title||'').localeCompare(String(b.title||'')))}
+function caloriesForDate(date){return db.calories.filter(x=>x.date===date).sort((a,b)=>String(a.title||'').localeCompare(String(b.title||'')))}
+function caloriesTotal(date){return caloriesForDate(date).reduce((a,b)=>a+Number(b.calories||0),0)}
+function latestWeightEntry(){return [...db.weights].sort((a,b)=>String(b.date).localeCompare(String(a.date))||b.id.localeCompare(a.id))[0]||null}
+function weightOnDate(date){return [...db.weights].filter(x=>x.date===date).sort((a,b)=>b.id.localeCompare(a.id))[0]||null}
+function weekRangeText(startDate){const end=new Date(startDate);end.setDate(end.getDate()+6);const f=new Intl.DateTimeFormat('ru-RU',{day:'numeric',month:'short'});return `${f.format(startDate)} — ${f.format(end)}`}
+function sameViewedWorkoutWeek(date){const start=iso(workoutWeekStart);const end=new Date(workoutWeekStart);end.setDate(end.getDate()+6);return date>=start && date<=iso(end)}
 function taskStatusLabel(s){return {backlog:'Не запланировано',planned:'Запланировано',in_progress:'В работе',done:'Выполнено'}[s]||s}
 function reconcileTaskPlanning(){
   const scheduled=new Set(db.calendar.filter(e=>e.taskId&&e.date>=todayISO).map(e=>e.taskId));
@@ -1697,7 +1986,7 @@ function renderTasks(){
   const list=$('#tasksList'); if(!list)return;
   list.innerHTML=rows.length?rows.map(t=>{const p=db.projects.find(x=>x.id===t.projectId),tracked=trackedTaskMs(t.id);return `<div class="task-row" draggable="true" data-drag-task="${t.id}"><input type="checkbox" data-task-page-check="${t.id}" ${t.done?'checked':''}><div class="task-main"><strong style="${t.done?'text-decoration:line-through;color:#a1a1aa':''}"><i class="priority ${t.priority||'normal'}"></i> ${escapeHTML(t.title)}</strong><span>${p?escapeHTML(p.name)+' · ':''}${taskStatusLabel(t.status||'backlog')}${t.due?' · до '+t.due:''}${t.notes?' · '+escapeHTML(t.notes):''}</span></div><div class="task-time"><div>план ${minutesText(Number(t.estimateMinutes||0))}</div><div>факт ${msHoursText(tracked)}</div></div><div class="task-actions"><button class="play" data-task-start="${t.id}" title="Запустить таймер">▶</button><button data-task-calendar="${t.id}" title="В календарь">▦</button></div><div class="task-actions"><button data-task-edit2="${t.id}">Изм.</button><button class="danger" data-task-del2="${t.id}">×</button></div></div>`}).join(''):'<div class="empty">Задач по этому фильтру нет.</div>';
   const open=db.tasks.filter(t=>!t.done),done=db.tasks.filter(t=>t.done);$('#tasksOpenCount').textContent=open.length;$('#tasksDoneCount').textContent=done.length;$('#tasksEstimate').textContent=minutesText(open.reduce((a,t)=>a+Number(t.estimateMinutes||0),0));$('#tasksTracked').textContent=msHoursText(totalFocusMs());
-  $$('[data-task-page-check]',list).forEach(c=>c.onchange=()=>{const t=db.tasks.find(x=>x.id===c.dataset.taskPageCheck);if(t){t.done=c.checked;t.status=c.checked?'done':'backlog';if(t.done)t.completedAt=t.completedAt||todayISO;else delete t.completedAt;save();renderTasks();renderToday();renderProjects();renderFocusHistory()}});
+  $$('[data-task-page-check]',list).forEach(c=>c.onchange=()=>{if(setTaskDoneState(c.dataset.taskPageCheck,c.checked)){renderTasks();renderToday();renderProjects();renderCalendar();renderFocusHistory();renderFocusPage();}});
   $$('[data-task-edit2]',list).forEach(b=>b.onclick=()=>openTaskDialog(b.dataset.taskEdit2));$$('[data-task-del2]',list).forEach(b=>b.onclick=()=>deleteTaskById(b.dataset.taskDel2));
   $$('[data-task-start]',list).forEach(b=>b.onclick=()=>startTaskTimer(b.dataset.taskStart));$$('[data-task-calendar]',list).forEach(b=>b.onclick=()=>scheduleTaskDialog(b.dataset.taskCalendar));
   $$('[data-drag-task]',list).forEach(el=>el.ondragstart=e=>{e.dataTransfer.setData('text/task-id',el.dataset.dragTask);e.dataTransfer.effectAllowed='move'});  renderFocusHistory();
@@ -2004,6 +2293,144 @@ function analyticsBounds(){
   if(analyticsPeriod==='year'){const s=new Date(now.getFullYear(),0,1),e=new Date(now.getFullYear()+1,0,1);return {start:iso(s),end:iso(e),label:String(now.getFullYear())}}
   const s=new Date(now.getFullYear(),now.getMonth(),1),e=new Date(now.getFullYear(),now.getMonth()+1,1);return {start:iso(s),end:iso(e),label:new Intl.DateTimeFormat('ru-RU',{month:'long',year:'numeric'}).format(s)}
 }
+
+function openWorkoutDialog(date=workoutSelectedDate,id=''){
+  const f=$('#workoutForm');
+  const item=id?db.workouts.find(x=>x.id===id):null;
+  $('#workoutDialogTitle').textContent=item?'Редактировать тренировку':'Новая тренировка';
+  f.elements.id.value=item?.id||'';
+  f.elements.date.value=item?.date||date||todayISO;
+  f.elements.title.value=item?.title||'';
+  f.elements.type.value=item?.type||'home';
+  f.elements.status.value=item?.status||'planned';
+  f.elements.duration.value=item?.duration??'';
+  f.elements.caloriesBurned.value=item?.caloriesBurned??'';
+  f.elements.note.value=item?.note||'';
+  $('#deleteWorkout').style.display=item?'inline-flex':'none';
+  $('#workoutDialog').showModal();
+}
+function openCalorieDialog(date=workoutSelectedDate,id=''){
+  const f=$('#calorieForm');
+  const item=id?db.calories.find(x=>x.id===id):null;
+  $('#calorieDialogTitle').textContent=item?'Редактировать калории':'Добавить калории';
+  f.elements.id.value=item?.id||'';
+  f.elements.date.value=item?.date||date||todayISO;
+  f.elements.title.value=item?.title||'';
+  f.elements.calories.value=item?.calories??'';
+  f.elements.note.value=item?.note||'';
+  $('#deleteCalorie').style.display=item?'inline-flex':'none';
+  $('#calorieDialog').showModal();
+}
+function openWeightDialog(date=workoutSelectedDate,id=''){
+  const f=$('#weightForm');
+  const item=id?db.weights.find(x=>x.id===id):null;
+  $('#weightDialogTitle').textContent=item?'Редактировать вес':'Добавить вес';
+  f.elements.id.value=item?.id||'';
+  f.elements.date.value=item?.date||date||todayISO;
+  f.elements.value.value=item?.value??'';
+  f.elements.zone.value=item?.zone||'green';
+  f.elements.note.value=item?.note||'';
+  $('#deleteWeight').style.display=item?'inline-flex':'none';
+  $('#weightDialog').showModal();
+}
+function renderWorkouts(){
+  if(!$('#page-workouts')) return;
+  const start=new Date(workoutWeekStart);
+  const days=[...Array(7)].map((_,i)=>{const d=new Date(start);d.setDate(start.getDate()+i);return d});
+  if(!sameViewedWorkoutWeek(workoutSelectedDate)) workoutSelectedDate=iso(days[0]);
+  const weekStartIso=iso(days[0]), weekEndIso=iso(days[6]);
+  const weekWorkouts=db.workouts.filter(x=>x.date>=weekStartIso&&x.date<=weekEndIso);
+  const plannedWeek=weekWorkouts.filter(x=>x.status!=='missed').length;
+  const doneWeek=weekWorkouts.filter(x=>x.status==='done').length;
+  const weeklyGoal=Math.max(1,Number(db.trainingSettings?.weeklyGoal||4));
+  const caloriesTodayRows=caloriesForDate(todayISO);
+  $('#workoutCaloriesToday').textContent=kcalText(caloriesTodayRows.reduce((a,b)=>a+Number(b.calories||0),0));
+  $('#workoutCaloriesHint').textContent=`${caloriesTodayRows.length} ${caloriesTodayRows.length===1?'запись':'записей'} за день`;
+  $('#workoutDoneWeek').textContent=String(doneWeek);
+  $('#workoutDoneWeekHint').textContent=`${doneWeek} из ${plannedWeek} тренировок с активностью на неделе`;
+  const latest=latestWeightEntry();
+  const heightCm=Number(db.trainingSettings?.heightCm||0);
+  $('#workoutHeight').textContent=heightCm?`${heightCm} см`:'— см';
+  const currentWeight=$('#workoutCurrentWeight');
+  currentWeight.textContent=latest?kgText(latest.value):'— кг';
+  currentWeight.classList.remove('weight-zone-green','weight-zone-yellow','weight-zone-red');
+  currentWeight.classList.add(`weight-zone-${latest?.zone||'green'}`);
+  $('#workoutWeightHint').textContent=latest?`последняя запись: ${latest.date} · ${latest.zone==='red'?'красная':latest.zone==='yellow'?'жёлтая':'зелёная'} зона`:'добавь вес и выбери цвет зоны';
+  const goalPct=Math.min(100,Math.round(doneWeek/weeklyGoal*100));
+  $('#workoutGoalInline').textContent=`${doneWeek} из ${weeklyGoal} · ${goalPct}%`;
+  $('#workoutRange').textContent=weekRangeText(start);
+  $('#trainingWeeklyGoal').value=weeklyGoal;
+  $('#trainingHeightCm').value=heightCm||'';
+
+  const board=$('#workoutWeekBoard');
+  board.innerHTML=days.map(d=>{
+    const date=iso(d),rows=workoutsForDate(date),cal=caloriesTotal(date),weight=weightOnDate(date),done=rows.filter(x=>x.status==='done').length,planned=rows.filter(x=>x.status==='planned').length,missed=rows.filter(x=>x.status==='missed').length;
+    const labels=new Intl.DateTimeFormat('ru-RU',{weekday:'short'}).format(d);
+    const chips=rows.slice(0,3).map(x=>`<div class="workout-chip"><div class="workout-chip-title"><span class="type-dot type-${escapeHTML(x.type||'home')}"></span><b>${escapeHTML(x.title)}</b></div><span class="status-pill ${escapeHTML(x.status||'planned')}">${workoutStatusLabel(x.status)}</span></div>`).join('') || '<div class="empty" style="margin:0">Пусто</div>';
+    return `<div class="workout-day-card ${date===workoutSelectedDate?'active':''} ${date===todayISO?'today':''}" data-workout-day="${date}"><div class="workout-day-head"><div><strong>${labels[0].toUpperCase()+labels.slice(1)} · ${d.getDate()}</strong><span>${new Intl.DateTimeFormat('ru-RU',{month:'short'}).format(d)}</span></div>${weight?`<span class="weight-badge weight-zone-${weight.zone||'green'}">${kgText(weight.value)}</span>`:''}</div><div class="workout-day-metrics"><div class="mini-item"><span>Калории</span><strong>${kcalText(cal)}</strong></div><div class="mini-item"><span>Тренировки</span><strong>${done} ✓ · ${planned} план${missed?` · ${missed} проп.`:''}</strong></div></div><div class="workout-chips">${chips}</div><div class="workout-day-actions"><button class="btn soft" type="button" data-add-workout-day="${date}">＋ Трен.</button><button class="btn soft" type="button" data-add-calories-day="${date}">＋ Ккал</button></div></div>`;
+  }).join('');
+  $$('[data-workout-day]',board).forEach(el=>el.onclick=e=>{if(e.target.closest('button'))return; workoutSelectedDate=el.dataset.workoutDay; renderWorkouts()});
+  $$('[data-add-workout-day]').forEach(b=>b.onclick=e=>{e.stopPropagation(); workoutSelectedDate=b.dataset.addWorkoutDay; openWorkoutDialog(b.dataset.addWorkoutDay)});
+  $$('[data-add-calories-day]').forEach(b=>b.onclick=e=>{e.stopPropagation(); workoutSelectedDate=b.dataset.addCaloriesDay; openCalorieDialog(b.dataset.addCaloriesDay)});
+
+  const selectedDate=new Date(workoutSelectedDate+'T12:00:00');
+  $('#workoutSelectedDayTitle').textContent=new Intl.DateTimeFormat('ru-RU',{weekday:'long',day:'numeric',month:'long'}).format(selectedDate);
+  $('#workoutSelectedDaySubtitle').textContent=workoutSelectedDate===todayISO?'сегодня':'выбранная дата';
+  const selectedWorkouts=workoutsForDate(workoutSelectedDate);
+  const selectedCalories=caloriesForDate(workoutSelectedDate);
+  const selectedWeight=weightOnDate(workoutSelectedDate);
+  const doneMinutes=selectedWorkouts.filter(x=>x.status==='done').reduce((a,b)=>a+Number(b.duration||0),0);
+  const burned=selectedWorkouts.filter(x=>x.status==='done').reduce((a,b)=>a+Number(b.caloriesBurned||0),0);
+  $('#selectedCaloriesTotal').textContent=kcalText(selectedCalories.reduce((a,b)=>a+Number(b.calories||0),0));
+  $('#workoutSelectedSummary').innerHTML=`
+    <div class="mini-item"><span>Тренировок на день</span><strong>${selectedWorkouts.length||0}</strong></div>
+    <div class="mini-item"><span>Выполнено времени</span><strong>${minutesText(doneMinutes)}</strong></div>
+    <div class="mini-item"><span>Сожжено тренировками</span><strong>${kcalText(burned)}</strong></div>
+    <div class="mini-item"><span>Вес на дату</span><strong>${selectedWeight?kgText(selectedWeight.value):'—'}</strong></div>`;
+
+  $('#workoutListHint').textContent=selectedWorkouts.length?`${selectedWorkouts.filter(x=>x.status==='done').length} выполнено · ${selectedWorkouts.filter(x=>x.status==='planned').length} в плане`:'запланированные, выполненные и пропущенные';
+  const workoutList=$('#workoutList');
+  workoutList.innerHTML=selectedWorkouts.length?selectedWorkouts.map(x=>`<div class="workout-row"><div class="workout-row-main"><strong>${escapeHTML(x.title)}</strong><div class="workout-row-meta"><span>${workoutTypeLabel(x.type)}</span><span>${workoutStatusLabel(x.status)}</span><span>${minutesText(Number(x.duration||0))}</span>${Number(x.caloriesBurned||0)?`<span>${kcalText(x.caloriesBurned)} сожжено</span>`:''}${x.note?`<span>${escapeHTML(x.note)}</span>`:''}</div></div><div class="row-actions"><button class="tiny-chip ${x.status==='planned'?'active':''}" data-workout-mark="planned" data-workout-id="${x.id}">План</button><button class="tiny-chip ${x.status==='done'?'active':''}" data-workout-mark="done" data-workout-id="${x.id}">Готово</button><button class="tiny-chip ${x.status==='missed'?'active':''}" data-workout-mark="missed" data-workout-id="${x.id}">Пропуск</button><button class="btn" data-workout-edit="${x.id}">Изм.</button><button class="btn danger" data-workout-del="${x.id}">×</button></div></div>`).join(''):'<div class="empty">На этот день тренировок пока нет.</div>';
+  $$('[data-workout-mark]').forEach(b=>b.onclick=()=>{const item=db.workouts.find(x=>x.id===b.dataset.workoutId); if(!item)return; item.status=b.dataset.workoutMark; save(); renderWorkouts()});
+  $$('[data-workout-edit]').forEach(b=>b.onclick=()=>openWorkoutDialog(workoutSelectedDate,b.dataset.workoutEdit));
+  $$('[data-workout-del]').forEach(b=>b.onclick=()=>{const item=db.workouts.find(x=>x.id===b.dataset.workoutDel); if(!item||!confirm(`Удалить тренировку «${item.title}»?`))return; db.workouts=db.workouts.filter(x=>x.id!==item.id); save(); renderWorkouts()});
+
+  const calorieList=$('#calorieList');
+  calorieList.innerHTML=selectedCalories.length?selectedCalories.map(x=>`<div class="calorie-row"><div class="calorie-row-main"><strong>${escapeHTML(x.title)}</strong><div class="calorie-row-meta"><span>${kcalText(x.calories)}</span>${x.note?`<span>${escapeHTML(x.note)}</span>`:''}</div></div><div class="row-actions"><span class="calorie-total-pill">${kcalText(x.calories)}</span><button class="btn" data-calorie-edit="${x.id}">Изм.</button><button class="btn danger" data-calorie-del="${x.id}">×</button></div></div>`).join(''):'<div class="empty">На этот день калории ещё не записаны.</div>';
+  $$('[data-calorie-edit]').forEach(b=>b.onclick=()=>openCalorieDialog(workoutSelectedDate,b.dataset.calorieEdit));
+  $$('[data-calorie-del]').forEach(b=>b.onclick=()=>{const item=db.calories.find(x=>x.id===b.dataset.calorieDel); if(!item||!confirm(`Удалить запись «${item.title}»?`))return; db.calories=db.calories.filter(x=>x.id!==item.id); save(); renderWorkouts()});
+
+  const latestWeights=[...db.weights].sort((a,b)=>String(b.date).localeCompare(String(a.date))||b.id.localeCompare(a.id)).slice(0,10);
+  $('#weightBigValue').textContent=latest?kgText(latest.value):'—';
+  $('#weightBigHint').textContent=latest?`последняя запись · ${latest.date}${latest.note?` · ${latest.note}`:''}`:'Добавь первую запись веса';
+  const weightList=$('#weightList');
+  weightList.innerHTML=latestWeights.length?latestWeights.map(x=>`<div class="weight-row"><div class="weight-row-main"><strong class="weight-zone-${x.zone||'green'}">${kgText(x.value)}</strong><div class="weight-row-meta"><span>${x.date}</span><span>${x.zone==='red'?'красная':x.zone==='yellow'?'жёлтая':'зелёная'} зона</span>${x.note?`<span>${escapeHTML(x.note)}</span>`:''}</div></div><div class="row-actions"><button class="btn" data-weight-edit="${x.id}">Изм.</button><button class="btn danger" data-weight-del="${x.id}">×</button></div></div>`).join(''):'<div class="empty">История веса пока пустая.</div>';
+  $$('[data-weight-edit]').forEach(b=>b.onclick=()=>openWeightDialog(workoutSelectedDate,b.dataset.weightEdit));
+  $$('[data-weight-del]').forEach(b=>b.onclick=()=>{const item=db.weights.find(x=>x.id===b.dataset.weightDel); if(!item||!confirm(`Удалить запись веса ${kgText(item.value)}?`))return; db.weights=db.weights.filter(x=>x.id!==item.id); save(); renderWorkouts()});
+
+  const types=['home','outdoor','gym'];
+  const typeBox=$('#workoutTypesStats');
+  typeBox.innerHTML=types.map(type=>{const rows=weekWorkouts.filter(x=>x.type===type),done=rows.filter(x=>x.status==='done'),mins=done.reduce((a,b)=>a+Number(b.duration||0),0);return `<div class="workout-type-row"><div class="left"><span class="type-dot type-${type}"></span><div><strong>${workoutTypeLabel(type)}</strong><div class="small">${done.length} выполнено · ${rows.length} всего</div></div></div><strong>${minutesText(mins)}</strong></div>`}).join('');
+}
+$('#workoutPrevWeek')?.addEventListener('click',()=>{workoutWeekStart=new Date(workoutWeekStart);workoutWeekStart.setDate(workoutWeekStart.getDate()-7); if(!sameViewedWorkoutWeek(workoutSelectedDate)) workoutSelectedDate=iso(workoutWeekStart); renderWorkouts()});
+$('#workoutNextWeek')?.addEventListener('click',()=>{workoutWeekStart=new Date(workoutWeekStart);workoutWeekStart.setDate(workoutWeekStart.getDate()+7); if(!sameViewedWorkoutWeek(workoutSelectedDate)) workoutSelectedDate=iso(workoutWeekStart); renderWorkouts()});
+$('#workoutCurrentWeek')?.addEventListener('click',()=>{workoutWeekStart=startOfWeek(new Date()); workoutSelectedDate=todayISO; renderWorkouts()});
+$('#addWorkoutGlobal')?.addEventListener('click',()=>openWorkoutDialog(workoutSelectedDate));
+$('#addCaloriesGlobal')?.addEventListener('click',()=>openCalorieDialog(workoutSelectedDate));
+$('#addWeightGlobal')?.addEventListener('click',()=>openWeightDialog(workoutSelectedDate));
+$('#addWorkoutSelected')?.addEventListener('click',()=>openWorkoutDialog(workoutSelectedDate));
+$('#addCaloriesSelected')?.addEventListener('click',()=>openCalorieDialog(workoutSelectedDate));
+$('#addWeightSelected')?.addEventListener('click',()=>openWeightDialog(workoutSelectedDate));
+$('#editHeightTop')?.addEventListener('click',()=>{showPage('workouts');setTimeout(()=>{$('#trainingHeightCm')?.scrollIntoView({behavior:'smooth',block:'center'});$('#trainingHeightCm')?.focus()},0)});
+$('#editWeightTop')?.addEventListener('click',()=>{const latest=latestWeightEntry();openWeightDialog(latest?.date||todayISO,latest?.id||'')});
+$('#saveTrainingSettings')?.addEventListener('click',()=>{const height=Math.max(0,Number($('#trainingHeightCm').value||0)); if(height && (height<100||height>250)){alert('Проверь рост: допустимый диапазон 100–250 см.');return} db.trainingSettings={...db.trainingSettings,weeklyGoal:Math.max(1,Number($('#trainingWeeklyGoal').value||4)),heightCm:height}; save(); renderWorkouts()});
+$('#workoutForm')?.addEventListener('submit',e=>{e.preventDefault(); const f=e.target; const item={id:f.elements.id.value||uid(),date:f.elements.date.value,title:f.elements.title.value.trim(),type:f.elements.type.value,status:f.elements.status.value,duration:Number(f.elements.duration.value||0),caloriesBurned:Number(f.elements.caloriesBurned.value||0),note:f.elements.note.value.trim()}; if(!item.title){alert('Укажи название тренировки.'); return} db.workouts=db.workouts.filter(x=>x.id!==item.id); db.workouts.push(item); workoutSelectedDate=item.date; if(!sameViewedWorkoutWeek(item.date)) workoutWeekStart=startOfWeek(new Date(item.date+'T12:00:00')); save(); $('#workoutDialog').close(); renderWorkouts()});
+$('#deleteWorkout')?.addEventListener('click',()=>{const id=$('#workoutForm').elements.id.value; const item=db.workouts.find(x=>x.id===id); if(!item||!confirm(`Удалить тренировку «${item.title}»?`))return; db.workouts=db.workouts.filter(x=>x.id!==id); save(); $('#workoutDialog').close(); renderWorkouts()});
+$('#calorieForm')?.addEventListener('submit',e=>{e.preventDefault(); const f=e.target; const item={id:f.elements.id.value||uid(),date:f.elements.date.value,title:f.elements.title.value.trim(),calories:Number(f.elements.calories.value||0),note:f.elements.note.value.trim()}; if(!item.title||!item.calories){alert('Заполни запись и калории.'); return} db.calories=db.calories.filter(x=>x.id!==item.id); db.calories.push(item); workoutSelectedDate=item.date; if(!sameViewedWorkoutWeek(item.date)) workoutWeekStart=startOfWeek(new Date(item.date+'T12:00:00')); save(); $('#calorieDialog').close(); renderWorkouts()});
+$('#deleteCalorie')?.addEventListener('click',()=>{const id=$('#calorieForm').elements.id.value; const item=db.calories.find(x=>x.id===id); if(!item||!confirm(`Удалить запись «${item.title}»?`))return; db.calories=db.calories.filter(x=>x.id!==id); save(); $('#calorieDialog').close(); renderWorkouts()});
+$('#weightForm')?.addEventListener('submit',e=>{e.preventDefault(); const f=e.target; const item={id:f.elements.id.value||uid(),date:f.elements.date.value,value:Number(f.elements.value.value||0),zone:f.elements.zone.value||'green',note:f.elements.note.value.trim()}; if(!item.value){alert('Укажи вес.'); return} db.weights=db.weights.filter(x=>x.id!==item.id); db.weights.push(item); workoutSelectedDate=item.date; if(!sameViewedWorkoutWeek(item.date)) workoutWeekStart=startOfWeek(new Date(item.date+'T12:00:00')); save(); $('#weightDialog').close(); renderWorkouts()});
+$('#deleteWeight')?.addEventListener('click',()=>{const id=$('#weightForm').elements.id.value; const item=db.weights.find(x=>x.id===id); if(!item||!confirm(`Удалить запись веса ${kgText(item.value)}?`))return; db.weights=db.weights.filter(x=>x.id!==id); save(); $('#weightDialog').close(); renderWorkouts()});
+
 function renderBarStats(boxId,entries,total,color='var(--accent)'){
   const box=$(boxId);if(!box)return;
   box.innerHTML=entries.length?entries.map(([label,value])=>`<div class="analytics-stat"><div class="analytics-stat-head"><span>${escapeHTML(label)}</span><strong>${typeof value==='number'?fmt(value):value}</strong></div><div class="bar"><span style="width:${typeof value==='number'&&total?Math.min(100,value/total*100):0}%;background:${color}"></span></div></div>`).join(''):'<div class="empty">Пока недостаточно данных.</div>';
@@ -2124,7 +2551,7 @@ function renderProjects(){
   $$('[data-edit-project]').forEach(b=>b.onclick=e=>{e.stopPropagation();openProjectDialog(b.dataset.editProject)});
   $$('[data-project-task-edit]').forEach(b=>b.onclick=()=>openTaskDialog(b.dataset.projectTaskEdit));
   $$('[data-project-task-del]').forEach(b=>b.onclick=()=>deleteTaskById(b.dataset.projectTaskDel));
-  $$('[data-project-task-check]').forEach(c=>c.onchange=()=>{const t=db.tasks.find(t=>t.id===c.dataset.projectTaskCheck);if(t){t.done=c.checked;t.status=c.checked?'done':'backlog';if(t.done)t.completedAt=t.completedAt||todayISO;else delete t.completedAt;reconcileTaskPlanning();save();renderProjects();renderToday();renderTasks();renderCalendarSide();renderFocusHistory();renderArchive();renderAnalytics();}});
+  $$('[data-project-task-check]').forEach(c=>c.onchange=()=>{if(setTaskDoneState(c.dataset.projectTaskCheck,c.checked)){renderProjects();renderToday();renderTasks();renderCalendar();renderFocusHistory();renderArchive();renderAnalytics();renderFocusPage();}});
 }
 function openProjectDialog(id=''){
   const f=$('#projectForm'); f.reset(); const p=id?db.projects.find(x=>x.id===id):null;
@@ -2156,6 +2583,107 @@ function mins(v){const [h,m]=String(v).split(':').map(Number);return h*60+m}
 function eventEndMins(e){let end=mins(e.end);const start=mins(e.start);if(end<=start)end+=1440;return end}
 function hhmm(m){m=(m+1440)%1440;return String(Math.floor(m/60)).padStart(2,'0')+':'+String(m%60).padStart(2,'0')}
 function eventHours(e){return Math.max(0,(eventEndMins(e)-mins(e.start))/60)}
+function taskCalendarTargetDate(task){
+  if(task?.due && task.due>todayISO)return task.due;
+  return todayISO;
+}
+function dayOpenClose(date){
+  const dow=new Date(date+'T12:00:00').getDay();
+  return [0,6].includes(dow)?{open:480,close:1440}:{open:420,close:1380};
+}
+function roundedNow30(){
+  const n=new Date(),m=n.getHours()*60+n.getMinutes();
+  return Math.ceil(m/30)*30;
+}
+function findTaskCalendarSlot(date,duration,ignoreEventId=''){
+  const {open,close}=dayOpenClose(date);
+  const minStart=date===todayISO?Math.max(open,roundedNow30()):open;
+  const occupied=db.calendar
+    .filter(e=>e.date===date && e.id!==ignoreEventId)
+    .map(e=>[mins(e.start),eventEndMins(e)])
+    .sort((a,b)=>a[0]-b[0]);
+
+  let cursor=minStart;
+  for(const [s,e] of occupied){
+    if(e<=cursor)continue;
+    if(s-cursor>=duration)return {start:cursor,end:cursor+duration};
+    cursor=Math.max(cursor,e);
+    cursor=Math.ceil(cursor/30)*30;
+  }
+  if(close-cursor>=duration)return {start:cursor,end:cursor+duration};
+  return null;
+}
+function syncTasksToCalendar(){
+  let changed=false;
+
+  const doneIds=new Set(db.tasks.filter(t=>t.done).map(t=>t.id));
+  const before=db.calendar.length;
+  db.calendar=db.calendar.filter(e=>!(e.autoFromTask && doneIds.has(e.taskId) && e.date>todayISO));
+  if(db.calendar.length!==before)changed=true;
+
+  const openTasks=db.tasks
+    .filter(t=>!t.done)
+    .sort((a,b)=>{
+      const p={high:0,normal:1,low:2};
+      return (p[a.priority||'normal']-p[b.priority||'normal']) ||
+        String(a.due||'9999-12-31').localeCompare(String(b.due||'9999-12-31')) ||
+        Number(a.createdAt||0)-Number(b.createdAt||0);
+    });
+
+  for(const task of openTasks){
+    const manualFuture=db.calendar.some(e=>e.taskId===task.id && !e.autoFromTask && e.date>=todayISO);
+    const auto=db.calendar.find(e=>e.taskId===task.id && e.autoFromTask && e.date>=todayISO);
+
+    if(manualFuture){
+      if(auto){
+        db.calendar=db.calendar.filter(e=>e.id!==auto.id);
+        changed=true;
+      }
+      continue;
+    }
+
+    const targetDate=taskCalendarTargetDate(task);
+    const duration=Math.max(30,Math.min(480,Math.ceil(Number(task.estimateMinutes||60)/30)*30));
+
+    if(auto){
+      let next={...auto};
+      if(next.title!==task.title){next.title=task.title;changed=true}
+      if(next.projectId!==(task.projectId||'')){next.projectId=task.projectId||'';changed=true}
+      const category=task.projectId?'project':'personal';
+      if(next.category!==category){next.category=category;changed=true}
+      if(next.date!==targetDate){
+        const slot=findTaskCalendarSlot(targetDate,duration,auto.id);
+        if(slot){
+          next.date=targetDate;next.start=hhmm(slot.start);next.end=hhmm(slot.end);changed=true;
+        }
+      }
+      const idx=db.calendar.findIndex(e=>e.id===auto.id);
+      if(idx>=0)db.calendar[idx]=next;
+      continue;
+    }
+
+    const slot=findTaskCalendarSlot(targetDate,duration);
+    if(!slot)continue;
+
+    db.calendar.push({
+      id:uid(),
+      title:task.title,
+      category:task.projectId?'project':'personal',
+      date:targetDate,
+      start:hhmm(slot.start),
+      end:hhmm(slot.end),
+      note:task.notes||'',
+      taskId:task.id,
+      projectId:task.projectId||'',
+      autoFromTask:true
+    });
+    changed=true;
+  }
+
+  if(changed)reconcileTaskPlanning();
+  return changed;
+}
+
 function occupiedHours(events){
   const byDate={};events.forEach(e=>{const s=mins(e.start),en=eventEndMins(e);(byDate[e.date]??=[]).push([s,en])});let total=0;
   Object.values(byDate).forEach(rows=>{rows.sort((a,b)=>a[0]-b[0]);let a=null,b=null;for(const [s,e] of rows){if(a===null){a=s;b=e}else if(s<=b)b=Math.max(b,e);else{total+=Math.max(0,b-a);a=s;b=e}}if(a!==null)total+=Math.max(0,b-a)});return total/60;
@@ -2197,13 +2725,15 @@ function calendarVisibleBounds(){
   const e=new Date(calendarWeekStart);e.setDate(e.getDate()+7);return {start:iso(calendarWeekStart),end:iso(e)};
 }
 function renderCalendar(){
+  if(syncTasksToCalendar()) save();
   const grid=$('#weekGrid');if(!grid)return;
+  const page=$('#page-calendar'); if(page) page.classList.toggle('day-mode', calendarView==='day');
   $$('[data-calendar-view]').forEach(b=>b.classList.toggle('active',b.dataset.calendarView===calendarView));
   const right=$('.calendar-toolbar .right');if(right)right.style.display=calendarView==='week'?'flex':'none';
   if(calendarView==='month'){renderCalendarMonth();renderCalendarSide();return}
   const dates=calendarView==='day'?[new Date(calendarDay)]:weekDates(),dayNames=['Пн','Вт','Ср','Чт','Пт','Сб','Вс'];
   $('#calendarWeekLabel').textContent=calendarView==='day'?new Intl.DateTimeFormat('ru-RU',{day:'numeric',month:'long',year:'numeric'}).format(dates[0]):calendarRangeText();
-  grid.className=calendarView==='day'?'day-grid':'week-grid';grid.style.gridTemplateColumns=calendarView==='day'?'58px minmax(260px,1fr)':'';
+  grid.className=calendarView==='day'?'day-grid':'week-grid';grid.style.gridTemplateColumns=calendarView==='day'?'72px minmax(720px,1fr)':'';grid.style.gridTemplateRows=calendarView==='day'?'58px repeat(34,34px)':'54px repeat(34,28px)';
   let html='<div class="week-head" style="grid-column:1;grid-row:1"></div>';
   dates.forEach((d,i)=>{const isToday=iso(d)===todayISO,di=(d.getDay()+6)%7;html+=`<div class="week-head ${isToday?'today':''}" style="grid-column:${i+2};grid-row:1"><strong>${dayNames[di]}</strong><span>${d.getDate()} ${new Intl.DateTimeFormat('ru-RU',{month:'short'}).format(d)}</span></div>`});
   for(let half=0;half<34;half++){const minute=420+half*30,row=half+2;if(half%2===0)html+=`<div class="time-cell" style="grid-column:1;grid-row:${row}/span 2">${hhmm(minute)}</div>`;dates.forEach((d,day)=>{const weekend=[0,6].includes(d.getDay()),open=weekend?minute>=480&&minute<1440:minute>=420&&minute<1380;html+=`<button type="button" class="calendar-slot ${open?'':'closed'} ${half%2===1?'hour':''}" ${open?'':'disabled'} data-slot-date="${iso(d)}" data-slot-time="${hhmm(minute)}" style="grid-column:${day+2};grid-row:${row}"></button>`})}
@@ -2214,7 +2744,7 @@ function renderCalendar(){
 function bindCalendarGrid(grid){
   $$('[data-slot-date]',grid).forEach(b=>b.onclick=()=>{const sm=mins(b.dataset.slotTime),dow=new Date(b.dataset.slotDate+'T12:00:00').getDay(),close=[0,6].includes(dow)?1440:1380;openEventDialog({date:b.dataset.slotDate,start:b.dataset.slotTime,end:hhmm(Math.min(sm+60,close)),category:'project'})});
   $$('[data-calendar-event]',grid).forEach(b=>{b.onclick=e=>{e.stopPropagation();openEventDialog({id:b.dataset.calendarEvent})};b.ondragstart=e=>{e.dataTransfer.setData('text/event-id',b.dataset.calendarEvent);e.dataTransfer.effectAllowed='move'}});
-  $$('[data-slot-date]',grid).forEach(slot=>{slot.ondragover=e=>{if(slot.disabled)return;e.preventDefault()};slot.ondrop=e=>{e.preventDefault();const eventId=e.dataTransfer.getData('text/event-id'),taskId=e.dataTransfer.getData('text/task-id');if(eventId){const ev=db.calendar.find(x=>x.id===eventId);if(ev){const dur=eventEndMins(ev)-mins(ev.start),st=mins(slot.dataset.slotTime),dow=new Date(slot.dataset.slotDate+'T12:00:00').getDay(),close=[0,6].includes(dow)?1440:1380;if(st+dur<=close){ev.date=slot.dataset.slotDate;ev.start=hhmm(st);ev.end=hhmm(st+dur);save();renderCalendar();renderToday()}}}else if(taskId)scheduleTaskDialog(taskId,{date:slot.dataset.slotDate,start:slot.dataset.slotTime})}})
+  $$('[data-slot-date]',grid).forEach(slot=>{slot.ondragover=e=>{if(slot.disabled)return;e.preventDefault()};slot.ondrop=e=>{e.preventDefault();const eventId=e.dataTransfer.getData('text/event-id'),taskId=e.dataTransfer.getData('text/task-id');if(eventId){const ev=db.calendar.find(x=>x.id===eventId);if(ev){const dur=eventEndMins(ev)-mins(ev.start),st=mins(slot.dataset.slotTime),dow=new Date(slot.dataset.slotDate+'T12:00:00').getDay(),close=[0,6].includes(dow)?1440:1380;if(st+dur<=close){ev.date=slot.dataset.slotDate;ev.start=hhmm(st);ev.end=hhmm(st+dur);ev.autoFromTask=false;save();renderCalendar();renderToday()}}}else if(taskId)scheduleTaskDialog(taskId,{date:slot.dataset.slotDate,start:slot.dataset.slotTime})}})
 }
 function renderCalendarMonth(){
   const grid=$('#weekGrid');grid.className='month-grid';grid.style.gridTemplateColumns='';const names=['Пн','Вт','Ср','Чт','Пт','Сб','Вс'];let html=names.map(x=>`<div class="month-weekday">${x}</div>`).join('');const first=new Date(calendarMonth.getFullYear(),calendarMonth.getMonth(),1),start=startOfWeek(first),end=new Date(start);end.setDate(end.getDate()+42);$('#calendarWeekLabel').textContent=new Intl.DateTimeFormat('ru-RU',{month:'long',year:'numeric'}).format(first);
@@ -2226,7 +2756,7 @@ function renderCalendarSide(){
   const bounds=calendarVisibleBounds(),events=db.calendar.filter(e=>e.date>=bounds.start&&e.date<bounds.end),total=events.reduce((a,e)=>a+eventHours(e),0),occupied=occupiedHours(events);let available=calendarView==='day'?16:calendarView==='week'?112:0;if(calendarView==='month'){for(let d=new Date(bounds.start+'T12:00:00');iso(d)<bounds.end;d.setDate(d.getDate()+1))available+=16}
   $('#calendarSideTitle').textContent=calendarView==='day'?'Этот день':calendarView==='month'?'Этот месяц':'Эта неделя';$('#plannedHours').textContent=`${total.toLocaleString('ru-RU',{maximumFractionDigits:1})} ч`;$('#freeHours').textContent=`${Math.max(0,available-occupied).toLocaleString('ru-RU',{maximumFractionDigits:1})} ч`;
   const groups=[['work','Работа','#a1a1aa'],['commute','Дорога','#60a5fa'],['food','Еда','#4ade80'],['freelance','Фриланс','#a78bfa'],['project','Свои проекты','#6366f1'],['together','Вместе','#f472b6'],['personal','Личное','#38bdf8'],['home','Быт','#fb923c'],['rest','Отдых','#facc15'],['sport','Спорт','#10b981'],['other','Другое','#71717a']];$('#calendarBalance').innerHTML=groups.map(([key,label,color])=>{const h=events.filter(e=>e.category===key).reduce((a,e)=>a+eventHours(e),0);return `<div class="bar-row"><div class="bar-head"><span>${label}</span><span>${h.toLocaleString('ru-RU',{maximumFractionDigits:1})} ч</span></div><div class="bar"><span style="width:${Math.min(100,h/Math.max(1,total)*100)}%;background:${color}"></span></div></div>`}).join('');
-  const scheduled=new Set(db.calendar.filter(e=>e.taskId&&e.date>=todayISO).map(e=>e.taskId)),tasks=db.tasks.filter(t=>!t.done&&!scheduled.has(t.id));$('#unscheduledTasks').innerHTML=tasks.length?tasks.map(t=>`<div class="calendar-task" draggable="true" data-drag-task="${t.id}"><span class="task-text">${escapeHTML(t.title)}</span><button class="schedule-btn" data-schedule-task="${t.id}">В календарь</button></div>`).join(''):'<div class="empty">Все открытые задачи уже запланированы.</div>';$$('[data-schedule-task]').forEach(b=>b.onclick=()=>scheduleTaskDialog(b.dataset.scheduleTask));$$('[data-drag-task]',$('#unscheduledTasks')).forEach(el=>el.ondragstart=e=>{e.dataTransfer.setData('text/task-id',el.dataset.dragTask);e.dataTransfer.effectAllowed='move'});
+  const scheduled=new Set(db.calendar.filter(e=>e.taskId&&e.date>=todayISO).map(e=>e.taskId)),tasks=db.tasks.filter(t=>!t.done&&!scheduled.has(t.id));$('#unscheduledTasks').innerHTML=tasks.length?tasks.map(t=>`<div class="calendar-task" draggable="true" data-drag-task="${t.id}"><span class="task-text">${escapeHTML(t.title)}</span><button class="schedule-btn" data-schedule-task="${t.id}">В календарь</button></div>`).join(''):'<div class="empty">Все открытые задачи уже стоят в календаре.</div>';$$('[data-schedule-task]').forEach(b=>b.onclick=()=>scheduleTaskDialog(b.dataset.scheduleTask));$$('[data-drag-task]',$('#unscheduledTasks')).forEach(el=>el.ondragstart=e=>{e.dataTransfer.setData('text/task-id',el.dataset.dragTask);e.dataTransfer.effectAllowed='move'});
 }
 function scheduleTaskDialog(taskId,pref={}){const t=db.tasks.find(x=>x.id===taskId);if(!t)return;let fallback;if(calendarView==='day')fallback=iso(calendarDay);else if(calendarView==='month'){const now=new Date();fallback=(calendarMonth.getFullYear()===now.getFullYear()&&calendarMonth.getMonth()===now.getMonth())?todayISO:iso(calendarMonth)}else fallback=inViewedWeek(todayISO)?todayISO:iso(calendarWeekStart);const date=pref.date||fallback,start=pref.start||'19:00',duration=Math.max(30,Math.min(240,Number(t.estimateMinutes||60))),dow=new Date(date+'T12:00:00').getDay(),close=[0,6].includes(dow)?1440:1380,st=mins(start),end=hhmm(Math.min(st+duration,close));if(st>=close){alert('Для этого дня нет свободного времени после выбранного часа.');return}openEventDialog({title:t.title,date,start,end,category:t.projectId?'project':'personal',note:t.notes||'',taskId:t.id,projectId:t.projectId||''})}
 function seedViewedWorkWeek(){
@@ -2263,7 +2793,7 @@ $('#eventForm').addEventListener('submit',e=>{
 
   if(existing){
     const i=db.calendar.findIndex(x=>x.id===id);
-    if(i>=0)db.calendar[i]={...existing,...base,id:existing.id};
+    if(i>=0)db.calendar[i]={...existing,...base,id:existing.id,autoFromTask:false};
     if(existing.seriesId&&f.elements.applySeries.checked){
       db.calendar=db.calendar.map(ev=>ev.seriesId===existing.seriesId?{...ev,title,category,start,end,note,taskId,projectId}:ev);
     }
@@ -2331,13 +2861,15 @@ $('#budgetDay').value=db.budgets.day; $('#budgetWeek').value=(Number(db.budgets.
 $('#saveBudgets').onclick=()=>{ db.budgets.day=Number($('#budgetDay').value)||1000; db.budgets.week=db.budgets.day*7; db.budgets.month=Number($('#budgetMonth').value)||30000; $('#budgetWeek').value=db.budgets.week; save(); renderFood(); alert('Лимиты сохранены'); };
 $('#exportData').onclick=()=>{
   const blob=new Blob([JSON.stringify(db,null,2)],{type:'application/json'});
-  const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='artem-planner-backup.json'; a.click(); setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='planner-backup.json'; a.click(); setTimeout(()=>URL.revokeObjectURL(a.href),1000);
 };
 $('#importData').onclick=()=>$('#importFile').click();$('#importFile').onchange=async e=>{const file=e.target.files?.[0];if(!file)return;try{const parsed=JSON.parse(await file.text());if(!parsed||typeof parsed!=='object')throw new Error();if(!confirm('Импорт заменит текущие данные. Продолжить?'))return;db=normalizeCloudData(parsed);reconcileTaskPlanning();persistLocal(true);cloudDirty=true;if(cloudUser&&navigator.onLine)await pushCloudState(true);location.reload()}catch(err){console.error(err);alert('Не удалось прочитать или импортировать JSON-файл.')}};
 $('#resetData').onclick=()=>{ if(confirm('Сбросить данные на этом устройстве? Если синхронизация включена, пустое состояние затем будет отправлено в облако.')){db=structuredClone(defaults);persistLocal(true);cloudDirty=true;if(cloudUser){pushCloudState(true).finally(()=>location.reload())}else location.reload();} };
 
 const FREE_FOCUS_ID='__free_focus__';
 let focusStatsPeriod='week';
+let workoutWeekStart=startOfWeek(new Date());
+let workoutSelectedDate=todayISO;
 
 function focusTaskLabel(taskId){
   if(taskId===FREE_FOCUS_ID)return 'Свободный фокус';
@@ -2402,7 +2934,15 @@ function drawTimer(){
     const p=focusProjectForTask(id);
     $('#focusCurrentProject').textContent=p?`Проект · ${p.name}`:(id===FREE_FOCUS_ID?'Без проекта':'');
     $('#focusToggle').textContent=db.timer.running?'Ⅱ Пауза':(id?'▶ Продолжить':'▶ Начать');
-    $('#focusFinish').disabled=!id;
+    const finish=$('#focusFinish');
+    finish.disabled=!id;
+    finish.textContent=id===FREE_FOCUS_ID?'■ Завершить сессию':'✓ Завершить задачу';
+    const hint=$('#focusSessionHint');
+    if(hint){
+      hint.textContent=id&&id!==FREE_FOCUS_ID
+        ? taskPlanFactSummary(id)
+        : 'Можно выбрать «Свободный фокус», если работа не привязана к задаче.';
+    }
   }
 }
 function updateFocusSelects(){
@@ -2523,8 +3063,17 @@ $('#focusToggle').onclick=()=>{
   drawTimer();renderFocusPage();renderTasks();renderProjects();renderToday();
 };
 $('#focusFinish').onclick=()=>{
-  if(db.timer.running)stopActiveTimer('finish');
-  db.timer.activeTaskId='';db.timer.sessionAccumulatedMs=0;save();drawTimer();renderFocusPage();renderTasks();renderProjects();renderToday();
+  const id=db.timer.activeTaskId||$('#focusTaskSelect').value;
+  if(!id)return;
+
+  if(id===FREE_FOCUS_ID){
+    if(db.timer.running)stopActiveTimer('finish');
+    db.timer.activeTaskId='';db.timer.sessionAccumulatedMs=0;save();
+  }else{
+    setTaskDoneState(id,true);
+  }
+
+  drawTimer();renderFocusPage();renderTasks();renderProjects();renderToday();renderCalendar();renderAnalytics();renderArchive();
 };
 $$('[data-focus-period]').forEach(b=>b.onclick=()=>{focusStatsPeriod=b.dataset.focusPeriod;renderFocusPage()});
 
@@ -2563,7 +3112,7 @@ setInterval(()=>{
 },1000);
 drawTimer();
 
-reconcileTaskPlanning();persistLocal(false);fillProjectSelect();renderToday(); renderMoney(); renderFood(); renderProjects(); renderTasks(); renderFocusHistory(); renderAnalytics(); renderArchive(); renderFocusPage();
+reconcileTaskPlanning();persistLocal(false);fillProjectSelect();renderToday(); renderMoney(); renderFood(); renderProjects(); renderTasks(); renderFocusHistory(); renderWorkouts(); renderAnalytics(); renderArchive(); renderFocusPage();
 
 if('serviceWorker' in navigator && location.protocol.startsWith('http')){
   navigator.serviceWorker.register('./service-worker.js').catch(()=>{});
