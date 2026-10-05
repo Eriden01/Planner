@@ -1,15 +1,15 @@
 <!doctype html>
-<html lang="ru">
+<html lang="ru" data-theme="dark" style="color-scheme: dark;">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta id="themeColorMeta" name="theme-color" content="#f7f7f8" />
+  <meta id="themeColorMeta" name="theme-color" content="#0f1012" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
   <meta name="apple-mobile-web-app-title" content="Planner" />
   <link rel="manifest" href="./manifest.webmanifest" />
   <link rel="apple-touch-icon" href="./icon-192.png" />
-  <title>Planner v0.9.0</title>
+  <title>Planner v0.9.2</title>
   <style>
     :root{
       --bg:#f7f7f8;
@@ -834,18 +834,22 @@
     @media(max-width:650px){.today-summary-compact{grid-template-columns:1fr}.today-section-head{align-items:flex-start;gap:10px}}
 
   
-    .subscriptions-summary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin-bottom:12px}
-    .subscriptions-summary>div{padding:11px 12px;border:1px solid var(--border);border-radius:11px;background:var(--surface-2)}
-    .subscriptions-summary span{display:block;font-size:10px;color:var(--muted)}
-    .subscriptions-summary strong{display:block;margin-top:3px;font-size:17px}
-    .subscriptions-list{display:flex;flex-direction:column}
-    .subscription-row{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:10px;align-items:center;padding:11px 2px;border-bottom:1px solid var(--border)}
-    .subscription-row:last-child{border-bottom:0}
-    .subscription-copy{min-width:0}
-    .subscription-copy strong{display:block;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-    .subscription-copy span{display:block;margin-top:3px;font-size:10px;color:var(--muted)}
-    .subscription-amount{text-align:right;font-weight:750;white-space:nowrap}
-    .subscription-actions{display:flex;gap:5px}
+    .recurring-money-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px;align-items:start}
+    .recurring-summary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:12px}
+    .recurring-summary>div{padding:10px 11px;border:1px solid var(--border);border-radius:10px;background:var(--surface-2)}
+    .recurring-summary span{display:block;font-size:9px;color:var(--muted)}
+    .recurring-summary strong{display:block;margin-top:3px;font-size:15px}
+    .recurring-list{display:flex;flex-direction:column}
+    .recurring-row{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:10px;align-items:center;padding:11px 2px;border-bottom:1px solid var(--border)}
+    .recurring-row:last-child{border-bottom:0}
+    .recurring-copy{min-width:0}
+    .recurring-copy strong{display:block;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .recurring-copy span{display:block;margin-top:3px;font-size:10px;color:var(--muted)}
+    .recurring-amounts{text-align:right;white-space:nowrap;min-width:112px}
+    .recurring-amounts strong{display:block;font-size:12px}
+    .recurring-amounts span{display:block;margin-top:2px;font-size:9px;color:var(--muted)}
+    .recurring-income-card .recurring-amounts strong,.recurring-income-card .recurring-summary strong{color:var(--success)}
+    .recurring-actions{display:flex;gap:5px}
     .today-focus-metrics{display:none!important}
     .project-calendar-stats{margin-top:9px;padding-top:9px;border-top:1px solid var(--border);display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
     .project-calendar-stats span{font-size:10px;color:var(--muted)}
@@ -867,10 +871,57 @@
     html[data-theme="dark"] .month-day.work-level-2{background:#252846}
     html[data-theme="dark"] .month-day.work-level-3{background:#2b2f55}
     @media(max-width:760px){
-      .subscriptions-summary{grid-template-columns:1fr}
-      .subscription-row{grid-template-columns:minmax(0,1fr) auto}
-      .subscription-actions{grid-column:1/-1}
+      .recurring-money-grid{grid-template-columns:1fr}
+      .recurring-summary{grid-template-columns:repeat(3,minmax(0,1fr))}
+      .recurring-row{grid-template-columns:minmax(0,1fr) auto}
+      .recurring-actions{grid-column:1/-1}
       .project-calendar-stats{grid-template-columns:1fr}
+    }
+
+  
+    .money-insights-grid{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(240px,.75fr) minmax(240px,.75fr);gap:14px;align-items:start}
+    .money-goals-block{min-width:0}
+    .goal-row{padding:12px 0;border-bottom:1px solid var(--border)}
+    .goal-row:last-child{border-bottom:0}
+    .goal-top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:8px}
+    .goal-title-btn{display:inline-flex;align-items:center;gap:7px;min-width:0;border:0;background:transparent;color:var(--text);padding:0;font:inherit;font-size:13px;font-weight:750;text-align:left}
+    .goal-title-btn:hover{color:var(--accent)}
+    .goal-title-btn span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .goal-total{font-size:12px;font-weight:750;white-space:nowrap}
+    .goal-total span{color:var(--muted);font-weight:500}
+    .goal-footer{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:7px}
+    .goal-progress-label{font-size:10px;color:var(--muted)}
+    .goal-return-btn{display:inline-flex;align-items:center;gap:5px}
+    .goal-return-btn:disabled{opacity:.38;pointer-events:none}
+    .goal-unallocated{font-size:10px;color:var(--muted);margin-top:8px;line-height:1.45}
+    @media(max-width:1100px){.money-insights-grid{grid-template-columns:1fr 1fr}.money-goals-block{grid-column:1/-1}}
+    @media(max-width:720px){.money-insights-grid{grid-template-columns:1fr}.money-goals-block{grid-column:auto}}
+
+  
+    /* v0.9.2 · month view */
+    .month-grid{grid-auto-rows:minmax(128px,1fr)}
+    .month-day{position:relative;min-height:128px;padding:0;isolation:isolate}
+    .month-day-num{
+      position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+      margin:0;font-size:clamp(38px,4.1vw,58px);line-height:1;font-weight:500;
+      letter-spacing:-.04em;color:#a1a1aa;opacity:.24;pointer-events:none;z-index:0;
+    }
+    .month-day-count{
+      position:absolute;left:10px;bottom:10px;z-index:2;margin:0;
+      backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+    }
+    .month-day.work-day .month-day-num{color:#a5b4fc;opacity:.72}
+    .month-day.today .month-day-num{color:#c7d2fe;opacity:.96;font-weight:650}
+    .month-day.outside .month-day-num{opacity:.13}
+    .month-day.outside.work-day .month-day-num{opacity:.26}
+    .month-day:hover .month-day-num{opacity:.42}
+    .month-day.work-day:hover .month-day-num{opacity:.86}
+    .month-day.today:hover .month-day-num{opacity:1}
+    @media(max-width:760px){
+      .month-grid{grid-auto-rows:minmax(96px,1fr)}
+      .month-day{min-height:96px}
+      .month-day-num{font-size:34px}
+      .month-day-count{left:7px;bottom:7px;padding:3px 6px;font-size:9px}
     }
 
   </style>
@@ -1096,28 +1147,16 @@
         <div class="today-summary"><div class="mini"><span>Доход</span><strong id="moneyIncomeDelta">—</strong></div><div class="mini"><span>Расход</span><strong id="moneyExpenseDelta">—</strong></div><div class="mini"><span>Свободный остаток</span><strong id="moneyBalanceDelta">—</strong></div></div>
       </div>
 
-      <div class="grid-2">
-        <div class="card">
-          <div class="section-title"><h2>История операций</h2><span class="period-label" id="moneyPeriodLabel">Текущий месяц</span></div>
-          <div class="table-wrap">
-            <table>
-              <thead><tr><th>Дата</th><th>Категория</th><th>Проект</th><th>Описание</th><th>Тип</th><th>Сумма</th><th></th></tr></thead>
-              <tbody id="moneyRows"></tbody>
-            </table>
-            <div id="moneyEmpty" class="empty">Пока нет операций.</div>
-          </div>
+      <div class="money-insights-grid">
+        <div class="today-block money-goals-block">
+          <div class="section-title"><h3 style="margin:0">Цели и накопления</h3><button class="tiny-btn" id="newGoal">＋ цель</button></div>
+          <div id="moneyGoals"></div>
+          <div id="unallocatedSavings" class="goal-unallocated"></div>
         </div>
-        <div class="today-panel">
-          <div class="today-block">
-            <div class="section-title"><h3 style="margin:0">Цели накоплений</h3><button class="tiny-btn" id="newGoal">＋ цель</button></div>
-            <div id="moneyGoals"></div>
-            <div id="unallocatedSavings" class="goal-unallocated"></div>
-          </div>
-          <div class="today-block"><h3>По проектам</h3><div id="moneyProjects"></div></div>
-          <div class="today-block">
-            <h3>Категории расходов</h3>
-            <div id="moneyCategories"></div>
-          </div>
+        <div class="today-block"><h3>По проектам</h3><div id="moneyProjects"></div></div>
+        <div class="today-block">
+          <h3>Категории расходов</h3>
+          <div id="moneyCategories"></div>
         </div>
       </div>
     </section>
@@ -1148,20 +1187,38 @@
 
       <div id="foodWeekReview"></div>
 
-      <div class="card subscriptions-card" style="margin-top:14px">
-        <div class="section-title">
-          <div>
-            <h2>Подписки и регулярные траты</h2>
-            <span class="small">Справочный список. Здесь ничего не списывается и не попадает в «Деньги» автоматически.</span>
+      <div class="recurring-money-grid" style="margin-top:14px">
+        <div class="card subscriptions-card">
+          <div class="section-title">
+            <div>
+              <h2>Подписки и регулярные траты</h2>
+              <span class="small">Справочно. Реальные списания добавляются отдельно в день оплаты.</span>
+            </div>
+            <button class="btn soft" id="addSubscription">＋ Добавить</button>
           </div>
-          <button class="btn soft" id="addSubscription">＋ Добавить</button>
+          <div class="recurring-summary">
+            <div><span>В месяц</span><strong id="subscriptionsMonthlyTotal">0 ₽</strong></div>
+            <div><span>За год</span><strong id="subscriptionsYearlyTotal">0 ₽</strong></div>
+            <div><span>Записей</span><strong id="subscriptionsCount">0</strong></div>
+          </div>
+          <div id="subscriptionsList" class="recurring-list"></div>
         </div>
-        <div class="subscriptions-summary">
-          <div><span>В месяц</span><strong id="subscriptionsMonthlyTotal">0 ₽</strong></div>
-          <div><span>Записей</span><strong id="subscriptionsCount">0</strong></div>
-          <div><span>За год</span><strong id="subscriptionsYearlyTotal">0 ₽</strong></div>
+
+        <div class="card recurring-income-card">
+          <div class="section-title">
+            <div>
+              <h2>Регулярный доход</h2>
+              <span class="small">Справочно. Здесь доход не создаёт операции в «Деньгах» автоматически.</span>
+            </div>
+            <button class="btn soft" id="addRecurringIncome">＋ Добавить</button>
+          </div>
+          <div class="recurring-summary">
+            <div><span>В месяц</span><strong id="recurringIncomeMonthlyTotal">0 ₽</strong></div>
+            <div><span>За год</span><strong id="recurringIncomeYearlyTotal">0 ₽</strong></div>
+            <div><span>Записей</span><strong id="recurringIncomeCount">0</strong></div>
+          </div>
+          <div id="recurringIncomeList" class="recurring-list"></div>
         </div>
-        <div id="subscriptionsList" class="subscriptions-list"></div>
       </div>
 
       <div class="grid-equal" id="foodSecondaryPanels" style="margin-top:14px">
@@ -1292,7 +1349,7 @@
 
     <section class="page" id="page-settings">
       <div class="topbar">
-        <div class="title-wrap"><h1>Настройки</h1><div class="subtitle">Синхронизация, локальные данные и бюджеты</div></div>
+        <div class="title-wrap"><h1>Настройки</h1><div class="subtitle">Синхронизация, локальные данные и бюджеты — только тёмная тема</div></div>
       </div>
       <div class="settings-grid">
         <div class="card cloud-card">
@@ -1320,22 +1377,13 @@
         </div>
         <div class="card">
           <div class="section-title"><h2>Лимиты трат</h2></div>
-          <div class="subtitle" style="margin-bottom:10px">Дневная сумма — это максимум, а не цель потратить. Недельный максимум считается автоматически × 7.</div>
+          <div class="subtitle" style="margin-bottom:10px">Дневная сумма — это ориентир, а не запрет. Недельный ориентир считается автоматически × 7.</div>
           <div class="form-grid">
-            <div class="field"><label>Дневной максимум, ₽</label><input id="budgetDay" type="number" min="0"></div>
+            <div class="field"><label>Дневной ориентир, ₽</label><input id="budgetDay" type="number" min="0"></div>
             <div class="field"><label>Неделя, ₽ · автоматически</label><input id="budgetWeek" type="number" min="0" disabled></div>
             <div class="field full"><label>Месячный ориентир, ₽</label><input id="budgetMonth" type="number" min="0"></div>
           </div>
           <div class="dialog-actions"><button class="btn primary" id="saveBudgets">Сохранить</button></div>
-        </div>
-        <div class="card">
-          <div class="section-title"><h2>Оформление</h2><span class="small" id="themeStatus">Системная</span></div>
-          <div class="subtitle" style="margin-bottom:10px">Тема хранится отдельно на каждом устройстве.</div>
-          <div class="theme-choice" id="themeChoice">
-            <button type="button" data-theme-choice="system"><span class="theme-preview-icon">◐</span>Системная<small>как в macOS / iOS</small></button>
-            <button type="button" data-theme-choice="light"><span class="theme-preview-icon">☀</span>Светлая<small>всегда светлая</small></button>
-            <button type="button" data-theme-choice="dark"><span class="theme-preview-icon">☾</span>Тёмная<small>всегда тёмная</small></button>
-          </div>
         </div>
         <div class="card">
           <div class="section-title"><h2>Данные</h2></div>
@@ -1397,10 +1445,17 @@
     <div class="form-grid">
       <div class="field"><label>Дата</label><input name="date" type="date" required></div>
       <div class="field"><label>Тип</label><select name="type"><option value="income">Доход</option><option value="expense">Расход</option><option value="saving">Отложено</option></select></div>
-      <div class="field"><label>Категория</label><input name="category" placeholder="Например, Фриланс" required></div>
+      <div class="field" id="moneyCategoryField"><label>Категория</label><input name="category" placeholder="Например, Фриланс" required></div>
       <div class="field"><label>Сумма, ₽</label><input name="amount" type="number" min="0" step="0.01" required></div>
       <div class="field"><label>Проект</label><select name="projectId" id="moneyProjectSelect"><option value="">Без проекта</option></select></div>
       <div class="field" id="moneyGoalField" style="display:none"><label>Цель накопления</label><select name="goalId" id="moneyGoalSelect"><option value="">Не распределять</option></select></div>
+      <div class="field full" id="moneyExternalField" style="display:none">
+        <label class="check-line">
+          <input name="external" type="checkbox">
+          Внешнее
+          <span class="muted">· участвует в накоплении, но не уменьшает твой баланс</span>
+        </label>
+      </div>
       <div class="field full"><label>Описание</label><input name="note" placeholder="Короткое описание"></div>
       <div class="field" id="moneyRepeatField"><label>Повтор</label><select name="repeat"><option value="none">Не повторять</option><option value="weekly">Каждую неделю</option><option value="monthly">Каждый месяц</option></select></div>
       <div class="field" id="moneyRepeatUntilField"><label>Повторять до</label><input name="repeatUntil" type="date"></div>
@@ -1408,6 +1463,21 @@
     </div>
     <div class="dialog-help" id="moneySourceHint" style="display:none"></div>
     <div class="dialog-actions"><button type="button" class="btn danger" id="deleteMoney" style="margin-right:auto;display:none">Удалить</button><button type="button" class="btn danger" id="deleteMoneySeries" style="display:none">Удалить серию</button><button type="button" class="btn" data-dialog-close="moneyDialog">Отмена</button><button type="submit" class="btn primary">Сохранить</button></div>
+  </form>
+</dialog>
+
+<dialog id="savingsReturnDialog">
+  <form id="savingsReturnForm" class="dialog-inner">
+    <div class="dialog-head"><h3>Вернуть из накоплений</h3><button type="button" class="icon-btn" data-dialog-close="savingsReturnDialog" aria-label="Закрыть">×</button></div>
+    <input type="hidden" name="goalId">
+    <div class="form-grid">
+      <div class="field full"><div class="note" id="savingsReturnGoal">—</div></div>
+      <div class="field"><label>Дата</label><input name="date" type="date" required></div>
+      <div class="field"><label>Сумма, ₽</label><input name="amount" type="number" min="0.01" step="0.01" required></div>
+      <div class="field full"><label>Комментарий</label><input name="note" placeholder="Необязательно"></div>
+    </div>
+    <div class="dialog-help">Сумма уменьшит накопление по цели и вернётся в доступный баланс. Это не считается доходом.</div>
+    <div class="dialog-actions"><button type="button" class="btn" data-dialog-close="savingsReturnDialog">Отмена</button><button type="submit" class="btn primary">Вернуть</button></div>
   </form>
 </dialog>
 
@@ -1425,6 +1495,25 @@
     <div class="dialog-actions">
       <button type="button" class="btn danger" id="deleteSubscription" style="margin-right:auto;display:none">Удалить</button>
       <button type="button" class="btn" data-dialog-close="subscriptionDialog">Отмена</button>
+      <button type="submit" class="btn primary">Сохранить</button>
+    </div>
+  </form>
+</dialog>
+
+<dialog id="recurringIncomeDialog">
+  <form id="recurringIncomeForm" class="dialog-inner">
+    <div class="dialog-head"><h3 id="recurringIncomeDialogTitle">Добавить регулярный доход</h3><button type="button" class="icon-btn" data-dialog-close="recurringIncomeDialog" aria-label="Закрыть">×</button></div>
+    <input type="hidden" name="id">
+    <div class="form-grid">
+      <div class="field full"><label>Источник</label><input name="title" required maxlength="60" placeholder="Например, зарплата / аренда / постоянный клиент"></div>
+      <div class="field"><label>Сумма в месяц, ₽</label><input name="amount" type="number" min="0" step="0.01" required placeholder="65000"></div>
+      <div class="field"><label>День поступления</label><input name="billingDay" type="number" min="1" max="31" step="1" placeholder="Необязательно"></div>
+      <div class="field full"><label>Комментарий</label><input name="note" maxlength="120" placeholder="Необязательно"></div>
+      <div class="field full"><div class="note">Это только справочная статистика. Фактическое поступление в «Деньги» добавляется отдельно, когда деньги реально пришли.</div></div>
+    </div>
+    <div class="dialog-actions">
+      <button type="button" class="btn danger" id="deleteRecurringIncome" style="margin-right:auto;display:none">Удалить</button>
+      <button type="button" class="btn" data-dialog-close="recurringIncomeDialog">Отмена</button>
       <button type="submit" class="btn primary">Сохранить</button>
     </div>
   </form>
@@ -1602,21 +1691,16 @@
 const $ = (s, root=document) => root.querySelector(s);
 const $$ = (s, root=document) => [...root.querySelectorAll(s)];
 const THEME_KEY='artemPlanner.theme.v1';
-const systemDarkQuery=window.matchMedia('(prefers-color-scheme: dark)');
-function selectedTheme(){return localStorage.getItem(THEME_KEY)||'system'}
-function effectiveTheme(choice=selectedTheme()){return choice==='system'?(systemDarkQuery.matches?'dark':'light'):choice}
-function applyTheme(choice=selectedTheme()){
-  if(!['system','light','dark'].includes(choice))choice='system';
-  const actual=effectiveTheme(choice);
-  document.documentElement.dataset.theme=actual;
-  document.documentElement.style.colorScheme=actual;
-  const meta=$('#themeColorMeta');if(meta)meta.setAttribute('content',actual==='dark'?'#0f1012':'#f7f7f8');
-  const status=$('#themeStatus');if(status)status.textContent=choice==='system'?`Системная · ${actual==='dark'?'тёмная':'светлая'}`:(choice==='dark'?'Тёмная':'Светлая');
-  $$('[data-theme-choice]').forEach(b=>b.classList.toggle('active',b.dataset.themeChoice===choice));
+function selectedTheme(){return 'dark'}
+function effectiveTheme(){return 'dark'}
+function applyTheme(){
+  document.documentElement.dataset.theme='dark';
+  document.documentElement.style.colorScheme='dark';
+  const meta=$('#themeColorMeta');if(meta)meta.setAttribute('content','#0f1012');
+  try{localStorage.setItem(THEME_KEY,'dark')}catch(e){}
 }
-function setTheme(choice){localStorage.setItem(THEME_KEY,choice);applyTheme(choice)}
+function setTheme(){applyTheme()}
 applyTheme();
-systemDarkQuery.addEventListener?.('change',()=>{if(selectedTheme()==='system')applyTheme('system')});
 const fmt = n => new Intl.NumberFormat('ru-RU',{maximumFractionDigits:2}).format(n||0) + ' ₽';
 const iso = d => {
   const z = new Date(d.getTime() - d.getTimezoneOffset()*60000);
@@ -1633,6 +1717,7 @@ const defaults = {
   money: [],
   food: [],
   subscriptions: [],
+  recurringIncome: [],
   calories: [],
   workouts: [],
   weights: [],
@@ -1657,7 +1742,7 @@ function load(){
   }catch(e){ return structuredClone(defaults); }
 }
 let db=load();
-db.calendar ??= []; db.tasks ??= []; db.projects ??= []; db.money ??= []; db.food ??= []; db.subscriptions ??= []; db.calories ??=[]; db.workouts ??=[]; db.weights ??=[]; db.trainingSettings ??= structuredClone(defaults.trainingSettings); db.foodWeekDecisions ??= {}; db.goals ??= []; db.budgets ??= structuredClone(defaults.budgets); db.meta ??= {}; db.timeEntries ??=[]; db.weekTemplate ??=[]; db.customCalendarPresets ??=[];
+db.calendar ??= []; db.tasks ??= []; db.projects ??= []; db.money ??= []; db.food ??= []; db.subscriptions ??= []; db.recurringIncome ??= []; db.calories ??=[]; db.workouts ??=[]; db.weights ??=[]; db.trainingSettings ??= structuredClone(defaults.trainingSettings); db.foodWeekDecisions ??= {}; db.goals ??= []; db.budgets ??= structuredClone(defaults.budgets); db.meta ??= {}; db.timeEntries ??=[]; db.weekTemplate ??=[]; db.customCalendarPresets ??=[];
 // v0.3: удаляем только старые демонстрационные быстрые задачи из прототипа.
 if((db.meta.schema||0)<3){
   const legacy=new Set(['Монтаж ролика','Ответить клиенту','План на неделю']);
@@ -1729,9 +1814,17 @@ if((db.meta.schema||0)<15){
   db.subscriptions=Array.isArray(db.subscriptions)?db.subscriptions:[];
   db.meta.schema=15;
 }
+if((db.meta.schema||0)<16){
+  db.recurringIncome=Array.isArray(db.recurringIncome)?db.recurringIncome:[];
+  db.meta.schema=16;
+}
+if((db.meta.schema||0)<17){
+  db.money=(Array.isArray(db.money)?db.money:[]).map(x=>({...x,external:!!x.external}));
+  db.meta.schema=17;
+}
 function persistLocal(touch=true){
   db.meta??={};
-  db.meta.schema=15;
+  db.meta.schema=17;
   if(touch) db.meta.updatedAt=new Date().toISOString();
   localStorage.setItem('artemPlanner.v01',JSON.stringify(db));
 }
@@ -1878,11 +1971,11 @@ function storeCloudConfig(){
   localStorage.setItem(CLOUD_CONFIG_KEY,JSON.stringify(cfg)); return cfg;
 }
 function cloudConfigValid(cfg=loadCloudConfig()){return /^https:\/\/.+/.test(cfg.url||'')&&String(cfg.key||'').length>20}
-function dataHasContent(x){const listCount=(x?.tasks?.length||0)+(x?.projects?.length||0)+(x?.calendar?.length||0)+(x?.money?.length||0)+(x?.food?.length||0)+(x?.subscriptions?.length||0)+(x?.calories?.length||0)+(x?.workouts?.length||0)+(x?.weights?.length||0)+(x?.timeEntries?.length||0)+(x?.weekTemplate?.length||0)+(x?.customCalendarPresets?.length||0)+(x?.goals?.length||0);const decisions=Object.keys(x?.foodWeekDecisions||{}).length,b=x?.budgets||{},customBudget=Number(b.day??1000)!==1000||Number(b.month??30000)!==30000;return !!(listCount+decisions)||customBudget}
+function dataHasContent(x){const listCount=(x?.tasks?.length||0)+(x?.projects?.length||0)+(x?.calendar?.length||0)+(x?.money?.length||0)+(x?.food?.length||0)+(x?.subscriptions?.length||0)+(x?.recurringIncome?.length||0)+(x?.calories?.length||0)+(x?.workouts?.length||0)+(x?.weights?.length||0)+(x?.timeEntries?.length||0)+(x?.weekTemplate?.length||0)+(x?.customCalendarPresets?.length||0)+(x?.goals?.length||0);const decisions=Object.keys(x?.foodWeekDecisions||{}).length,b=x?.budgets||{},customBudget=Number(b.day??1000)!==1000||Number(b.month??30000)!==30000;return !!(listCount+decisions)||customBudget}
 function normalizeCloudData(raw){
   const next={...structuredClone(defaults),...(raw&&typeof raw==='object'?raw:{})};
-  for(const k of ['money','food','subscriptions','calories','workouts','weights','tasks','projects','calendar','timeEntries','weekTemplate','customCalendarPresets','goals']) if(!Array.isArray(next[k])) next[k]=[];
-  next.budgets={...defaults.budgets,...(next.budgets||{})}; next.budgets.week=(Number(next.budgets.day)||1000)*7; next.foodWeekDecisions=(next.foodWeekDecisions&&typeof next.foodWeekDecisions==='object')?next.foodWeekDecisions:{}; next.timer={...defaults.timer,...(next.timer||{})}; next.trainingSettings={...defaults.trainingSettings,...(next.trainingSettings||{})}; next.weights=next.weights.map(x=>({...x,zone:x.zone||'green'})); next.food=next.food.map(x=>({...x,excludeFromLimit:!!x.excludeFromLimit})); next.meta={...defaults.meta,...(next.meta||{}),schema:15}; next.timer={...defaults.timer,...(next.timer||{}),sessionAccumulatedMs:Number(next.timer?.sessionAccumulatedMs||0)}; next.timeEntries=next.timeEntries.map(x=>({...x,taskTitle:x.taskTitle||'',projectName:x.projectName||''})); next.money=next.money.map(x=>({...x,goalId:x.goalId||'',seriesId:x.seriesId||''})); return next;
+  for(const k of ['money','food','subscriptions','recurringIncome','calories','workouts','weights','tasks','projects','calendar','timeEntries','weekTemplate','customCalendarPresets','goals']) if(!Array.isArray(next[k])) next[k]=[];
+  next.budgets={...defaults.budgets,...(next.budgets||{})}; next.budgets.week=(Number(next.budgets.day)||1000)*7; next.foodWeekDecisions=(next.foodWeekDecisions&&typeof next.foodWeekDecisions==='object')?next.foodWeekDecisions:{}; next.timer={...defaults.timer,...(next.timer||{})}; next.trainingSettings={...defaults.trainingSettings,...(next.trainingSettings||{})}; next.weights=next.weights.map(x=>({...x,zone:x.zone||'green'})); next.food=next.food.map(x=>({...x,excludeFromLimit:!!x.excludeFromLimit})); next.meta={...defaults.meta,...(next.meta||{}),schema:17}; next.timer={...defaults.timer,...(next.timer||{}),sessionAccumulatedMs:Number(next.timer?.sessionAccumulatedMs||0)}; next.timeEntries=next.timeEntries.map(x=>({...x,taskTitle:x.taskTitle||'',projectName:x.projectName||''})); next.money=next.money.map(x=>({...x,goalId:x.goalId||'',seriesId:x.seriesId||'',external:!!x.external})); return next;
 }
 function dotClass(mode){return mode==='ready'?'ok':mode==='syncing'?'busy':mode==='conflict'?'warn':mode==='error'?'err':''}
 function cloudStatusCopy(){
@@ -2204,8 +2297,9 @@ function inDateBounds(date,b){return date>=b.start&&date<b.end}
 function moneyNet(rows){
   return rows.reduce((sum,x)=>{
     const amount=Number(x.amount||0);
-    if(x.type==='income') return sum+amount;
-    if(x.type==='expense'||x.type==='saving') return sum-amount;
+    if(x.type==='income'||x.type==='saving_return') return sum+amount;
+    if(x.type==='expense') return sum-amount;
+    if(x.type==='saving') return x.external?sum:sum-amount;
     return sum;
   },0);
 }
@@ -2223,21 +2317,25 @@ function updateMoneyGoalVisibility(){
   const form=$('#moneyForm');if(!form)return;
   const saving=form.elements.type.value==='saving';
   $('#moneyGoalField').style.display=saving?'flex':'none';
-  if(!saving)form.elements.goalId.value='';
+  $('#moneyExternalField').style.display=saving?'flex':'none';
+  $('#moneyCategoryField').style.display=saving?'none':'flex';
+  form.elements.category.required=!saving;
+  if(saving)form.elements.category.value='';
+  if(!saving){form.elements.goalId.value='';form.elements.external.checked=false}
 }
 function openMoneyDialog(id=''){
   const form=$('#moneyForm'),item=id?db.money.find(x=>x.id===id):null;
   form.reset();fillProjectSelect();$('#moneyProjectSelect').innerHTML=projectOptions(item?.projectId||'');form.elements.id.value=item?.id||'';
   form.elements.date.value=item?.date||iso(moneyCursor);form.elements.type.value=item?.type||'expense';
   form.elements.category.value=item?.category||'';form.elements.amount.value=item?.amount??'';
-  form.elements.projectId.value=item?.projectId||'';form.elements.note.value=item?.note||'';form.elements.repeat.value='none';form.elements.repeatUntil.value='';form.elements.applySeries.checked=false;$('#moneyRepeatField').style.display=item?'none':'flex';$('#moneyRepeatUntilField').style.display=item?'none':'flex';$('#moneySeriesField').style.display=item?.seriesId?'flex':'none';
+  form.elements.projectId.value=item?.projectId||'';form.elements.note.value=item?.note||'';form.elements.external.checked=!!item?.external;form.elements.repeat.value='none';form.elements.repeatUntil.value='';form.elements.applySeries.checked=false;$('#moneyRepeatField').style.display=item?'none':'flex';$('#moneyRepeatUntilField').style.display=item?'none':'flex';$('#moneySeriesField').style.display=item?.seriesId?'flex':'none';
   $('#moneyGoalSelect').innerHTML=goalOptions(item?.goalId||'');form.elements.goalId.value=item?.goalId||'';
   $('#moneyDialogTitle').textContent=item?'Редактировать операцию':'Новая операция';
   $('#deleteMoney').style.display=item?'inline-flex':'none';$('#deleteMoneySeries').style.display=item?.seriesId?'inline-flex':'none';
   const linked=item?.source==='food'||item?.source==='food_week_saving';
   $('#moneySourceHint').style.display=linked?'block':'none';
   $('#moneySourceHint').textContent=item?.source==='food'?'Эта операция создана из раздела «Траты». Редактируй исходную запись — связанный расход обновится автоматически.':item?.source==='food_week_saving'?'Эта операция создана из решения по недельной экономии в разделе «Траты». Изменение суммы здесь обновит сохранённое решение.':'';
-  updateMoneyGoalVisibility();$('#moneyDialog').showModal();setTimeout(()=>form.elements.category.focus(),0);
+  updateMoneyGoalVisibility();$('#moneyDialog').showModal();setTimeout(()=>{const saving=form.elements.type.value==='saving';(saving?form.elements.amount:form.elements.category).focus()},0);
 }
 function deleteMoneyEntry(id){
   const item=db.money.find(x=>x.id===id);if(!item)return;const message=item.source==='food'?'Удалить расход и связанную запись еды?':item.source==='food_week_saving'?'Удалить отложенную сумму и сбросить решение по этой неделе?':'Удалить операцию?';if(!confirm(message))return;
@@ -2248,14 +2346,55 @@ function deleteMoneyEntry(id){
   }
   save();renderMoney();renderFood();renderToday();renderProjects();renderAnalytics();
 }
-function goalSaved(id){return db.money.filter(x=>x.type==='saving'&&x.goalId===id).reduce((a,b)=>a+Number(b.amount||0),0)}
+function goalSaved(id){
+  const added=db.money.filter(x=>x.type==='saving'&&x.goalId===id).reduce((a,b)=>a+Number(b.amount||0),0);
+  const returned=db.money.filter(x=>x.type==='saving_return'&&x.goalId===id).reduce((a,b)=>a+Number(b.amount||0),0);
+  return Math.max(0,added-returned);
+}
 function renderMoneyGoals(){
   const box=$('#moneyGoals');if(!box)return;
-  box.innerHTML=db.goals.length?db.goals.map(g=>{const saved=goalSaved(g.id),target=Math.max(1,Number(g.target||0)),pct=Math.min(100,saved/target*100);return `<div class="goal-row"><div class="goal-head"><button data-goal-edit="${g.id}"><i class="dot" style="background:${g.color||'#3b82f6'};display:inline-block;margin-right:6px"></i>${escapeHTML(g.title)}</button><span>${fmt(saved)} / ${fmt(target)}</span></div><div class="bar"><span style="width:${pct}%;background:${g.color||'#3b82f6'}"></span></div></div>`}).join(''):'<div class="empty">Целей пока нет. Создай цель и привязывай к ней операции «Отложено».</div>';
+  box.innerHTML=db.goals.length?db.goals.map(g=>{
+    const saved=goalSaved(g.id),target=Math.max(1,Number(g.target||0)),pct=Math.min(100,Math.round(saved/target*100));
+    return `<div class="goal-row">
+      <div class="goal-top">
+        <button class="goal-title-btn" data-goal-edit="${g.id}" title="Редактировать цель"><i class="dot" style="background:${g.color||'#3b82f6'}"></i><span>${escapeHTML(g.title)}</span></button>
+        <div class="goal-total">${fmt(saved)} <span>/ ${fmt(target)}</span></div>
+      </div>
+      <div class="bar"><span style="width:${pct}%;background:${g.color||'#3b82f6'}"></span></div>
+      <div class="goal-footer">
+        <span class="goal-progress-label">${pct}% накоплено</span>
+        <button class="tiny-btn goal-return-btn" data-goal-return="${g.id}" ${saved<=0?'disabled':''}>↩ Вернуть</button>
+      </div>
+    </div>`;
+  }).join(''):'<div class="empty">Целей пока нет. Создай цель и привязывай к ней операции «Отложено».</div>';
   $$('[data-goal-edit]',box).forEach(b=>b.onclick=()=>openGoalDialog(b.dataset.goalEdit));
+  $$('[data-goal-return]',box).forEach(b=>b.onclick=()=>openSavingsReturnDialog(b.dataset.goalReturn));
   const unallocated=db.money.filter(x=>x.type==='saving'&&!x.goalId).reduce((a,b)=>a+Number(b.amount||0),0);
-  $('#unallocatedSavings').innerHTML=unallocated>0?`Не распределено по целям: <strong>${fmt(unallocated)}</strong>. Открой операцию «Отложено» и выбери цель.`:'';
+  $('#unallocatedSavings').innerHTML=unallocated>0?`Не распределено по целям: <strong>${fmt(unallocated)}</strong>.`:'';
+}function openSavingsReturnDialog(goalId){
+  const goal=db.goals.find(g=>g.id===goalId);if(!goal)return;
+  const available=goalSaved(goalId),form=$('#savingsReturnForm');
+  form.reset();
+  form.elements.goalId.value=goalId;
+  form.elements.date.value=todayISO;
+  form.elements.amount.max=String(available);
+  $('#savingsReturnGoal').innerHTML=`<strong>${escapeHTML(goal.title)}</strong><br><span class="muted">В накоплении сейчас ${fmt(available)}</span>`;
+  $('#savingsReturnDialog').showModal();
+  setTimeout(()=>form.elements.amount.focus(),0);
 }
+$('#savingsReturnForm').addEventListener('submit',e=>{
+  e.preventDefault();
+  const f=e.currentTarget,goalId=f.elements.goalId.value,goal=db.goals.find(g=>g.id===goalId);
+  if(!goal)return;
+  const amount=Number(f.elements.amount.value||0),available=goalSaved(goalId);
+  if(!Number.isFinite(amount)||amount<=0)return;
+  if(amount>available){alert(`В этой цели доступно ${fmt(available)}.`);return}
+  db.money.push({id:uid(),date:f.elements.date.value||todayISO,type:'saving_return',category:'',projectId:'',goalId,amount,note:(f.elements.note.value||'').trim(),seriesId:'',external:false});
+  save(`Из «${goal.title}» возвращено ${fmt(amount)}`);
+  $('#savingsReturnDialog').close();
+  renderMoney();renderToday();renderProjects();
+});
+
 function openGoalDialog(id=''){
   const form=$('#goalForm'),g=id?db.goals.find(x=>x.id===id):null;form.reset();
   form.elements.id.value=g?.id||'';form.elements.title.value=g?.title||'';form.elements.target.value=g?.target??'';form.elements.color.value=g?.color||'#3b82f6';
@@ -2285,7 +2424,9 @@ function renderMoney(){
   const bounds=moneyBounds(), rows=db.money.filter(x=>inDateBounds(x.date,bounds)).sort((a,b)=>(b.date+b.id).localeCompare(a.date+a.id));
   const income=rows.filter(x=>x.type==='income').reduce((a,b)=>a+Number(b.amount||0),0);
   const expense=rows.filter(x=>x.type==='expense').reduce((a,b)=>a+Number(b.amount||0),0);
-  const saved=rows.filter(x=>x.type==='saving').reduce((a,b)=>a+Number(b.amount||0),0);
+  const ownSaved=rows.filter(x=>x.type==='saving'&&!x.external).reduce((a,b)=>a+Number(b.amount||0),0);
+  const returned=rows.filter(x=>x.type==='saving_return').reduce((a,b)=>a+Number(b.amount||0),0);
+  const saved=ownSaved-returned;
   const openingBalance=moneyBalanceBefore(bounds.start);
   const periodNet=income-expense-saved;
   const closingBalance=openingBalance+periodNet;
@@ -2297,7 +2438,6 @@ function renderMoney(){
   $('#incomeHint').textContent=`${new Set(rows.filter(x=>x.type==='income').map(x=>x.category)).size} источников дохода`;
   $('#expenseHint').textContent=`Расходы · ${bounds.label}`;
   $('#savedHint').textContent=`Накопления · ${bounds.label}`;
-  $('#moneyPeriodLabel').textContent=bounds.label;
   const prevB=previousMoneyBounds(),
         prevRows=db.money.filter(x=>inDateBounds(x.date,prevB)),
         prevIncome=prevRows.filter(x=>x.type==='income').reduce((a,b)=>a+Number(b.amount||0),0),
@@ -2308,23 +2448,6 @@ function renderMoney(){
   $('#moneyExpenseDelta').innerHTML=deltaText(expense,prevExpense,true);
   $('#moneyBalanceDelta').innerHTML=deltaText(closingBalance,prevClosingBalance,false);
   $$('[data-money-period]').forEach(b=>b.classList.toggle('active',b.dataset.moneyPeriod===moneyPeriod));
-  $('#moneyRows').innerHTML=rows.map(x=>{
-    const t=x.type==='income'?'Доход':x.type==='expense'?'Расход':'Отложено';
-    const cls=x.type==='income'?'income':x.type==='expense'?'expense':'saving'; const sign=x.type==='income'?'+':'−';
-    const p=db.projects.find(p=>p.id===x.projectId),g=db.goals.find(g=>g.id===x.goalId);
-    return `<tr><td>${new Intl.DateTimeFormat('ru-RU',{day:'2-digit',month:'short'}).format(new Date(x.date+'T12:00:00'))}</td><td><span class="badge ${x.type==='income'?'green':x.type==='expense'?'red':'blue'}">${escapeHTML(x.category)}</span>${x.seriesId?'<span class="archive-tag" style="margin-left:5px">повтор</span>':''}${g?`<div class="meta">→ ${escapeHTML(g.title)}</div>`:''}</td><td>${p?`<span class="money-project"><i class="dot" style="background:${p.color}"></i>${escapeHTML(p.name)}</span>`:'—'}</td><td>${escapeHTML(x.note||'—')}</td><td>${t}</td><td class="amount ${cls}">${sign} ${fmt(x.amount)}</td><td><button class="tiny-btn" data-money-edit="${x.id}" title="Изменить">Изм.</button> <button class="delete-row" data-money-del="${x.id}" title="Удалить">×</button></td></tr>`;
-  }).join('');
-  $('#moneyEmpty').style.display=rows.length?'none':'block';
-  $$('[data-money-edit]').forEach(b=>b.onclick=()=>{
-    const item=db.money.find(x=>x.id===b.dataset.moneyEdit);
-    if(item?.source==='food'){
-      const food=db.food.find(x=>x.id===item.sourceId||x.moneyId===item.id);
-      if(food){foodWeekStart=startOfWeek(new Date(food.date+'T12:00:00'));showPage('food');openFoodDialog(food.date,food.id);return}
-    }
-    if(item?.source==='food_week_saving'){foodWeekStart=startOfWeek(new Date(item.date+'T12:00:00'));showPage('food');return}
-    openMoneyDialog(b.dataset.moneyEdit);
-  });
-  $$('[data-money-del]').forEach(b=>b.onclick=()=>deleteMoneyEntry(b.dataset.moneyDel));
   const cats={}; rows.filter(x=>x.type==='expense').forEach(x=>cats[x.category]=(cats[x.category]||0)+Number(x.amount||0));
   const top=Object.entries(cats).sort((a,b)=>b[1]-a[1]);
   const projectTotals={};rows.forEach(x=>{if(x.projectId){projectTotals[x.projectId]??={income:0,expense:0};if(x.type==='income')projectTotals[x.projectId].income+=Number(x.amount||0);if(x.type==='expense')projectTotals[x.projectId].expense+=Number(x.amount||0)}});$('#moneyProjects').innerHTML=Object.keys(projectTotals).length?Object.entries(projectTotals).map(([id,v])=>{const p=db.projects.find(p=>p.id===id);return `<div class="mini-item"><div class="left"><i class="dot" style="background:${p?.color||'#6366f1'}"></i><span>${escapeHTML(p?.name||'Проект')}</span></div><strong>${fmt(v.income-v.expense)}</strong></div>`}).join(''):'<div class="empty">Нет операций, связанных с проектами.</div>';
@@ -2338,10 +2461,11 @@ $('#moneyForm').addEventListener('submit',e=>{
   const repeat=f.elements.repeat.value||'none',until=f.elements.repeatUntil.value||'';
   if(!id&&repeat!=='none'&&!until){alert('Для повторяющейся операции укажи дату «Повторять до».');return}
   const old=id?db.money.find(x=>x.id===id):null;
-  const obj={...(old||{}),id:id||uid(),date:f.elements.date.value,type:f.elements.type.value,category:(f.elements.category.value||'Другое').trim(),projectId:f.elements.projectId.value||'',goalId:f.elements.type.value==='saving'?(f.elements.goalId.value||''):'',amount,note:(f.elements.note.value||'').trim()};
+  const type=f.elements.type.value;
+  const obj={...(old||{}),id:id||uid(),date:f.elements.date.value,type,category:type==='saving'?'':(f.elements.category.value||'Другое').trim(),projectId:f.elements.projectId.value||'',goalId:type==='saving'?(f.elements.goalId.value||''):'',amount,note:(f.elements.note.value||'').trim(),external:type==='saving'?!!f.elements.external.checked:false};
   if(id){
     const i=db.money.findIndex(x=>x.id===id);if(i>=0)db.money[i]=obj;
-    if(old?.seriesId&&f.elements.applySeries.checked){db.money=db.money.map(x=>x.seriesId===old.seriesId?{...x,type:obj.type,category:obj.category,projectId:obj.projectId,goalId:obj.goalId,amount:obj.amount,note:obj.note}:x)}
+    if(old?.seriesId&&f.elements.applySeries.checked){db.money=db.money.map(x=>x.seriesId===old.seriesId?{...x,type:obj.type,category:obj.category,projectId:obj.projectId,goalId:obj.goalId,amount:obj.amount,note:obj.note,external:obj.external}:x)}
     if(old?.source==='food_week_saving'){for(const decision of Object.values(db.foodWeekDecisions||{}))if(decision.moneyId===id)decision.amount=amount}
   }else addMoneySeries(obj,repeat,until);
   save(); $('#moneyDialog').close(); f.reset(); renderMoney(); renderFood(); renderToday();renderProjects();renderAnalytics();
@@ -2390,10 +2514,10 @@ function renderSubscriptions(){
   $('#subscriptionsYearlyTotal').textContent=fmt(total*12);
   list.innerHTML=rows.length?rows.map(x=>{
     const meta=[x.billingDay?`списание примерно ${x.billingDay}-го числа`:'ежемесячно',x.note||''].filter(Boolean).join(' · ');
-    return `<div class="subscription-row">
-      <div class="subscription-copy"><strong>${escapeHTML(x.title)}</strong><span>${escapeHTML(meta)}</span></div>
-      <div class="subscription-amount">${fmt(x.amount)}</div>
-      <div class="subscription-actions"><button class="tiny-btn" data-subscription-edit="${x.id}">Изм.</button><button class="tiny-btn danger" data-subscription-del="${x.id}">×</button></div>
+    return `<div class="recurring-row">
+      <div class="recurring-copy"><strong>${escapeHTML(x.title)}</strong><span>${escapeHTML(meta)}</span></div>
+      <div class="recurring-amounts"><strong>${fmt(x.amount)} / мес.</strong><span>${fmt(Number(x.amount||0)*12)} / год</span></div>
+      <div class="recurring-actions"><button class="tiny-btn" data-subscription-edit="${x.id}">Изм.</button><button class="tiny-btn danger" data-subscription-del="${x.id}">×</button></div>
     </div>`;
   }).join(''):'<div class="empty">Пока ничего нет. Добавь подписки, связь, интернет или другие регулярные ежемесячные траты.</div>';
   $$('[data-subscription-edit]',list).forEach(b=>b.onclick=()=>openSubscriptionDialog(b.dataset.subscriptionEdit));
@@ -2403,6 +2527,47 @@ function renderSubscriptions(){
     db.subscriptions=db.subscriptions.filter(v=>v.id!==x.id);
     save(`«${x.title}» удалено из регулярных трат`);
     renderSubscriptions();
+  });
+}
+
+function openRecurringIncomeDialog(id=''){
+  const f=$('#recurringIncomeForm'),item=id?db.recurringIncome.find(x=>x.id===id):null;
+  f.reset();
+  f.elements.id.value=item?.id||'';
+  f.elements.title.value=item?.title||'';
+  f.elements.amount.value=item?.amount??'';
+  f.elements.billingDay.value=item?.billingDay??'';
+  f.elements.note.value=item?.note||'';
+  $('#recurringIncomeDialogTitle').textContent=item?'Редактировать регулярный доход':'Добавить регулярный доход';
+  $('#deleteRecurringIncome').style.display=item?'inline-flex':'none';
+  $('#recurringIncomeDialog').showModal();
+  setTimeout(()=>f.elements.title.focus(),0);
+}
+function renderRecurringIncome(){
+  const list=$('#recurringIncomeList');if(!list)return;
+  const rows=[...db.recurringIncome].sort((a,b)=>{
+    const ad=Number(a.billingDay||99),bd=Number(b.billingDay||99);
+    return ad-bd||String(a.title).localeCompare(String(b.title),'ru');
+  });
+  const total=rows.reduce((a,b)=>a+Number(b.amount||0),0);
+  $('#recurringIncomeMonthlyTotal').textContent=fmt(total);
+  $('#recurringIncomeCount').textContent=rows.length;
+  $('#recurringIncomeYearlyTotal').textContent=fmt(total*12);
+  list.innerHTML=rows.length?rows.map(x=>{
+    const meta=[x.billingDay?`поступление примерно ${x.billingDay}-го числа`:'ежемесячно',x.note||''].filter(Boolean).join(' · ');
+    return `<div class="recurring-row">
+      <div class="recurring-copy"><strong>${escapeHTML(x.title)}</strong><span>${escapeHTML(meta)}</span></div>
+      <div class="recurring-amounts"><strong>${fmt(x.amount)} / мес.</strong><span>${fmt(Number(x.amount||0)*12)} / год</span></div>
+      <div class="recurring-actions"><button class="tiny-btn" data-recurring-income-edit="${x.id}">Изм.</button><button class="tiny-btn danger" data-recurring-income-del="${x.id}">×</button></div>
+    </div>`;
+  }).join(''):'<div class="empty">Пока ничего нет. Добавь зарплату, постоянного клиента или другой регулярный доход.</div>';
+  $$('[data-recurring-income-edit]',list).forEach(b=>b.onclick=()=>openRecurringIncomeDialog(b.dataset.recurringIncomeEdit));
+  $$('[data-recurring-income-del]',list).forEach(b=>b.onclick=()=>{
+    const x=db.recurringIncome.find(v=>v.id===b.dataset.recurringIncomeDel);
+    if(!x||!confirm(`Удалить «${x.title}» из справочного списка?`))return;
+    db.recurringIncome=db.recurringIncome.filter(v=>v.id!==x.id);
+    save(`«${x.title}» удалено из регулярного дохода`);
+    renderRecurringIncome();
   });
 }
 
@@ -2454,7 +2619,7 @@ function renderFoodWeekReview(start,end){
   }else{
     action=`<div class="food-review-suggestion">Ты сэкономил <strong>${fmt(saved)}</strong>. Предлагаю отправить <strong>50% = ${fmt(suggested)}</strong> в копилку, а оставшиеся ${fmt(saved-suggested)} оставить свободными.</div><div class="food-review-actions"><button class="btn primary" data-food-save-half="${key}">Отложить 50%</button><input id="foodSavingsCustom" type="number" min="0" max="${saved}" step="1" placeholder="Своя сумма"><button class="btn" data-food-save-custom="${key}">Отложить свою</button><button class="btn" data-food-save-none="${key}">Не откладывать</button></div>`;
   }
-  box.innerHTML=`<div class="food-review"><div class="food-review-main"><div class="section-title"><h2>Итоги завершённой недели</h2><span class="small">${weekRangeLabel(start,end)}</span></div><div class="food-review-kpis"><div class="food-review-kpi"><span>Ориентир</span><strong>${fmt(limit)}</strong></div><div class="food-review-kpi"><span>Повседневные</span><strong>${fmt(spent)}</strong></div><div class="food-review-kpi"><span>${over?'Перерасход':'Сэкономлено'}</span><strong style="color:${over?'var(--danger)':'var(--success)'}">${fmt(over||saved)}</strong></div></div>${outsideSpent?`<div class="food-review-note" style="margin-bottom:10px">Всего расходов: <strong>${fmt(totalSpent)}</strong> · вне лимита: <strong>${fmt(outsideSpent)}</strong>.</div>`:''}${action}</div><div class="card"><div class="section-title"><h2>Связь с деньгами</h2></div><div class="food-review-note">Все записи полностью попадают в «Деньги». Флаг «вне повседневного лимита» влияет только на лимит и расчёт недельной экономии.</div></div></div>`;
+  box.innerHTML=`<div class="food-review"><div class="food-review-main"><div class="section-title"><h2>Итоги завершённой недели</h2><span class="small">${weekRangeLabel(start,end)}</span></div><div class="food-review-kpis"><div class="food-review-kpi"><span>Ориентир</span><strong>${fmt(limit)}</strong></div><div class="food-review-kpi"><span>Повседневные</span><strong>${fmt(spent)}</strong></div><div class="food-review-kpi"><span>${over?'Перерасход':'Сэкономлено'}</span><strong style="color:${over?'var(--danger)':'var(--success)'}">${fmt(over||saved)}</strong></div></div>${outsideSpent?`<div class="food-review-note" style="margin-bottom:10px">Всего расходов: <strong>${fmt(totalSpent)}</strong> · вне лимита: <strong>${fmt(outsideSpent)}</strong>.</div>`:''}${action}</div></div>`;
   $$('[data-food-save-half]',box).forEach(b=>b.onclick=()=>applyFoodWeekDecision(key,suggested,start,end));
   $$('[data-food-save-custom]',box).forEach(b=>b.onclick=()=>{const value=Number($('#foodSavingsCustom')?.value);if(!Number.isFinite(value)||value<0||value>saved){alert(`Введи сумму от 0 до ${fmt(saved)}`);return}applyFoodWeekDecision(key,value,start,end)});
   $$('[data-food-save-none]',box).forEach(b=>b.onclick=()=>applyFoodWeekDecision(key,0,start,end));
@@ -2519,6 +2684,7 @@ function renderFood(){
   $('#foodCategories').innerHTML=Object.entries(cats).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`<div class="bar-row"><div class="bar-head"><span>${escapeHTML(k)}</span><span>${fmt(v)}</span></div><div class="bar"><span style="width:${monthSummary.total?Math.min(100,v/monthSummary.total*100):0}%;background:#22c55e"></span></div></div>`).join('')||'<div class="empty">Нет данных.</div>';
   renderFoodWeekReview(weekStart,weekEnd);
   renderSubscriptions();
+  renderRecurringIncome();
 }
 
 
@@ -2543,6 +2709,29 @@ $('#deleteSubscription')?.addEventListener('click',()=>{
   save(`«${x.title}» удалено из регулярных трат`);
   $('#subscriptionDialog').close();
   renderSubscriptions();
+});
+
+$('#addRecurringIncome')?.addEventListener('click',()=>openRecurringIncomeDialog());
+$('#recurringIncomeForm')?.addEventListener('submit',e=>{
+  e.preventDefault();
+  const f=e.currentTarget,id=f.elements.id.value,title=f.elements.title.value.trim(),amount=Number(f.elements.amount.value||0);
+  if(!title||amount<0)return;
+  const item={id:id||uid(),title,amount,billingDay:f.elements.billingDay.value?Math.max(1,Math.min(31,Number(f.elements.billingDay.value))):null,note:f.elements.note.value.trim()};
+  if(id){
+    const i=db.recurringIncome.findIndex(x=>x.id===id);
+    if(i>=0)db.recurringIncome[i]=item;
+  }else db.recurringIncome.push(item);
+  save(`Регулярный доход «${title}» сохранён`);
+  $('#recurringIncomeDialog').close();
+  renderRecurringIncome();
+});
+$('#deleteRecurringIncome')?.addEventListener('click',()=>{
+  const id=$('#recurringIncomeForm').elements.id.value,x=db.recurringIncome.find(v=>v.id===id);
+  if(!x||!confirm(`Удалить «${x.title}» из справочного списка?`))return;
+  db.recurringIncome=db.recurringIncome.filter(v=>v.id!==id);
+  save(`«${x.title}» удалено из регулярного дохода`);
+  $('#recurringIncomeDialog').close();
+  renderRecurringIncome();
 });
 
 $('#foodPrevWeek').onclick=()=>{foodWeekStart=new Date(foodWeekStart);foodWeekStart.setDate(foodWeekStart.getDate()-7);renderFood()};
@@ -2756,6 +2945,7 @@ function globalSearchItems(q){
   db.money.filter(m=>hit(m.category)||hit(m.note)).slice(0,5).forEach(m=>out.push({type:'money',id:m.id,title:m.category,meta:`Деньги · ${m.date} · ${fmt(m.amount)}`}));
   db.food.filter(f=>hit(foodTitle(f))||hit(f.note)||hit(f.category)).slice(0,5).forEach(f=>out.push({type:'food',id:f.id,title:foodTitle(f),meta:`Траты · ${f.date} · ${fmt(f.amount)}`}));
   db.subscriptions.filter(s=>hit(s.title)||hit(s.note)).slice(0,5).forEach(s=>out.push({type:'subscription',id:s.id,title:s.title,meta:`Регулярная трата · ${fmt(s.amount)}/мес.`}));
+  db.recurringIncome.filter(s=>hit(s.title)||hit(s.note)).slice(0,5).forEach(s=>out.push({type:'recurringIncome',id:s.id,title:s.title,meta:`Регулярный доход · ${fmt(s.amount)}/мес.`}));
   db.workouts.filter(w=>hit(w.title)||hit(w.note)||hit(workoutTypeLabel(w.type))).slice(0,5).forEach(w=>out.push({type:'workout',id:w.id,title:w.title,meta:`Тренировка · ${w.date} · ${workoutTypeLabel(w.type)}`}));
   return out.slice(0,20);
 }
@@ -2771,7 +2961,8 @@ function renderGlobalSearch(){
     if(type==='money'){const m=db.money.find(x=>x.id===id);if(!m)return;if(m.source==='food'){const f=db.food.find(x=>x.id===m.sourceId||x.moneyId===m.id);if(f){foodWeekStart=startOfWeek(new Date(f.date+'T12:00:00'));showPage('food');openFoodDialog(f.date,f.id);return}}if(m.source==='food_week_saving'){foodWeekStart=startOfWeek(new Date(m.date+'T12:00:00'));showPage('food');return}moneyCursor=new Date(m.date+'T12:00:00');showPage('money');openMoneyDialog(id);return}
     if(type==='food'){const f=db.food.find(x=>x.id===id);if(f){foodWeekStart=startOfWeek(new Date(f.date+'T12:00:00'));showPage('food');openFoodDialog(f.date,id)}return}
     if(type==='workout'){const w=db.workouts.find(x=>x.id===id);if(w){workoutSelectedDate=w.date;workoutWeekStart=startOfWeek(new Date(w.date+'T12:00:00'));showPage('workouts');openWorkoutDialog(w.date,w.id)}return}
-    if(type==='subscription'){showPage('food');openSubscriptionDialog(id)}
+    if(type==='subscription'){showPage('food');openSubscriptionDialog(id);return}
+    if(type==='recurringIncome'){showPage('food');openRecurringIncomeDialog(id)}
   });
 }
 $('#globalSearch')?.addEventListener('input',renderGlobalSearch);
@@ -3398,7 +3589,7 @@ $$('dialog').forEach(d=>{
   d.addEventListener('cancel',()=>{});
 });
 
-$$('[data-theme-choice]').forEach(b=>b.onclick=()=>setTheme(b.dataset.themeChoice));applyTheme();
+applyTheme();
 $('#budgetDay').value=db.budgets.day; $('#budgetWeek').value=(Number(db.budgets.day)||1000)*7; $('#budgetMonth').value=db.budgets.month;
 $('#saveBudgets').onclick=()=>{ db.budgets.day=Number($('#budgetDay').value)||1000; db.budgets.week=db.budgets.day*7; db.budgets.month=Number($('#budgetMonth').value)||30000; $('#budgetWeek').value=db.budgets.week; save(); renderFood(); alert('Ориентиры сохранены'); };
 $('#exportData').onclick=()=>{
