@@ -10,7 +10,7 @@
   <link rel="manifest" href="./manifest.webmanifest" />
   <link rel="apple-touch-icon" href="./icon-192.png" />
   <link rel="icon" href="./icon-192.png" />
-  <title>Planner v0.9.8</title>
+  <title>Planner v0.9.11</title>
   <style>
     :root{
       --bg:#f7f7f8;
@@ -653,7 +653,7 @@
       .today-summary-hero{grid-template-columns:repeat(3,minmax(0,1fr))}
       .today-main-grid,.today-lower-grid.v2{grid-template-columns:1fr}
     }
-    @media(max-width:780px){
+    @media(max-width:820px){
       :root{--sidebar:0px}
       body{padding-bottom:74px}
       .app{display:block}
@@ -850,19 +850,83 @@
   
     .money-insights-grid{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(240px,.75fr) minmax(240px,.75fr);gap:14px;align-items:start}
     .money-goals-block{min-width:0}
-    .goal-row{padding:12px 0;border-bottom:1px solid var(--border)}
-    .goal-row:last-child{border-bottom:0}
-    .goal-top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:8px}
-    .goal-title-btn{display:inline-flex;align-items:center;gap:7px;min-width:0;border:0;background:transparent;color:var(--text);padding:0;font:inherit;font-size:13px;font-weight:750;text-align:left}
-    .goal-title-btn:hover{color:var(--accent)}
-    .goal-title-btn span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-    .goal-total{font-size:12px;font-weight:750;white-space:nowrap}
-    .goal-total span{color:var(--muted);font-weight:500}
-    .goal-footer{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:7px}
-    .goal-progress-label{font-size:10px;color:var(--muted)}
-    .goal-return-btn{display:inline-flex;align-items:center;gap:5px}
-    .goal-return-btn:disabled{opacity:.38;pointer-events:none}
-    .goal-unallocated{font-size:10px;color:var(--muted);margin-top:8px;line-height:1.45}
+    #moneyGoals{display:grid;gap:10px;margin-top:10px}
+
+    .money-goals-block{overflow:hidden}
+    .savings-showcase-block{padding:20px;border-radius:28px;background:
+      radial-gradient(circle at 15% 14%,rgba(94,92,230,.16),transparent 23%),
+      radial-gradient(circle at 72% 12%,rgba(63,129,255,.15),transparent 20%),
+      linear-gradient(180deg,rgba(18,20,31,.98),rgba(14,16,25,.98));
+      border:1px solid rgba(120,128,255,.14);box-shadow:0 12px 44px rgba(0,0,0,.25),inset 0 1px 0 rgba(255,255,255,.04)}
+    .savings-showcase-head{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:18px;margin-bottom:18px}
+    .savings-showcase-icon{width:62px;height:62px;border-radius:20px;display:grid;place-items:center;font-size:32px;font-weight:800;color:#aeb9ff;background:radial-gradient(circle at 35% 30%,rgba(120,121,255,.5),rgba(72,85,255,.18) 38%,rgba(17,18,30,.92) 78%);border:1px solid rgba(125,134,255,.18);box-shadow:0 12px 26px rgba(72,88,255,.18),inset 0 1px 0 rgba(255,255,255,.12)}
+    .savings-showcase-copy h3{margin:0;font-size:20px;font-weight:800;letter-spacing:-.02em}
+    .savings-showcase-copy p{margin:6px 0 0;color:var(--muted);font-size:13px;line-height:1.45;max-width:720px}
+    .savings-showcase-add{min-width:132px;justify-self:end;padding-inline:18px}
+    .goal-cards-stack{display:grid;gap:14px}
+    .goal-card{position:relative;padding:22px 22px 18px;border-radius:24px;border:1px solid rgba(122,129,255,.14);background:linear-gradient(180deg,rgba(17,19,30,.95),rgba(14,16,26,.96));box-shadow:inset 0 1px 0 rgba(255,255,255,.03)}
+    .goal-card::before{content:"";position:absolute;inset:0;border-radius:inherit;background:radial-gradient(circle at 68% 0%,rgba(69,97,255,.14),transparent 30%);pointer-events:none}
+    .goal-card-head{position:relative;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:14px;align-items:start;margin-bottom:14px}
+    .goal-title-btn{display:flex;align-items:center;gap:14px;min-width:0;border:0;background:transparent;color:var(--text);padding:0;text-align:left;font:inherit;cursor:pointer}
+    .goal-dot-large{width:20px;height:20px;border-radius:999px;flex:0 0 auto;box-shadow:0 0 0 5px rgba(255,255,255,.04),0 0 20px currentColor}
+    .goal-title-text{min-width:0}
+    .goal-title-main{display:block;font-size:18px;font-weight:800;letter-spacing:-.02em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .goal-target-note{display:none}
+    .goal-card-side{display:flex;align-items:center;gap:12px;justify-content:flex-end;min-width:0}
+    .goal-card-total{font-size:18px;font-weight:850;letter-spacing:-.02em;white-space:nowrap}
+    .goal-card-total span{color:var(--muted);font-weight:650}
+    .goal-percent-chip{display:inline-flex;align-items:center;justify-content:center;min-width:72px;height:44px;padding:0 14px;border-radius:16px;font-size:16px;font-weight:850;letter-spacing:-.02em;border:1px solid rgba(255,255,255,.04)}
+    .goal-edit-btn{width:38px;height:38px;border-radius:14px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.02);color:#97a0c6;font-size:20px;display:grid;place-items:center}
+    .goal-edit-btn:hover{border-color:rgba(132,140,255,.35);color:#cfd6ff}
+    .goal-track{position:relative;height:12px;border-radius:999px;background:#232738;overflow:hidden;margin:0 0 16px;border:1px solid rgba(255,255,255,.04)}
+    .goal-track>span{display:block;height:100%;border-radius:inherit;box-shadow:0 0 24px rgba(78,116,255,.28)}
+    .goal-card-bottom{position:relative;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:14px;align-items:center}
+    .goal-contributors{display:flex;gap:10px;flex-wrap:wrap;min-width:0}
+    .goal-contrib-chip{display:inline-flex;align-items:center;gap:10px;min-width:0;padding:11px 14px;border-radius:18px;border:1px solid rgba(255,255,255,.07);background:linear-gradient(180deg,#181a29,#121524);color:#d9ddf1;box-shadow:inset 0 1px 0 rgba(255,255,255,.03)}
+    .goal-contrib-chip .icon{font-size:18px;opacity:.95;flex:0 0 auto}
+    .goal-contrib-chip .label{font-size:11px;color:#a6acce;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:180px}
+    .goal-contrib-chip strong{font-size:14px;font-weight:800;white-space:nowrap}
+    .goal-contrib-empty{font-size:12px;color:var(--muted)}
+    .goal-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:flex-end}
+    .goal-actions .tiny-btn{min-height:46px;padding:0 20px;border-radius:16px;font-size:13px;font-weight:760;border:1px solid rgba(255,255,255,.07);background:linear-gradient(180deg,#1d2132,#151928);box-shadow:none}
+    .goal-actions .tiny-btn:hover{border-color:rgba(135,145,255,.24)}
+    .goal-actions .goal-add-btn{background:linear-gradient(180deg,#6073ff,#4a5fff);color:#fff;border-color:rgba(121,138,255,.55);box-shadow:0 14px 28px rgba(85,101,255,.18)}
+    .goal-actions .goal-return-btn{background:linear-gradient(180deg,#1a1d2d,#111421);color:#d7dcf1}
+    .goal-actions .goal-return-btn:disabled{opacity:.34;pointer-events:none}
+    .goal-unallocated{margin-top:14px}
+    .goal-free-card{display:grid;grid-template-columns:minmax(0,1fr) auto auto;align-items:center;gap:16px;padding:20px 22px;border-radius:24px;border:1px solid rgba(122,129,255,.12);background:linear-gradient(180deg,rgba(16,18,28,.95),rgba(12,14,22,.96))}
+    .goal-free-card-main{display:flex;align-items:center;gap:16px;min-width:0}
+    .goal-free-icon{width:56px;height:56px;border-radius:18px;display:grid;place-items:center;font-size:26px;color:#adb7ff;background:radial-gradient(circle at 35% 30%,rgba(118,122,255,.36),rgba(56,67,255,.16) 42%,rgba(17,18,30,.92) 78%);border:1px solid rgba(125,134,255,.18)}
+    .goal-free-copy strong{display:block;font-size:16px;font-weight:780;letter-spacing:-.02em}
+    .goal-free-copy span{display:block;margin-top:4px;color:var(--muted);font-size:12px;line-height:1.45}
+    .goal-free-total{font-size:18px;font-weight:860;letter-spacing:-.02em;white-space:nowrap}
+    .goal-free-card .goal-return-btn{min-height:44px;padding:0 18px;border-radius:16px}
+    .goal-free-contrib{margin-top:10px;display:flex;gap:8px;flex-wrap:wrap}
+    .goal-empty{padding:24px;border:1px dashed rgba(120,128,255,.18);border-radius:22px;text-align:center;color:var(--muted);font-size:13px;line-height:1.55;background:rgba(255,255,255,.015)}
+    .goal-dialog-sources{margin-top:8px}
+    @media(max-width:980px){
+      .goal-card-bottom,.goal-free-card{grid-template-columns:1fr}
+      .goal-actions{justify-content:flex-start}
+      .goal-free-total{justify-self:start}
+      .savings-showcase-head{grid-template-columns:auto 1fr;align-items:start}
+      .savings-showcase-add{grid-column:1/-1;justify-self:start}
+    }
+    @media(max-width:720px){
+      .savings-showcase-block{padding:16px;border-radius:22px}
+      .savings-showcase-head{gap:12px}
+      .savings-showcase-icon{width:54px;height:54px;font-size:28px;border-radius:18px}
+      .goal-card{padding:16px 16px 14px;border-radius:20px}
+      .goal-card-head{grid-template-columns:1fr;gap:10px}
+      .goal-card-side{justify-content:flex-start;flex-wrap:wrap}
+      .goal-card-total{font-size:17px}
+      .goal-percent-chip{min-width:64px;height:40px;font-size:15px;padding:0 12px}
+      .goal-contrib-chip{padding:10px 12px;border-radius:16px}
+      .goal-contrib-chip .label{max-width:120px}
+      .goal-actions .tiny-btn{min-height:42px;padding:0 16px;border-radius:14px}
+      .goal-free-card{padding:16px;border-radius:20px}
+      .goal-free-card-main{align-items:flex-start}
+      .goal-free-icon{width:50px;height:50px;border-radius:16px}
+    }
     @media(max-width:1100px){.money-insights-grid{grid-template-columns:1fr 1fr}.money-goals-block{grid-column:1/-1}}
     @media(max-width:720px){.money-insights-grid{grid-template-columns:1fr}.money-goals-block{grid-column:auto}}
 
@@ -892,17 +956,6 @@
       .month-day-num{font-size:34px}
       .month-day-count{left:7px;bottom:7px;padding:3px 6px;font-size:9px}
     }
-
-  
-    .goal-actions{display:flex;align-items:center;gap:6px;flex-wrap:wrap;justify-content:flex-end}
-    .goal-breakdown{display:flex;gap:10px;flex-wrap:wrap;font-size:10px;color:var(--muted)}
-    .goal-breakdown strong{color:var(--text);font-weight:700}
-    .goal-free-pool{margin-top:12px;padding:11px 12px;border:1px solid var(--border);border-radius:11px;background:var(--surface-2)}
-    .goal-free-pool-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:5px}
-    .goal-free-pool-head strong{font-size:12px}
-    .goal-free-pool-total{font-size:12px;font-weight:750}
-    .goal-free-pool-copy{font-size:10px;color:var(--muted);line-height:1.45}
-    .goal-free-pool-copy b{color:var(--text);font-weight:700}
 
   
     .brand-minimal{padding:8px 10px 12px;align-items:flex-start}
@@ -971,15 +1024,101 @@
     .cloud-advanced summary{cursor:pointer;color:var(--muted);font-size:11px;user-select:none}
     .cloud-advanced[open] summary{color:var(--text)}
 
+  
+    /* ===== responsive desktop shell ===== */
+    .app{min-height:100vh;min-height:100dvh}
+    .sidebar{
+      height:100vh;
+      height:100dvh;
+      min-height:0;
+      overflow:hidden;
+    }
+    .sidebar-v2{
+      padding:0;
+      gap:0;
+    }
+    .sidebar-main{
+      min-height:0;
+      flex:1 1 auto;
+      overflow-y:auto;
+      overflow-x:hidden;
+      overscroll-behavior:contain;
+      scrollbar-width:thin;
+      scrollbar-color:#34384f transparent;
+      padding:18px 16px 10px;
+      display:flex;
+      flex-direction:column;
+      gap:14px;
+    }
+    .sidebar-main::-webkit-scrollbar{width:6px}
+    .sidebar-main::-webkit-scrollbar-track{background:transparent}
+    .sidebar-main::-webkit-scrollbar-thumb{background:#34384f;border-radius:999px}
+    .sidebar-footer-v2{
+      margin-top:0;
+      flex:0 0 auto;
+      padding:10px 16px 14px;
+      border-top:1px solid rgba(255,255,255,.055);
+      background:linear-gradient(180deg,rgba(11,12,19,.90),#0b0c13 28%);
+      position:relative;
+      z-index:3;
+    }
+    .sidebar-footer-v2 .cloud-indicator{margin-bottom:8px}
+    .content{min-width:0;width:100%;overflow-x:hidden}
+    .page{min-width:0}
+    .topbar,.actions,.title-wrap{min-width:0}
+
+    /* Small desktop / compact laptop widths */
+    @media (min-width:821px) and (max-width:1050px){
+      :root{--sidebar:200px}
+      .sidebar-main{padding-left:12px;padding-right:12px}
+      .sidebar-footer-v2{padding-left:12px;padding-right:12px}
+      .nav-v2 button{font-size:13px;padding-left:10px;padding-right:10px}
+      .search-shortcut{display:none}
+      .search-v2 input{font-size:13px;padding-right:10px}
+      .brand-minimal .brand-copy strong{font-size:19px}
+      .project-chip{font-size:12px}
+      .content{padding-left:14px;padding-right:14px}
+    }
+
+    /* Short laptop screens: compact spacing, but never hide navigation. */
+    @media (min-width:821px) and (max-height:760px){
+      .sidebar-main{padding-top:11px;padding-bottom:7px;gap:8px}
+      .brand-minimal{padding:2px 8px 5px}
+      .brand-minimal .brand-copy strong{font-size:18px}
+      .brand-minimal .brand-copy small{font-size:9px;margin-top:1px}
+      .search-v2 input{padding-top:8px;padding-bottom:8px}
+      .search-v2 span{top:8px}
+      .nav-v2{gap:3px;margin-top:0}
+      .nav-v2 button{padding-top:8px;padding-bottom:8px;border-radius:11px}
+      .sidebar-section-row{margin-top:0}
+      .project-list-v2{gap:2px}
+      .project-chip{padding-top:6px;padding-bottom:6px}
+      .sidebar-footer-v2{padding-top:8px;padding-bottom:9px}
+      .sidebar-settings-btn{padding:9px 10px!important;border-radius:11px!important}
+      .cloud-indicator-v2{padding:8px 9px}
+    }
+
+    /* Very short screens: make footer/login reachable at all times; middle simply scrolls. */
+    @media (min-width:821px) and (max-height:620px){
+      .sidebar-main{padding-top:8px;gap:6px}
+      .brand-minimal{padding-bottom:2px}
+      .search-v2 input{padding-top:7px;padding-bottom:7px}
+      .nav-v2 button{padding-top:7px;padding-bottom:7px}
+      .sidebar-section{font-size:10px}
+      .sidebar-footer-v2 .cloud-indicator{display:none}
+      .sidebar-footer-v2{padding-top:7px;padding-bottom:7px}
+    }
+
   </style>
 </head>
 <body>
 <div class="app">
   <aside class="sidebar sidebar-v2">
+    <div class="sidebar-main">
     <div class="brand brand-v2 brand-minimal">
       <div class="brand-copy">
         <strong>Planner</strong>
-        <small>v0.9.8</small>
+        <small>v0.9.11</small>
       </div>
     </div>
     <div class="search search-v2">
@@ -999,6 +1138,7 @@
     </div>
     <div class="sidebar-section sidebar-section-row"><span>Проекты</span><button class="sidebar-add-project" data-page="projects" title="Открыть проекты">＋</button></div>
     <div class="project-list project-list-v2" id="sidebarProjects"></div>
+    </div>
     <div class="sidebar-footer sidebar-footer-v2">
       <div class="cloud-indicator cloud-indicator-v2"><span class="sync-dot" id="sidebarSyncDot"></span><span id="sidebarSyncText">Только локально</span></div>
       <button data-page="settings" class="sidebar-settings-btn">⚙ Настройки</button>
@@ -1108,9 +1248,16 @@
       </div>
 
       <div class="money-insights-grid">
-        <div class="today-block money-goals-block">
-          <div class="section-title"><h3 style="margin:0">Цели и накопления</h3><button class="tiny-btn" id="newGoal">＋ цель</button></div>
-          <div id="moneyGoals"></div>
+        <div class="today-block money-goals-block savings-showcase-block">
+          <div class="savings-showcase-head">
+            <div class="savings-showcase-icon">◎</div>
+            <div class="savings-showcase-copy">
+              <h3>Цели и накопления</h3>
+              <p>Копите на важные цели вместе — шаг за шагом к большему.</p>
+            </div>
+            <button class="btn primary savings-showcase-add" id="newGoal">＋ Цель</button>
+          </div>
+          <div id="moneyGoals" class="goal-cards-stack"></div>
           <div id="unallocatedSavings" class="goal-unallocated"></div>
         </div>
         <div class="today-block"><h3>По проектам</h3><div id="moneyProjects"></div></div>
@@ -1459,11 +1606,11 @@
       <div class="field full" id="moneyExternalField" style="display:none">
         <label class="check-line">
           <input name="external" type="checkbox">
-          Чужие
-          <span class="muted">· вклад другого человека, не уменьшает твой баланс</span>
+          Вклад другого человека
+          <span class="muted">· не уменьшает твой баланс; комментарий будет показан у цели</span>
         </label>
       </div>
-      <div class="field full"><label>Описание</label><input name="note" placeholder="Короткое описание"></div>
+      <div class="field full"><label>Описание / имя</label><input name="note" placeholder="Например, Даша или короткое описание"></div>
       <div class="field" id="moneyRepeatField"><label>Повтор</label><select name="repeat"><option value="none">Не повторять</option><option value="weekly">Каждую неделю</option><option value="monthly">Каждый месяц</option></select></div>
       <div class="field" id="moneyRepeatUntilField"><label>Повторять до</label><input name="repeatUntil" type="date"></div>
       <div class="field full" id="moneySeriesField" style="display:none"><label class="check-line"><input name="applySeries" type="checkbox"> Применить изменения ко всей серии <span class="muted">· даты операций не меняются</span></label></div>
@@ -1484,9 +1631,9 @@
       <div class="field"><label>Дата</label><input name="date" type="date" required></div>
       <div class="field"><label>Сумма, ₽</label><input name="amount" type="number" min="0.01" step="0.01" required></div>
       <div class="field full"><div class="note" id="savingsReturnAvailable">Доступно: —</div></div>
-      <div class="field full"><label>Комментарий</label><input name="note" placeholder="Необязательно"></div>
+      <div class="field full"><label>Комментарий</label><input name="note" placeholder="Например, Даша · необязательно"></div>
     </div>
-    <div class="dialog-help" id="savingsReturnHelp">Свои деньги вернутся в доступный баланс. Чужие уменьшат только накопление и твой баланс не изменят.</div>
+    <div class="dialog-help" id="savingsReturnHelp">Свои деньги вернутся в доступный баланс. Деньги другого человека уменьшат только накопление и твой баланс не изменят.</div>
     <div class="dialog-actions"><button type="button" class="btn danger" id="deleteSavingsReturn" style="margin-right:auto;display:none">Удалить</button><button type="button" class="btn" data-dialog-close="savingsReturnDialog">Отмена</button><button type="submit" class="btn primary">Сохранить</button></div>
   </form>
 </dialog>
@@ -1502,13 +1649,13 @@
       <div class="field full">
         <label class="check-line">
           <input name="external" type="checkbox">
-          Чужие
-          <span class="muted">· вклад другого человека, не уменьшает твой баланс</span>
+          Вклад другого человека
+          <span class="muted">· не уменьшает твой баланс; комментарий будет показан у цели</span>
         </label>
       </div>
-      <div class="field full"><label>Комментарий</label><input name="note" placeholder="Необязательно"></div>
+      <div class="field full"><label>Имя или комментарий</label><input name="note" placeholder="Например, Даша · необязательно"></div>
     </div>
-    <div class="dialog-help">Свои деньги уменьшат доступный баланс. Чужие попадут только в прогресс цели.</div>
+    <div class="dialog-help">Свои деньги уменьшат доступный баланс. Если вклад делает другой человек, укажи его имя или комментарий — он отобразится прямо в карточке цели.</div>
     <div class="dialog-actions"><button type="button" class="btn" data-dialog-close="goalSavingDialog">Отмена</button><button type="submit" class="btn primary">Добавить</button></div>
   </form>
 </dialog>
@@ -1560,7 +1707,7 @@
       <div class="field"><label>Название</label><input name="title" placeholder="Обед, ужин, кофе…" required></div>
       <div class="field"><label>Категория</label><select name="category"><option>Продукты</option><option>Кафе</option><option>Доставка</option><option>Транспорт</option><option>Дом</option><option>Здоровье</option><option>Развлечения</option><option>Покупки</option><option>Подписки/связь</option><option>Перекусы</option><option>Другое</option></select></div>
       <div class="field"><label>Сумма, ₽</label><input name="amount" type="number" min="0" step="0.01" required></div>
-      <div class="field full"><label>Комментарий</label><input name="note" placeholder="Необязательно"></div>
+      <div class="field full"><label>Имя или комментарий</label><input name="note" placeholder="Например, Даша · необязательно"></div>
       <div class="field full">
         <label class="check-line">
           <input name="excludeFromLimit" type="checkbox">
@@ -2634,51 +2781,108 @@ function goalSavingBreakdown(goalId=''){
   return {own,external,total:own+external,ownAdded,externalAdded,ownReturned,externalReturned};
 }
 function goalSaved(id){return goalSavingBreakdown(id).total}
+function goalContributorRows(goalId=''){
+  const split=goalSavingBreakdown(goalId);
+  const rows=db.money.filter(x=>x.goalId===goalId&&(x.type==='saving'||x.type==='saving_return'));
+  const externalMap=new Map();
+  rows.forEach(x=>{
+    if(!x.external)return;
+    const label=(x.note||'').trim()||'Партнёр';
+    const delta=(x.type==='saving'?1:-1)*Number(x.amount||0);
+    externalMap.set(label,(externalMap.get(label)||0)+delta);
+  });
+  const result=[{key:'own',label:'Мои',amount:Math.max(0,split.own),icon:'◔',kind:'own'}];
+  [...externalMap.entries()].sort((a,b)=>b[1]-a[1]).forEach(([label,amount],idx)=>{
+    result.push({key:'external-'+idx,label,amount:Math.max(0,amount),icon:'◉',kind:'external'});
+  });
+  return result;
+}
+function goalContributorsHTML(goalId=''){
+  const rows=goalContributorRows(goalId).filter(x=>x.amount>0||x.kind==='own');
+  if(!rows.length)return '<span class="goal-contrib-empty">Пока без пополнений</span>';
+  return rows.map(x=>`<span class="goal-contrib-chip ${x.kind}"><span class="icon">${x.icon}</span><span class="label">${escapeHTML(x.label)}</span><strong>${fmt(Math.max(0,x.amount))}</strong></span>`).join('');
+}
+function goalSourcesHTML(goalId=''){
+  return `<div class="goal-contributors goal-dialog-sources">${goalContributorsHTML(goalId)}</div>`;
+}
+function goalPercentBadge(pct,color){
+  const tint=hexToRgba(color||'#4f6cff',0.18);
+  return `<span class="goal-percent-chip" style="background:${tint};color:${color||'#89a0ff'}">${pct}%</span>`;
+}
 function renderMoneyGoals(){
   const box=$('#moneyGoals');if(!box)return;
   box.innerHTML=db.goals.length?db.goals.map(g=>{
+    const color=g.color||'#3b82f6';
     const split=goalSavingBreakdown(g.id),saved=split.total,target=Math.max(1,Number(g.target||0)),pct=Math.min(100,Math.round(saved/target*100));
-    return `<div class="goal-row">
-      <div class="goal-top">
-        <button class="goal-title-btn" data-goal-edit="${g.id}" title="Редактировать цель"><i class="dot" style="background:${g.color||'#3b82f6'}"></i><span>${escapeHTML(g.title)}</span></button>
-        <div class="goal-total">${fmt(saved)} <span>/ ${fmt(target)}</span></div>
-      </div>
-      <div class="bar"><span style="width:${pct}%;background:${g.color||'#3b82f6'}"></span></div>
-      <div class="goal-footer">
-        <div>
-          <div class="goal-progress-label">${pct}% накоплено</div>
-          <div class="goal-breakdown"><span>Мои <strong>${fmt(split.own)}</strong></span><span>Чужие <strong>${fmt(split.external)}</strong></span></div>
+    return `<div class="goal-card">
+      <div class="goal-card-head">
+        <button class="goal-title-btn" data-goal-edit="${g.id}" title="Редактировать цель">
+          <span class="goal-dot-large" style="background:${color};color:${color}"></span>
+          <span class="goal-title-text"><span class="goal-title-main">${escapeHTML(g.title)}</span></span>
+        </button>
+        <div class="goal-card-side">
+          <div class="goal-card-total">${fmt(saved)} <span>/ ${fmt(target)}</span></div>
+          ${goalPercentBadge(pct,color)}
+          <button class="goal-edit-btn" data-goal-edit="${g.id}" aria-label="Редактировать цель" title="Редактировать цель">⋮</button>
         </div>
+      </div>
+      <div class="goal-track"><span style="width:${pct}%;background:${color}"></span></div>
+      <div class="goal-card-bottom">
+        <div class="goal-contributors">${goalContributorsHTML(g.id)}</div>
         <div class="goal-actions">
-          <button class="tiny-btn" data-goal-add="${g.id}" title="Добавить деньги в накопление">＋ Пополнить</button>
+          <button class="tiny-btn goal-add-btn" data-goal-add="${g.id}" title="Добавить деньги в накопление">＋ Пополнить</button>
           <button class="tiny-btn goal-return-btn" data-goal-return="${g.id}" ${saved<=0?'disabled':''}>↩ Вернуть</button>
         </div>
       </div>
     </div>`;
-  }).join(''):'<div class="empty">Целей пока нет. Создай цель и добавляй накопления прямо сюда.</div>';
+  }).join(''):'<div class="goal-empty">Целей пока нет. Создай первую цель и пополняй её прямо отсюда — свои деньги или вклад другого человека.</div>';
   $$('[data-goal-edit]',box).forEach(b=>b.onclick=()=>openGoalDialog(b.dataset.goalEdit));
   $$('[data-goal-add]',box).forEach(b=>b.onclick=()=>openGoalSavingDialog(b.dataset.goalAdd));
   $$('[data-goal-return]',box).forEach(b=>b.onclick=()=>openSavingsReturnDialog(b.dataset.goalReturn));
 
   const free=goalSavingBreakdown('');
-  $('#unallocatedSavings').innerHTML=free.total>0?`<div class="goal-free-pool"><div class="goal-free-pool-head"><strong>Свободные накопления</strong><div class="goal-actions"><span class="goal-free-pool-total">${fmt(free.total)}</span><button class="tiny-btn goal-return-btn" id="returnFreeSavings">↩ Вернуть</button></div></div><div class="goal-free-pool-copy">Деньги без цели остаются здесь. Мои: <b>${fmt(free.own)}</b> · Чужие: <b>${fmt(free.external)}</b>.</div></div>`:'';
+  $('#unallocatedSavings').innerHTML=free.total>0?`<div class="goal-free-card">
+    <div>
+      <div class="goal-free-card-main">
+        <div class="goal-free-icon">◌</div>
+        <div class="goal-free-copy">
+          <strong>Свободные накопления</strong>
+          <span>Деньги, которые пока не распределены по целям.</span>
+        </div>
+      </div>
+      <div class="goal-free-contrib">${goalContributorsHTML('')}</div>
+    </div>
+    <div class="goal-free-total">${fmt(free.total)}</div>
+    <button class="tiny-btn goal-return-btn" id="returnFreeSavings">↩ Вернуть</button>
+  </div>`:'';
   $('#returnFreeSavings')?.addEventListener('click',()=>openSavingsReturnDialog(''));
 }
 function openGoalSavingDialog(goalId){
   const goal=db.goals.find(g=>g.id===goalId);if(!goal)return;
   const split=goalSavingBreakdown(goalId),form=$('#goalSavingForm');
-  form.reset();form.elements.goalId.value=goalId;form.elements.date.value=todayISO;
-  $('#goalSavingGoal').innerHTML=`<strong>${escapeHTML(goal.title)}</strong><br><span class="muted">Сейчас ${fmt(split.total)} · мои ${fmt(split.own)} · чужие ${fmt(split.external)}</span>`;
+  form.reset();form.elements.goalId.value=goalId;form.elements.date.value=todayISO;syncGoalSavingNoteUI();
+  $('#goalSavingGoal').innerHTML=`<strong>${escapeHTML(goal.title)}</strong><br><span class="muted">Сейчас ${fmt(split.total)}</span><div class="goal-sources" style="margin-top:7px">${goalSourcesHTML(goalId)}</div>`;
   $('#goalSavingDialog').showModal();
   setTimeout(()=>form.elements.amount.focus(),0);
 }
+const goalSavingNoteField=()=>$('#goalSavingForm').querySelector('input[name="note"]');
+const goalSavingNoteLabel=()=>$('#goalSavingForm').querySelector('label[for]');
+function syncGoalSavingNoteUI(){
+  const form=$('#goalSavingForm');if(!form)return;
+  const isExternal=!!form.elements.external.checked;
+  const noteInput=form.elements.note;
+  const labelEl=noteInput.closest('.field').querySelector('label');
+  if(labelEl)labelEl.textContent=isExternal?'Имя или комментарий':'Комментарий';
+  noteInput.placeholder=isExternal?'Например, Даша · необязательно':'Необязательно';
+}
+$('#goalSavingForm').elements.external.addEventListener('change',syncGoalSavingNoteUI);
 $('#goalSavingForm').addEventListener('submit',e=>{
   e.preventDefault();
   const f=e.currentTarget,goalId=f.elements.goalId.value,goal=db.goals.find(g=>g.id===goalId);if(!goal)return;
   const amount=Number(f.elements.amount.value||0);if(!Number.isFinite(amount)||amount<=0)return;
   const external=!!f.elements.external.checked;
   db.money.push({id:uid(),date:f.elements.date.value||todayISO,type:'saving',category:'',projectId:'',goalId,amount,note:(f.elements.note.value||'').trim(),seriesId:'',external});
-  save(`${external?'Чужой вклад':'Отложено'} ${fmt(amount)} в «${goal.title}»`);
+  save(`${external?(f.elements.note.value.trim()||'Вклад другого человека'):'Отложено'} · ${fmt(amount)} в «${goal.title}»`);
   $('#goalSavingDialog').close();
   renderMoney();renderToday();renderProjects();
 });
@@ -2696,7 +2900,7 @@ function updateSavingsReturnAvailability(){
   const goalId=f.elements.goalId.value,external=f.elements.owner.value==='external',editingId=f.elements.id.value||'';
   const available=savingsOwnerAvailable(goalId,external,editingId);
   f.elements.amount.max=String(available);
-  $('#savingsReturnAvailable').innerHTML=`Доступно ${external?'чужих':'своих'} денег: <strong>${fmt(available)}</strong>`;
+  $('#savingsReturnAvailable').innerHTML=`Доступно ${external?'денег другого человека':'своих денег'}: <strong>${fmt(available)}</strong>`;
 }
 function openSavingsReturnDialog(goalId='',returnId=''){
   const goal=goalId?db.goals.find(g=>g.id===goalId):null;
@@ -2716,7 +2920,7 @@ function openSavingsReturnDialog(goalId='',returnId=''){
   else if(split.own<=0&&split.external>0)form.elements.owner.value='external';
   else form.elements.owner.value='own';
   const label=effectiveGoal?.title||'Свободные накопления';
-  $('#savingsReturnGoal').innerHTML=`<strong>${escapeHTML(label)}</strong><br><span class="muted">Всего ${fmt(split.total)} · мои ${fmt(split.own)} · чужие ${fmt(split.external)}</span>`;
+  $('#savingsReturnGoal').innerHTML=`<strong>${escapeHTML(label)}</strong><br><span class="muted">Всего ${fmt(split.total)}</span><div class="goal-sources" style="margin-top:7px">${goalSourcesHTML(effectiveGoalId)}</div>`;
   $('#deleteSavingsReturn').style.display=item?'inline-flex':'none';
   updateSavingsReturnAvailability();
   $('#savingsReturnDialog').showModal();
@@ -2729,13 +2933,13 @@ $('#savingsReturnForm').addEventListener('submit',e=>{
   if(goalId&&!db.goals.some(g=>g.id===goalId)){alert('Эта цель больше не существует.');return}
   const available=savingsOwnerAvailable(goalId,external,id),amount=Number(f.elements.amount.value||0);
   if(!Number.isFinite(amount)||amount<=0)return;
-  if(amount>available){alert(`Доступно ${external?'чужих':'своих'} денег: ${fmt(available)}.`);return}
+  if(amount>available){alert(`Доступно ${external?'денег другого человека':'своих денег'}: ${fmt(available)}.`);return}
   const obj={id:id||uid(),date:f.elements.date.value||todayISO,type:'saving_return',category:'',projectId:'',goalId,amount,note:(f.elements.note.value||'').trim(),seriesId:'',external};
   if(id){
     const i=db.money.findIndex(x=>x.id===id);if(i<0)return;db.money[i]={...db.money[i],...obj};
   }else db.money.push(obj);
   const label=goalId?(db.goals.find(g=>g.id===goalId)?.title||'цели'):'свободных накоплений';
-  save(`${external?'Чужие деньги':'Свои деньги'} ${id?'обновлены':'возвращены'} из «${label}»: ${fmt(amount)}`);
+  save(`${external?'Деньги другого человека':'Свои деньги'} ${id?'обновлены':'возвращены'} из «${label}»: ${fmt(amount)}`);
   $('#savingsReturnDialog').close();
   renderMoney();renderToday();renderProjects();
 });
@@ -2778,6 +2982,12 @@ function openMoneyEntryEditor(id){
   if(item.type==='saving_return'){openSavingsReturnDialog(item.goalId||'',item.id);return}
   openMoneyDialog(id);
 }
+function hexToRgba(hex,alpha=.18){
+  const safe=String(hex||'').replace('#','').trim();
+  if(!/^[0-9a-fA-F]{6}$/.test(safe))return `rgba(79,108,255,${alpha})`;
+  const n=parseInt(safe,16),r=(n>>16)&255,g=(n>>8)&255,b=n&255;
+  return `rgba(${r},${g},${b},${alpha})`;
+}
 function moneyTypeLabel(type){
   return type==='income'?'Доход':type==='expense'?'Расход':type==='saving'?'Отложено':type==='saving_return'?'Возврат':'Операция';
 }
@@ -2793,7 +3003,7 @@ function renderMoneyLedger(){
   box.innerHTML=rows.length?rows.map(x=>{
     const p=x.projectId?db.projects.find(v=>v.id===x.projectId):null,g=x.goalId?db.goals.find(v=>v.id===x.goalId):null;
     const title=x.category||x.note||g?.title||moneyTypeLabel(x.type);
-    const meta=[moneyTypeLabel(x.type),p?.name,g?.title,x.external?'Чужие':'',x.note&&x.note!==title?x.note:''].filter(Boolean).join(' · ');
+    const meta=[moneyTypeLabel(x.type),p?.name,g?.title,x.external?(x.note||'Вклад другого человека'):'',(!x.external&&x.note&&x.note!==title)?x.note:''].filter(Boolean).join(' · ');
     const sign=(x.external&&(x.type==='saving'||x.type==='saving_return'))?'':(x.type==='income'||x.type==='saving_return'?'+':x.type==='expense'||x.type==='saving'?'−':'');
     return `<div class="money-ledger-row">
       <span class="small">${escapeHTML(x.date||'—')}</span>
