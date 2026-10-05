@@ -9,7 +9,7 @@
   <meta name="apple-mobile-web-app-title" content="Planner" />
   <link rel="manifest" href="./manifest.webmanifest" />
   <link rel="apple-touch-icon" href="./icon-192.png" />
-  <title>Planner v0.8.2</title>
+  <title>Planner v0.9.0</title>
   <style>
     :root{
       --bg:#f7f7f8;
@@ -172,6 +172,9 @@
     .food-review-note{font-size:12px;color:var(--muted);line-height:1.45}
     .food-entry-actions{display:flex;gap:3px;position:absolute;right:5px;top:5px}
     .food-entry-action{border:0;background:rgba(255,255,255,.76);border-radius:7px;width:23px;height:23px;padding:0;color:#52525b}
+    .food-entry.outside-limit{box-shadow:inset 0 0 0 1px rgba(99,102,241,.20)}
+    .food-outside-badge{display:inline-flex;align-items:center;gap:5px;margin-top:6px;padding:3px 6px;border-radius:999px;background:var(--accent-2);color:var(--accent);font-size:9px;font-weight:700}
+    .food-outside-badge:before{content:"";width:5px;height:5px;border-radius:50%;background:var(--accent)}
     .calendar-view-switch{margin-left:2px}
     .month-grid{display:grid;grid-template-columns:repeat(7,minmax(110px,1fr));grid-auto-rows:minmax(116px,auto);align-items:stretch;border:1px solid var(--border);border-radius:14px;overflow:auto;background:var(--surface)}
     .month-weekday{padding:9px;text-align:center;font-size:11px;font-weight:650;color:var(--muted);background:var(--surface-2);border-right:1px solid var(--border);border-bottom:1px solid var(--border)}
@@ -830,6 +833,46 @@
     @media(max-width:1050px){.today-summary-compact{grid-template-columns:repeat(2,minmax(0,1fr))}}
     @media(max-width:650px){.today-summary-compact{grid-template-columns:1fr}.today-section-head{align-items:flex-start;gap:10px}}
 
+  
+    .subscriptions-summary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin-bottom:12px}
+    .subscriptions-summary>div{padding:11px 12px;border:1px solid var(--border);border-radius:11px;background:var(--surface-2)}
+    .subscriptions-summary span{display:block;font-size:10px;color:var(--muted)}
+    .subscriptions-summary strong{display:block;margin-top:3px;font-size:17px}
+    .subscriptions-list{display:flex;flex-direction:column}
+    .subscription-row{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:10px;align-items:center;padding:11px 2px;border-bottom:1px solid var(--border)}
+    .subscription-row:last-child{border-bottom:0}
+    .subscription-copy{min-width:0}
+    .subscription-copy strong{display:block;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .subscription-copy span{display:block;margin-top:3px;font-size:10px;color:var(--muted)}
+    .subscription-amount{text-align:right;font-weight:750;white-space:nowrap}
+    .subscription-actions{display:flex;gap:5px}
+    .today-focus-metrics{display:none!important}
+    .project-calendar-stats{margin-top:9px;padding-top:9px;border-top:1px solid var(--border);display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
+    .project-calendar-stats span{font-size:10px;color:var(--muted)}
+    .project-calendar-stats strong{display:block;font-size:12px;color:var(--text);margin-top:2px}
+    .project-block-row{display:grid;grid-template-columns:auto minmax(0,1fr) auto auto;gap:10px;align-items:center;padding:10px 2px;border-bottom:1px solid var(--border)}
+    .project-block-row:last-child{border-bottom:0}
+    .project-block-row.is-done{opacity:.58}
+    .project-block-row.is-done .project-block-title{text-decoration:line-through}
+    .project-block-copy{min-width:0}
+    .project-block-title{font-size:13px;font-weight:700}
+    .project-block-meta{display:block;font-size:10px;color:var(--muted);margin-top:3px}
+    .month-day.routine-day{background:#f3f4f6;color:#71717a}
+    .month-day.work-day{box-shadow:inset 0 0 0 1px rgba(99,102,241,.22)}
+    .month-day.work-level-1{background:rgba(99,102,241,.08)}
+    .month-day.work-level-2{background:rgba(99,102,241,.13)}
+    .month-day.work-level-3{background:rgba(99,102,241,.19)}
+    html[data-theme="dark"] .month-day.routine-day{background:#191a1e;color:#71717a}
+    html[data-theme="dark"] .month-day.work-level-1{background:#20223a}
+    html[data-theme="dark"] .month-day.work-level-2{background:#252846}
+    html[data-theme="dark"] .month-day.work-level-3{background:#2b2f55}
+    @media(max-width:760px){
+      .subscriptions-summary{grid-template-columns:1fr}
+      .subscription-row{grid-template-columns:minmax(0,1fr) auto}
+      .subscription-actions{grid-column:1/-1}
+      .project-calendar-stats{grid-template-columns:1fr}
+    }
+
   </style>
 </head>
 <body>
@@ -1019,12 +1062,12 @@
 
     <section class="page" id="page-projects">
       <div class="topbar">
-        <div class="title-wrap"><h1>Проекты</h1><div class="subtitle">Только твои проекты и задачи — без демонстрационных записей</div></div>
-        <div class="actions"><button class="btn" id="newProjectTask">＋ Задача</button><button class="btn" id="toggleArchivedProjects">Архив</button><button class="btn primary" id="newProject">＋ Новый проект</button></div>
+        <div class="title-wrap"><h1>Проекты</h1><div class="subtitle">Календарные блоки, фактическое время и доход по каждому проекту</div></div>
+        <div class="actions"><button class="btn" id="newProjectBlock">＋ Блок</button><button class="btn" id="toggleArchivedProjects">Архив</button><button class="btn primary" id="newProject">＋ Новый проект</button></div>
       </div>
       <div class="project-grid" id="projectsGrid"></div>
       <div class="card">
-        <div class="section-title"><h2>Задачи</h2><span class="small" id="projectTaskScope">Все проекты · можно оставить без проекта</span></div>
+        <div class="section-title"><h2>Календарные блоки</h2><span class="small" id="projectTaskScope">Работа по проектам из календаря</span></div>
         <div id="projectTasksList"></div>
       </div>
     </section>
@@ -1081,7 +1124,7 @@
 
     <section class="page" id="page-food">
       <div class="topbar">
-        <div class="title-wrap"><h1>Траты</h1><div class="subtitle">Повседневные расходы, дневной максимум и связь с общими финансами</div></div>
+        <div class="title-wrap"><h1>Траты</h1><div class="subtitle">Повседневные расходы, дневной ориентир и связь с общими финансами</div></div>
         <div class="actions">
           <button class="btn" id="foodPrevWeek">←</button>
           <button class="btn" id="foodCurrentWeek">Текущая</button>
@@ -1099,11 +1142,27 @@
       </div>
 
       <div class="card" style="margin-bottom:14px">
-        <div class="section-title"><div><h2>Неделя</h2><span class="small" id="foodWeekRange">Текущая неделя</span></div><span class="small" id="foodWeekBudgetLabel">Максимум 7 000 ₽</span></div>
+        <div class="section-title"><div><h2>Неделя</h2><span class="small" id="foodWeekRange">Текущая неделя</span></div><span class="small" id="foodWeekBudgetLabel">Ориентир 7 000 ₽</span></div>
         <div class="food-week" id="foodWeekBoard"></div>
       </div>
 
       <div id="foodWeekReview"></div>
+
+      <div class="card subscriptions-card" style="margin-top:14px">
+        <div class="section-title">
+          <div>
+            <h2>Подписки и регулярные траты</h2>
+            <span class="small">Справочный список. Здесь ничего не списывается и не попадает в «Деньги» автоматически.</span>
+          </div>
+          <button class="btn soft" id="addSubscription">＋ Добавить</button>
+        </div>
+        <div class="subscriptions-summary">
+          <div><span>В месяц</span><strong id="subscriptionsMonthlyTotal">0 ₽</strong></div>
+          <div><span>Записей</span><strong id="subscriptionsCount">0</strong></div>
+          <div><span>За год</span><strong id="subscriptionsYearlyTotal">0 ₽</strong></div>
+        </div>
+        <div id="subscriptionsList" class="subscriptions-list"></div>
+      </div>
 
       <div class="grid-equal" id="foodSecondaryPanels" style="margin-top:14px">
         <div class="card">
@@ -1352,6 +1411,25 @@
   </form>
 </dialog>
 
+<dialog id="subscriptionDialog">
+  <form id="subscriptionForm" class="dialog-inner">
+    <div class="dialog-head"><h3 id="subscriptionDialogTitle">Добавить регулярную трату</h3><button type="button" class="icon-btn" data-dialog-close="subscriptionDialog" aria-label="Закрыть">×</button></div>
+    <input type="hidden" name="id">
+    <div class="form-grid">
+      <div class="field full"><label>Название</label><input name="title" required maxlength="60" placeholder="Например, iCloud / YouTube Premium / интернет"></div>
+      <div class="field"><label>Сумма в месяц, ₽</label><input name="amount" type="number" min="0" step="0.01" required placeholder="299"></div>
+      <div class="field"><label>День списания</label><input name="billingDay" type="number" min="1" max="31" step="1" placeholder="Необязательно"></div>
+      <div class="field full"><label>Комментарий</label><input name="note" maxlength="120" placeholder="Необязательно"></div>
+      <div class="field full"><div class="note">Эта запись существует только как справочная статистика. Реальное списание ты, как и раньше, добавляешь отдельно в «Траты» в тот день, когда деньги действительно ушли.</div></div>
+    </div>
+    <div class="dialog-actions">
+      <button type="button" class="btn danger" id="deleteSubscription" style="margin-right:auto;display:none">Удалить</button>
+      <button type="button" class="btn" data-dialog-close="subscriptionDialog">Отмена</button>
+      <button type="submit" class="btn primary">Сохранить</button>
+    </div>
+  </form>
+</dialog>
+
 <dialog id="foodDialog">
   <form id="foodForm" class="dialog-inner">
     <div class="dialog-head"><h3 id="foodDialogTitle">Добавить трату</h3><button type="button" class="icon-btn" data-dialog-close="foodDialog" aria-label="Закрыть">×</button></div>
@@ -1359,10 +1437,17 @@
     <div class="form-grid">
       <div class="field"><label>Дата</label><input name="date" type="date" required></div>
       <div class="field"><label>Название</label><input name="title" placeholder="Обед, ужин, кофе…" required></div>
-      <div class="field"><label>Категория</label><select name="category"><option>Продукты</option><option>Доставка</option><option>Кафе</option><option>Перекусы</option><option>Другое</option></select></div>
+      <div class="field"><label>Категория</label><select name="category"><option>Продукты</option><option>Кафе</option><option>Доставка</option><option>Транспорт</option><option>Дом</option><option>Здоровье</option><option>Развлечения</option><option>Покупки</option><option>Подписки/связь</option><option>Перекусы</option><option>Другое</option></select></div>
       <div class="field"><label>Сумма, ₽</label><input name="amount" type="number" min="0" step="0.01" required></div>
       <div class="field full"><label>Комментарий</label><input name="note" placeholder="Необязательно"></div>
-      <div class="field full"><div class="note">Этот расход автоматически попадёт в раздел «Деньги» и во всю статистику еды.</div></div>
+      <div class="field full">
+        <label class="check-line">
+          <input name="excludeFromLimit" type="checkbox">
+          Не учитывать в повседневном лимите
+          <span class="muted">· медицина, крупные обязательные покупки и другие разовые расходы</span>
+        </label>
+      </div>
+      <div class="field full"><div class="note">Расход всё равно полностью попадёт в «Деньги». Этот переключатель влияет только на лимит 1 000 ₽/день и связанную недельную статистику.</div></div>
     </div>
     <div class="dialog-actions"><button type="button" class="btn danger" id="deleteFood" style="margin-right:auto;display:none">Удалить</button><button type="button" class="btn" data-dialog-close="foodDialog">Отмена</button><button type="submit" class="btn primary">Сохранить</button></div>
   </form>
@@ -1537,7 +1622,7 @@ const iso = d => {
   const z = new Date(d.getTime() - d.getTimezoneOffset()*60000);
   return z.toISOString().slice(0,10);
 };
-const todayISO = iso(new Date());
+let todayISO = iso(new Date());
 const uid = () => (crypto.randomUUID ? crypto.randomUUID() : Date.now().toString(36)+Math.random().toString(36).slice(2));
 const startOfWeek = d => {
   const x=new Date(d); const day=(x.getDay()+6)%7; x.setHours(0,0,0,0); x.setDate(x.getDate()-day); return x;
@@ -1547,6 +1632,7 @@ const monthKey = d => d.slice(0,7);
 const defaults = {
   money: [],
   food: [],
+  subscriptions: [],
   calories: [],
   workouts: [],
   weights: [],
@@ -1561,7 +1647,7 @@ const defaults = {
   timeEntries:[],
   weekTemplate:[],
   customCalendarPresets:[],
-  meta:{schema:13,updatedAt:null}
+  meta:{schema:14,updatedAt:null}
 };
 
 function load(){
@@ -1571,7 +1657,7 @@ function load(){
   }catch(e){ return structuredClone(defaults); }
 }
 let db=load();
-db.calendar ??= []; db.tasks ??= []; db.projects ??= []; db.money ??= []; db.food ??= []; db.calories ??=[]; db.workouts ??=[]; db.weights ??=[]; db.trainingSettings ??= structuredClone(defaults.trainingSettings); db.foodWeekDecisions ??= {}; db.goals ??= []; db.budgets ??= structuredClone(defaults.budgets); db.meta ??= {}; db.timeEntries ??=[]; db.weekTemplate ??=[]; db.customCalendarPresets ??=[];
+db.calendar ??= []; db.tasks ??= []; db.projects ??= []; db.money ??= []; db.food ??= []; db.subscriptions ??= []; db.calories ??=[]; db.workouts ??=[]; db.weights ??=[]; db.trainingSettings ??= structuredClone(defaults.trainingSettings); db.foodWeekDecisions ??= {}; db.goals ??= []; db.budgets ??= structuredClone(defaults.budgets); db.meta ??= {}; db.timeEntries ??=[]; db.weekTemplate ??=[]; db.customCalendarPresets ??=[];
 // v0.3: удаляем только старые демонстрационные быстрые задачи из прототипа.
 if((db.meta.schema||0)<3){
   const legacy=new Set(['Монтаж ролика','Ответить клиенту','План на неделю']);
@@ -1635,9 +1721,17 @@ if((db.meta.schema||0)<13){
   db.customCalendarPresets=Array.isArray(db.customCalendarPresets)?db.customCalendarPresets:[];
   db.meta.schema=13;
 }
+if((db.meta.schema||0)<14){
+  db.food=(Array.isArray(db.food)?db.food:[]).map(x=>({...x,excludeFromLimit:!!x.excludeFromLimit}));
+  db.meta.schema=14;
+}
+if((db.meta.schema||0)<15){
+  db.subscriptions=Array.isArray(db.subscriptions)?db.subscriptions:[];
+  db.meta.schema=15;
+}
 function persistLocal(touch=true){
   db.meta??={};
-  db.meta.schema=13;
+  db.meta.schema=15;
   if(touch) db.meta.updatedAt=new Date().toISOString();
   localStorage.setItem('artemPlanner.v01',JSON.stringify(db));
 }
@@ -1784,11 +1878,11 @@ function storeCloudConfig(){
   localStorage.setItem(CLOUD_CONFIG_KEY,JSON.stringify(cfg)); return cfg;
 }
 function cloudConfigValid(cfg=loadCloudConfig()){return /^https:\/\/.+/.test(cfg.url||'')&&String(cfg.key||'').length>20}
-function dataHasContent(x){const listCount=(x?.tasks?.length||0)+(x?.projects?.length||0)+(x?.calendar?.length||0)+(x?.money?.length||0)+(x?.food?.length||0)+(x?.calories?.length||0)+(x?.workouts?.length||0)+(x?.weights?.length||0)+(x?.timeEntries?.length||0)+(x?.weekTemplate?.length||0)+(x?.customCalendarPresets?.length||0)+(x?.goals?.length||0);const decisions=Object.keys(x?.foodWeekDecisions||{}).length,b=x?.budgets||{},customBudget=Number(b.day??1000)!==1000||Number(b.month??30000)!==30000;return !!(listCount+decisions)||customBudget}
+function dataHasContent(x){const listCount=(x?.tasks?.length||0)+(x?.projects?.length||0)+(x?.calendar?.length||0)+(x?.money?.length||0)+(x?.food?.length||0)+(x?.subscriptions?.length||0)+(x?.calories?.length||0)+(x?.workouts?.length||0)+(x?.weights?.length||0)+(x?.timeEntries?.length||0)+(x?.weekTemplate?.length||0)+(x?.customCalendarPresets?.length||0)+(x?.goals?.length||0);const decisions=Object.keys(x?.foodWeekDecisions||{}).length,b=x?.budgets||{},customBudget=Number(b.day??1000)!==1000||Number(b.month??30000)!==30000;return !!(listCount+decisions)||customBudget}
 function normalizeCloudData(raw){
   const next={...structuredClone(defaults),...(raw&&typeof raw==='object'?raw:{})};
-  for(const k of ['money','food','calories','workouts','weights','tasks','projects','calendar','timeEntries','weekTemplate','customCalendarPresets','goals']) if(!Array.isArray(next[k])) next[k]=[];
-  next.budgets={...defaults.budgets,...(next.budgets||{})}; next.budgets.week=(Number(next.budgets.day)||1000)*7; next.foodWeekDecisions=(next.foodWeekDecisions&&typeof next.foodWeekDecisions==='object')?next.foodWeekDecisions:{}; next.timer={...defaults.timer,...(next.timer||{})}; next.trainingSettings={...defaults.trainingSettings,...(next.trainingSettings||{})}; next.weights=next.weights.map(x=>({...x,zone:x.zone||'green'})); next.meta={...defaults.meta,...(next.meta||{}),schema:13}; next.timer={...defaults.timer,...(next.timer||{}),sessionAccumulatedMs:Number(next.timer?.sessionAccumulatedMs||0)}; next.timeEntries=next.timeEntries.map(x=>({...x,taskTitle:x.taskTitle||'',projectName:x.projectName||''})); next.money=next.money.map(x=>({...x,goalId:x.goalId||'',seriesId:x.seriesId||''})); return next;
+  for(const k of ['money','food','subscriptions','calories','workouts','weights','tasks','projects','calendar','timeEntries','weekTemplate','customCalendarPresets','goals']) if(!Array.isArray(next[k])) next[k]=[];
+  next.budgets={...defaults.budgets,...(next.budgets||{})}; next.budgets.week=(Number(next.budgets.day)||1000)*7; next.foodWeekDecisions=(next.foodWeekDecisions&&typeof next.foodWeekDecisions==='object')?next.foodWeekDecisions:{}; next.timer={...defaults.timer,...(next.timer||{})}; next.trainingSettings={...defaults.trainingSettings,...(next.trainingSettings||{})}; next.weights=next.weights.map(x=>({...x,zone:x.zone||'green'})); next.food=next.food.map(x=>({...x,excludeFromLimit:!!x.excludeFromLimit})); next.meta={...defaults.meta,...(next.meta||{}),schema:15}; next.timer={...defaults.timer,...(next.timer||{}),sessionAccumulatedMs:Number(next.timer?.sessionAccumulatedMs||0)}; next.timeEntries=next.timeEntries.map(x=>({...x,taskTitle:x.taskTitle||'',projectName:x.projectName||''})); next.money=next.money.map(x=>({...x,goalId:x.goalId||'',seriesId:x.seriesId||''})); return next;
 }
 function dotClass(mode){return mode==='ready'?'ok':mode==='syncing'?'busy':mode==='conflict'?'warn':mode==='error'?'err':''}
 function cloudStatusCopy(){
@@ -2265,9 +2359,56 @@ function foodTone(category=''){
   if(c.includes('каф'))return 'dinner';
   return 'snack';
 }
+function foodCountsTowardLimit(x){return !x?.excludeFromLimit}
+function foodSpendSummary(entries){
+  const total=entries.reduce((a,b)=>a+Number(b.amount||0),0);
+  const limited=entries.filter(foodCountsTowardLimit).reduce((a,b)=>a+Number(b.amount||0),0);
+  return {total,limited,outside:Math.max(0,total-limited)};
+}
+function openSubscriptionDialog(id=''){
+  const f=$('#subscriptionForm'),item=id?db.subscriptions.find(x=>x.id===id):null;
+  f.reset();
+  f.elements.id.value=item?.id||'';
+  f.elements.title.value=item?.title||'';
+  f.elements.amount.value=item?.amount??'';
+  f.elements.billingDay.value=item?.billingDay??'';
+  f.elements.note.value=item?.note||'';
+  $('#subscriptionDialogTitle').textContent=item?'Редактировать регулярную трату':'Добавить регулярную трату';
+  $('#deleteSubscription').style.display=item?'inline-flex':'none';
+  $('#subscriptionDialog').showModal();
+  setTimeout(()=>f.elements.title.focus(),0);
+}
+function renderSubscriptions(){
+  const list=$('#subscriptionsList');if(!list)return;
+  const rows=[...db.subscriptions].sort((a,b)=>{
+    const ad=Number(a.billingDay||99),bd=Number(b.billingDay||99);
+    return ad-bd||String(a.title).localeCompare(String(b.title),'ru');
+  });
+  const total=rows.reduce((a,b)=>a+Number(b.amount||0),0);
+  $('#subscriptionsMonthlyTotal').textContent=fmt(total);
+  $('#subscriptionsCount').textContent=rows.length;
+  $('#subscriptionsYearlyTotal').textContent=fmt(total*12);
+  list.innerHTML=rows.length?rows.map(x=>{
+    const meta=[x.billingDay?`списание примерно ${x.billingDay}-го числа`:'ежемесячно',x.note||''].filter(Boolean).join(' · ');
+    return `<div class="subscription-row">
+      <div class="subscription-copy"><strong>${escapeHTML(x.title)}</strong><span>${escapeHTML(meta)}</span></div>
+      <div class="subscription-amount">${fmt(x.amount)}</div>
+      <div class="subscription-actions"><button class="tiny-btn" data-subscription-edit="${x.id}">Изм.</button><button class="tiny-btn danger" data-subscription-del="${x.id}">×</button></div>
+    </div>`;
+  }).join(''):'<div class="empty">Пока ничего нет. Добавь подписки, связь, интернет или другие регулярные ежемесячные траты.</div>';
+  $$('[data-subscription-edit]',list).forEach(b=>b.onclick=()=>openSubscriptionDialog(b.dataset.subscriptionEdit));
+  $$('[data-subscription-del]',list).forEach(b=>b.onclick=()=>{
+    const x=db.subscriptions.find(v=>v.id===b.dataset.subscriptionDel);
+    if(!x||!confirm(`Удалить «${x.title}» из справочного списка?`))return;
+    db.subscriptions=db.subscriptions.filter(v=>v.id!==x.id);
+    save(`«${x.title}» удалено из регулярных трат`);
+    renderSubscriptions();
+  });
+}
+
 function openFoodDialog(date=todayISO,id=''){
   const form=$('#foodForm'),item=id?db.food.find(x=>x.id===id):null;form.reset();
-  form.elements.id.value=item?.id||'';form.elements.date.value=item?.date||date;form.elements.title.value=item?foodTitle(item):'';form.elements.category.value=item?.category||'Продукты';form.elements.amount.value=item?.amount??'';form.elements.note.value=item?.note||'';
+  form.elements.id.value=item?.id||'';form.elements.date.value=item?.date||date;form.elements.title.value=item?foodTitle(item):'';form.elements.category.value=item?.category||'Продукты';form.elements.amount.value=item?.amount??'';form.elements.note.value=item?.note||'';form.elements.excludeFromLimit.checked=!!item?.excludeFromLimit;
   $('#foodDialogTitle').textContent=item?'Редактировать трату':'Добавить трату';$('#deleteFood').style.display=item?'inline-flex':'none';$('#foodDialog').showModal();
   setTimeout(()=>form.elements.title?.focus(),0);
 }
@@ -2288,11 +2429,12 @@ function renderFoodWeekReview(start,end){
   const currentStart=startOfWeek(new Date());
   const key=iso(start);
   const entries=db.food.filter(x=>{const d=new Date(x.date+'T12:00:00');return d>=start&&d<end});
-  const limit=(Number(db.budgets.day)||1000)*7,spent=entries.reduce((a,b)=>a+Number(b.amount||0),0);
+  const summary=foodSpendSummary(entries);
+  const limit=(Number(db.budgets.day)||1000)*7,spent=summary.limited,totalSpent=summary.total,outsideSpent=summary.outside;
 
   if(start>=currentStart){
     const left=Math.max(0,limit-spent);
-    box.innerHTML=`<div class="card"><div class="section-title"><h2>Итоги недели</h2><span class="small">${weekRangeLabel(start,end)}</span></div><div class="food-review-kpis"><div class="food-review-kpi"><span>Максимум</span><strong>${fmt(limit)}</strong></div><div class="food-review-kpi"><span>Потрачено</span><strong>${fmt(spent)}</strong></div><div class="food-review-kpi"><span>Осталось</span><strong>${fmt(left)}</strong></div></div><div class="food-review-note">${start.getTime()===currentStart.getTime()?'Неделя ещё идёт. После её завершения здесь появится итог и предложение, сколько отправить в копилку.':'Это будущая неделя. Итог появится после её завершения.'}</div></div>`;
+    box.innerHTML=`<div class="card"><div class="section-title"><h2>Итоги недели</h2><span class="small">${weekRangeLabel(start,end)}</span></div><div class="food-review-kpis"><div class="food-review-kpi"><span>Ориентир</span><strong>${fmt(limit)}</strong></div><div class="food-review-kpi"><span>Повседневные</span><strong>${fmt(spent)}</strong></div><div class="food-review-kpi"><span>Осталось</span><strong>${fmt(left)}</strong></div></div>${outsideSpent?`<div class="food-review-note">Всего расходов: <strong>${fmt(totalSpent)}</strong> · вне повседневного лимита: <strong>${fmt(outsideSpent)}</strong>.</div>`:''}<div class="food-review-note">${start.getTime()===currentStart.getTime()?'Неделя ещё идёт. После её завершения здесь появится итог и предложение, сколько отправить в копилку.':'Это будущая неделя. Итог появится после её завершения.'}</div></div>`;
     return;
   }
 
@@ -2312,7 +2454,7 @@ function renderFoodWeekReview(start,end){
   }else{
     action=`<div class="food-review-suggestion">Ты сэкономил <strong>${fmt(saved)}</strong>. Предлагаю отправить <strong>50% = ${fmt(suggested)}</strong> в копилку, а оставшиеся ${fmt(saved-suggested)} оставить свободными.</div><div class="food-review-actions"><button class="btn primary" data-food-save-half="${key}">Отложить 50%</button><input id="foodSavingsCustom" type="number" min="0" max="${saved}" step="1" placeholder="Своя сумма"><button class="btn" data-food-save-custom="${key}">Отложить свою</button><button class="btn" data-food-save-none="${key}">Не откладывать</button></div>`;
   }
-  box.innerHTML=`<div class="food-review"><div class="food-review-main"><div class="section-title"><h2>Итоги завершённой недели</h2><span class="small">${weekRangeLabel(start,end)}</span></div><div class="food-review-kpis"><div class="food-review-kpi"><span>Максимум</span><strong>${fmt(limit)}</strong></div><div class="food-review-kpi"><span>Потрачено</span><strong>${fmt(spent)}</strong></div><div class="food-review-kpi"><span>${over?'Перерасход':'Сэкономлено'}</span><strong style="color:${over?'var(--danger)':'var(--success)'}">${fmt(over||saved)}</strong></div></div>${action}</div><div class="card"><div class="section-title"><h2>Связь с деньгами</h2></div><div class="food-review-note">Записи из раздела «Траты» автоматически попадают в «Деньги». Решение по экономии создаёт операцию «Отложено».</div></div></div>`;
+  box.innerHTML=`<div class="food-review"><div class="food-review-main"><div class="section-title"><h2>Итоги завершённой недели</h2><span class="small">${weekRangeLabel(start,end)}</span></div><div class="food-review-kpis"><div class="food-review-kpi"><span>Ориентир</span><strong>${fmt(limit)}</strong></div><div class="food-review-kpi"><span>Повседневные</span><strong>${fmt(spent)}</strong></div><div class="food-review-kpi"><span>${over?'Перерасход':'Сэкономлено'}</span><strong style="color:${over?'var(--danger)':'var(--success)'}">${fmt(over||saved)}</strong></div></div>${outsideSpent?`<div class="food-review-note" style="margin-bottom:10px">Всего расходов: <strong>${fmt(totalSpent)}</strong> · вне лимита: <strong>${fmt(outsideSpent)}</strong>.</div>`:''}${action}</div><div class="card"><div class="section-title"><h2>Связь с деньгами</h2></div><div class="food-review-note">Все записи полностью попадают в «Деньги». Флаг «вне повседневного лимита» влияет только на лимит и расчёт недельной экономии.</div></div></div>`;
   $$('[data-food-save-half]',box).forEach(b=>b.onclick=()=>applyFoodWeekDecision(key,suggested,start,end));
   $$('[data-food-save-custom]',box).forEach(b=>b.onclick=()=>{const value=Number($('#foodSavingsCustom')?.value);if(!Number.isFinite(value)||value<0||value>saved){alert(`Введи сумму от 0 до ${fmt(saved)}`);return}applyFoodWeekDecision(key,value,start,end)});
   $$('[data-food-save-none]',box).forEach(b=>b.onclick=()=>applyFoodWeekDecision(key,0,start,end));
@@ -2323,7 +2465,7 @@ function applyFoodWeekDecision(key,amount,start,end){
   const old=db.foodWeekDecisions[key];if(old?.moneyId)db.money=db.money.filter(x=>x.id!==old.moneyId);
   let moneyId='';
   if(amount>0){moneyId=uid();db.money.push({id:moneyId,date:iso(new Date(end.getTime()-86400000)),type:'saving',category:'Экономия на еде',projectId:'',amount:Number(amount),note:`Экономия за ${weekRangeLabel(start,end)}`,source:'food_week_saving',sourceId:key});}
-  db.foodWeekDecisions[key]={amount:Number(amount)||0,moneyId,spentAtDecision:db.food.filter(x=>{const d=new Date(x.date+'T12:00:00');return d>=start&&d<end}).reduce((a,b)=>a+Number(b.amount||0),0),decidedAt:new Date().toISOString()};save();renderFood();renderMoney();renderToday();renderAnalytics();
+  db.foodWeekDecisions[key]={amount:Number(amount)||0,moneyId,spentAtDecision:db.food.filter(x=>{const d=new Date(x.date+'T12:00:00');return d>=start&&d<end&&foodCountsTowardLimit(x)}).reduce((a,b)=>a+Number(b.amount||0),0),decidedAt:new Date().toISOString()};save();renderFood();renderMoney();renderToday();renderAnalytics();
 }
 function resetFoodWeekDecision(key){
   const d=db.foodWeekDecisions?.[key];if(d?.moneyId)db.money=db.money.filter(x=>x.id!==d.moneyId);if(db.foodWeekDecisions)delete db.foodWeekDecisions[key];save();renderFood();renderMoney();renderToday();renderAnalytics();
@@ -2334,33 +2476,38 @@ function deleteFoodEntry(id){
 
 function renderFood(){
   const now=new Date(); const weekStart=new Date(foodWeekStart); const weekEnd=new Date(weekStart); weekEnd.setDate(weekEnd.getDate()+7);
-  const selectedMonthISO=iso(weekStart),month=monthKey(selectedMonthISO),dayLimit=Number(db.budgets.day)||1000,weekLimit=dayLimit*7; db.budgets.week=weekLimit;
-  const todaySum=db.food.filter(x=>x.date===todayISO).reduce((a,b)=>a+Number(b.amount||0),0);
-  const weekEntries=db.food.filter(x=>{const d=new Date(x.date+'T12:00:00'); return d>=weekStart&&d<weekEnd});
-  const weekSum=weekEntries.reduce((a,b)=>a+Number(b.amount||0),0);
-  const monthEntries=db.food.filter(x=>monthKey(x.date)===month);
-  const monthSum=monthEntries.reduce((a,b)=>a+Number(b.amount||0),0);
-  const days=new Set(monthEntries.map(x=>x.date)).size, todayState=foodLimitState(todaySum,dayLimit),weekState=foodLimitState(weekSum,weekLimit);
+  const monthAnchor=new Date(weekStart);monthAnchor.setDate(monthAnchor.getDate()+3);
+  const month=monthKey(iso(monthAnchor)),dayLimit=Number(db.budgets.day)||1000,weekLimit=dayLimit*7; db.budgets.week=weekLimit;
+
+  const todayEntries=db.food.filter(x=>x.date===todayISO),todaySummary=foodSpendSummary(todayEntries);
+  const weekEntries=db.food.filter(x=>{const d=new Date(x.date+'T12:00:00'); return d>=weekStart&&d<weekEnd}),weekSummary=foodSpendSummary(weekEntries);
+  const monthEntries=db.food.filter(x=>monthKey(x.date)===month),monthSummary=foodSpendSummary(monthEntries);
+
+  const todaySum=todaySummary.limited,weekSum=weekSummary.limited,monthSum=monthSummary.limited;
+  const days=new Set(monthEntries.filter(foodCountsTowardLimit).map(x=>x.date)).size, todayState=foodLimitState(todaySum,dayLimit),weekState=foodLimitState(weekSum,weekLimit);
+
   $('#foodToday').textContent=fmt(todaySum); $('#foodWeek').textContent=fmt(weekSum); $('#foodMonth').textContent=fmt(monthSum); $('#foodAvg').textContent=fmt(days?monthSum/days:0);
-  $('#foodTodayHint').textContent=`максимум ${fmt(dayLimit)}`; $('#foodWeekHint').textContent=`максимум ${fmt(weekLimit)}`; $('#foodMonthHint').textContent=`ориентир ${fmt(db.budgets.month)}`;
-  $('#foodTodayBar').style.width=todayState.clamped+'%';$('#foodTodayBar').style.background=todayState.tone==='over'?'var(--danger)':todayState.tone==='warn'?'var(--warning)':'var(--success)';$('#foodTodayState').textContent=todayState.copy;$('#foodTodayPct').textContent=todayState.pct+'%';
-  $('#foodWeekBar').style.width=weekState.clamped+'%';$('#foodWeekBar').style.background=weekState.tone==='over'?'var(--danger)':weekState.tone==='warn'?'var(--warning)':'var(--success)';$('#foodWeekState').textContent=weekState.copy.replace('Осталось','Резерв');$('#foodWeekPct').textContent=weekState.pct+'%';
-  $('#foodWeekRange').textContent=weekRangeLabel(weekStart,weekEnd);$('#foodNavRange').textContent=weekRangeLabel(weekStart,weekEnd);$('#foodWeekBudgetLabel').textContent=`Максимум ${fmt(weekLimit)} · ${fmt(dayLimit)} в день`;
-  const selectedMonthDate=new Date(weekStart.getFullYear(),weekStart.getMonth(),1);
+  $('#foodTodayHint').textContent=todaySummary.outside?`ориентир ${fmt(dayLimit)} · всего ${fmt(todaySummary.total)}`:`ориентир ${fmt(dayLimit)}`;
+  $('#foodWeekHint').textContent=weekSummary.outside?`ориентир ${fmt(weekLimit)} · всего ${fmt(weekSummary.total)}`:`ориентир ${fmt(weekLimit)}`;
+  $('#foodMonthHint').textContent=monthSummary.outside?`ориентир ${fmt(db.budgets.month)} · всего ${fmt(monthSummary.total)}`:`ориентир ${fmt(db.budgets.month)}`;
+  $('#foodTodayBar').style.width=todayState.clamped+'%';$('#foodTodayBar').style.background=todayState.tone==='over'?'var(--danger)':todayState.tone==='warn'?'var(--warning)':'var(--success)';$('#foodTodayState').textContent=todayState.copy+(todaySummary.outside?` · вне лимита ${fmt(todaySummary.outside)}`:'');$('#foodTodayPct').textContent=todayState.pct+'%';
+  $('#foodWeekBar').style.width=weekState.clamped+'%';$('#foodWeekBar').style.background=weekState.tone==='over'?'var(--danger)':weekState.tone==='warn'?'var(--warning)':'var(--success)';$('#foodWeekState').textContent=weekState.copy.replace('Осталось','Резерв')+(weekSummary.outside?` · вне лимита ${fmt(weekSummary.outside)}`:'');$('#foodWeekPct').textContent=weekState.pct+'%';
+  $('#foodWeekRange').textContent=weekRangeLabel(weekStart,weekEnd);$('#foodNavRange').textContent=weekRangeLabel(weekStart,weekEnd);$('#foodWeekBudgetLabel').textContent=`Ориентир ${fmt(weekLimit)} · ${fmt(dayLimit)} в день`;
+  const selectedMonthDate=new Date(monthAnchor.getFullYear(),monthAnchor.getMonth(),1);
   const currentMonthDate=new Date(now.getFullYear(),now.getMonth(),1);
   const selectedMonthLabel=new Intl.DateTimeFormat('ru-RU',{month:'long',year:'numeric'}).format(selectedMonthDate);$('#foodMonthLabel').textContent=selectedMonthLabel;$('#foodCategoriesPeriod').textContent=selectedMonthLabel;
   if(selectedMonthDate.getTime()===currentMonthDate.getTime()){
     const dayOfMonth=now.getDate(),daysInMonth=new Date(now.getFullYear(),now.getMonth()+1,0).getDate(),forecast=dayOfMonth?monthSum/dayOfMonth*daysInMonth:0;
-    $('#foodForecast').textContent=`Прогноз месяца: ${fmt(forecast)}${db.budgets.month?` · ${forecast<=db.budgets.month?'в лимите':'выше ориентира'}`:''}`;
+    $('#foodForecast').textContent=`Прогноз повседневных: ${fmt(forecast)}${db.budgets.month?` · ${forecast<=db.budgets.month?'в лимите':'выше ориентира'}`:''}${monthSummary.outside?` · вне лимита уже ${fmt(monthSummary.outside)}`:''}`;
   }else{
-    $('#foodForecast').textContent=`Итог выбранного месяца: ${fmt(monthSum)}`;
+    $('#foodForecast').textContent=`Повседневные: ${fmt(monthSum)}${monthSummary.outside?` · вне лимита ${fmt(monthSummary.outside)} · всего ${fmt(monthSummary.total)}`:''}`;
   }
 
   const dayNames=['Пн','Вт','Ср','Чт','Пт','Сб','Вс'],cols=[];
   for(let i=0;i<7;i++){
-    const d=new Date(weekStart); d.setDate(d.getDate()+i); const key=iso(d),entries=weekEntries.filter(x=>x.date===key),sum=entries.reduce((a,b)=>a+Number(b.amount||0),0),state=foodLimitState(sum,dayLimit);
-    const list=entries.length?entries.map(x=>`<div class="meal ${foodTone(x.category)} food-entry"><div class="food-entry-actions"><button class="food-entry-action" data-food-edit="${x.id}" title="Изменить">✎</button><button class="food-entry-action" data-food-del="${x.id}" title="Удалить">×</button></div><div class="meal-title">${escapeHTML(foodTitle(x))}</div><div class="meal-line"><span class="meal-note">${escapeHTML(x.note||x.category||'Еда')}</span><strong>${fmt(x.amount)}</strong></div></div>`).join(''):'<div class="meal"><div class="meal-title">Пока пусто</div><div class="meal-line"><span class="muted">Добавь первую запись</span></div></div>';
-    cols.push(`<div class="day-col"><div class="day-head"><div><strong>${dayNames[i]}</strong><br><span>${d.getDate()} ${new Intl.DateTimeFormat('ru-RU',{month:'short'}).format(d)}</span></div><strong>${fmt(sum)}</strong></div><div class="food-day-progress ${state.tone}"><span style="width:${state.clamped}%"></span></div><div class="food-day-state"><span>${state.copy}</span><span>${state.pct}%</span></div>${list}<button class="food-add-day" data-food-add="${key}">＋ Добавить</button></div>`);
+    const d=new Date(weekStart); d.setDate(d.getDate()+i); const key=iso(d),entries=weekEntries.filter(x=>x.date===key),summary=foodSpendSummary(entries),sum=summary.limited,state=foodLimitState(sum,dayLimit);
+    const list=entries.length?entries.map(x=>`<div class="meal ${foodTone(x.category)} food-entry ${x.excludeFromLimit?'outside-limit':''}"><div class="food-entry-actions"><button class="food-entry-action" data-food-edit="${x.id}" title="Изменить">✎</button><button class="food-entry-action" data-food-del="${x.id}" title="Удалить">×</button></div><div class="meal-title">${escapeHTML(foodTitle(x))}</div><div class="meal-line"><span class="meal-note">${escapeHTML(x.note||x.category||'Траты')}</span><strong>${fmt(x.amount)}</strong></div>${x.excludeFromLimit?'<span class="food-outside-badge">вне лимита</span>':''}</div>`).join(''):'<div class="meal"><div class="meal-title">Пока пусто</div><div class="meal-line"><span class="muted">Добавь первую запись</span></div></div>';
+    cols.push(`<div class="day-col"><div class="day-head"><div><strong>${dayNames[i]}</strong><br><span>${d.getDate()} ${new Intl.DateTimeFormat('ru-RU',{month:'short'}).format(d)}</span></div><strong>${fmt(sum)}</strong></div><div class="food-day-progress ${state.tone}"><span style="width:${state.clamped}%"></span></div><div class="food-day-state"><span>${state.copy}${summary.outside?` · вне ${fmt(summary.outside)}`:''}</span><span>${state.pct}%</span></div>${list}<button class="food-add-day" data-food-add="${key}">＋ Добавить</button></div>`);
   }
   $('#foodWeekBoard').innerHTML=cols.join('');
   $$('[data-food-add]').forEach(b=>b.onclick=()=>openFoodDialog(b.dataset.foodAdd));$$('[data-food-edit]').forEach(b=>b.onclick=()=>openFoodDialog(todayISO,b.dataset.foodEdit));$$('[data-food-del]').forEach(b=>b.onclick=()=>deleteFoodEntry(b.dataset.foodDel));
@@ -2369,10 +2516,34 @@ function renderFood(){
   $('#foodRecent').innerHTML=recent.length?recent.map(x=>`<div class="mini-item"><div class="left"><span>🍽</span><div><strong>${escapeHTML(foodTitle(x))}</strong><div class="meta">${x.date} · ${escapeHTML(x.category||'Еда')}${x.note?' · '+escapeHTML(x.note):''}</div></div></div><div><strong>${fmt(x.amount)}</strong> <button class="tiny-btn" data-food-recent-edit="${x.id}">Изм.</button> <button class="delete-row" data-food-recent-del="${x.id}">×</button></div></div>`).join(''):'<div class="empty">Добавь первую трату.</div>';
   $$('[data-food-recent-edit]').forEach(b=>b.onclick=()=>openFoodDialog(todayISO,b.dataset.foodRecentEdit));$$('[data-food-recent-del]').forEach(b=>b.onclick=()=>deleteFoodEntry(b.dataset.foodRecentDel));
   const cats={}; monthEntries.forEach(x=>cats[x.category||'Другое']=(cats[x.category||'Другое']||0)+Number(x.amount||0));
-  $('#foodCategories').innerHTML=Object.entries(cats).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`<div class="bar-row"><div class="bar-head"><span>${escapeHTML(k)}</span><span>${fmt(v)}</span></div><div class="bar"><span style="width:${monthSum?Math.min(100,v/monthSum*100):0}%;background:#22c55e"></span></div></div>`).join('')||'<div class="empty">Нет данных.</div>';
+  $('#foodCategories').innerHTML=Object.entries(cats).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`<div class="bar-row"><div class="bar-head"><span>${escapeHTML(k)}</span><span>${fmt(v)}</span></div><div class="bar"><span style="width:${monthSummary.total?Math.min(100,v/monthSummary.total*100):0}%;background:#22c55e"></span></div></div>`).join('')||'<div class="empty">Нет данных.</div>';
   renderFoodWeekReview(weekStart,weekEnd);
+  renderSubscriptions();
 }
 
+
+$('#addSubscription')?.addEventListener('click',()=>openSubscriptionDialog());
+$('#subscriptionForm')?.addEventListener('submit',e=>{
+  e.preventDefault();
+  const f=e.currentTarget,id=f.elements.id.value,title=f.elements.title.value.trim(),amount=Number(f.elements.amount.value||0);
+  if(!title||amount<0)return;
+  const item={id:id||uid(),title,amount,billingDay:f.elements.billingDay.value?Math.max(1,Math.min(31,Number(f.elements.billingDay.value))):null,note:f.elements.note.value.trim()};
+  if(id){
+    const i=db.subscriptions.findIndex(x=>x.id===id);
+    if(i>=0)db.subscriptions[i]=item;
+  }else db.subscriptions.push(item);
+  save(`Регулярная трата «${title}» сохранена`);
+  $('#subscriptionDialog').close();
+  renderSubscriptions();
+});
+$('#deleteSubscription')?.addEventListener('click',()=>{
+  const id=$('#subscriptionForm').elements.id.value,x=db.subscriptions.find(v=>v.id===id);
+  if(!x||!confirm(`Удалить «${x.title}» из справочного списка?`))return;
+  db.subscriptions=db.subscriptions.filter(v=>v.id!==id);
+  save(`«${x.title}» удалено из регулярных трат`);
+  $('#subscriptionDialog').close();
+  renderSubscriptions();
+});
 
 $('#foodPrevWeek').onclick=()=>{foodWeekStart=new Date(foodWeekStart);foodWeekStart.setDate(foodWeekStart.getDate()-7);renderFood()};
 $('#foodNextWeek').onclick=()=>{foodWeekStart=new Date(foodWeekStart);foodWeekStart.setDate(foodWeekStart.getDate()+7);renderFood()};
@@ -2382,7 +2553,7 @@ $('#foodCurrentWeek').onclick=()=>{foodWeekStart=startOfWeek(new Date());renderF
 $('#foodForm').addEventListener('submit',e=>{
   e.preventDefault();const f=e.currentTarget,amount=Number(f.elements.amount.value),title=String(f.elements.title.value||'').trim(),id=f.elements.id.value;if(!amount||amount<0||!title)return;
   const old=id?db.food.find(x=>x.id===id):null;
-  const item={...(old||{}),id:id||uid(),date:f.elements.date.value,title,category:f.elements.category.value||'Другое',amount,note:String(f.elements.note.value||'').trim()};
+  const item={...(old||{}),id:id||uid(),date:f.elements.date.value,title,category:f.elements.category.value||'Другое',amount,note:String(f.elements.note.value||'').trim(),excludeFromLimit:!!f.elements.excludeFromLimit.checked};
   let moneyId=old?.moneyId||'';
   if(!moneyId){moneyId=uid();item.moneyId=moneyId;db.money.push({id:moneyId,date:item.date,type:'expense',category:'Траты · '+item.category,projectId:'',goalId:'',amount:item.amount,note:item.title+(item.note?' · '+item.note:''),source:'food',sourceId:item.id})}
   else{
@@ -2584,6 +2755,7 @@ function globalSearchItems(q){
   db.calendar.filter(e=>hit(e.title)||hit(e.note)||hit(categoryLabels[e.category])).slice(0,6).forEach(e=>out.push({type:'event',id:e.id,title:e.title,meta:`Календарь · ${e.date} ${e.start}`}));
   db.money.filter(m=>hit(m.category)||hit(m.note)).slice(0,5).forEach(m=>out.push({type:'money',id:m.id,title:m.category,meta:`Деньги · ${m.date} · ${fmt(m.amount)}`}));
   db.food.filter(f=>hit(foodTitle(f))||hit(f.note)||hit(f.category)).slice(0,5).forEach(f=>out.push({type:'food',id:f.id,title:foodTitle(f),meta:`Траты · ${f.date} · ${fmt(f.amount)}`}));
+  db.subscriptions.filter(s=>hit(s.title)||hit(s.note)).slice(0,5).forEach(s=>out.push({type:'subscription',id:s.id,title:s.title,meta:`Регулярная трата · ${fmt(s.amount)}/мес.`}));
   db.workouts.filter(w=>hit(w.title)||hit(w.note)||hit(workoutTypeLabel(w.type))).slice(0,5).forEach(w=>out.push({type:'workout',id:w.id,title:w.title,meta:`Тренировка · ${w.date} · ${workoutTypeLabel(w.type)}`}));
   return out.slice(0,20);
 }
@@ -2598,7 +2770,8 @@ function renderGlobalSearch(){
     if(type==='event'){const e=db.calendar.find(x=>x.id===id);if(e){const d=new Date(e.date+'T12:00:00');calendarWeekStart=startOfWeek(d);calendarDay=new Date(d);calendarMonth=new Date(d.getFullYear(),d.getMonth(),1);showPage('calendar');openEventDialog({id})}return}
     if(type==='money'){const m=db.money.find(x=>x.id===id);if(!m)return;if(m.source==='food'){const f=db.food.find(x=>x.id===m.sourceId||x.moneyId===m.id);if(f){foodWeekStart=startOfWeek(new Date(f.date+'T12:00:00'));showPage('food');openFoodDialog(f.date,f.id);return}}if(m.source==='food_week_saving'){foodWeekStart=startOfWeek(new Date(m.date+'T12:00:00'));showPage('food');return}moneyCursor=new Date(m.date+'T12:00:00');showPage('money');openMoneyDialog(id);return}
     if(type==='food'){const f=db.food.find(x=>x.id===id);if(f){foodWeekStart=startOfWeek(new Date(f.date+'T12:00:00'));showPage('food');openFoodDialog(f.date,id)}return}
-    if(type==='workout'){const w=db.workouts.find(x=>x.id===id);if(w){workoutSelectedDate=w.date;workoutWeekStart=startOfWeek(new Date(w.date+'T12:00:00'));showPage('workouts');openWorkoutDialog(w.date,w.id)}}
+    if(type==='workout'){const w=db.workouts.find(x=>x.id===id);if(w){workoutSelectedDate=w.date;workoutWeekStart=startOfWeek(new Date(w.date+'T12:00:00'));showPage('workouts');openWorkoutDialog(w.date,w.id)}return}
+    if(type==='subscription'){showPage('food');openSubscriptionDialog(id)}
   });
 }
 $('#globalSearch')?.addEventListener('input',renderGlobalSearch);
@@ -2722,21 +2895,74 @@ function renderProjects(){
   renderSidebarProjects();
   const grid=$('#projectsGrid'),list=$('#projectTasksList');if(!grid||!list)return;
   if(selectedProjectId&&!db.projects.some(p=>p.id===selectedProjectId&&!p.archived))selectedProjectId='';
+
+  const now=new Date(),weekStart=startOfWeek(now),weekEnd=new Date(weekStart);weekEnd.setDate(weekEnd.getDate()+7);
+  const weekStartISO=iso(weekStart),weekEndISO=iso(weekEnd);
+  const monthStart=iso(new Date(now.getFullYear(),now.getMonth(),1)),monthEnd=iso(new Date(now.getFullYear(),now.getMonth()+1,1));
   const visibleProjects=db.projects.filter(p=>showArchivedProjects?true:!p.archived);
-  if(!visibleProjects.length){grid.innerHTML='<div class="project-empty" style="grid-column:1/-1"><strong>Проектов пока нет</strong><br><span>Создай первый проект — например, фриланс, личный продукт или обучение.</span></div>'}
-  else grid.innerHTML=visibleProjects.map(p=>{
-    const tasks=db.tasks.filter(t=>t.projectId===p.id),done=tasks.filter(t=>t.done).length,pct=tasks.length?Math.round(done/tasks.length*100):0;
-    const tracked=trackedProjectMs(p.id),income=db.money.filter(m=>m.projectId===p.id&&m.type==='income').reduce((a,m)=>a+Number(m.amount||0),0);
-    return `<div class="project-card ${selectedProjectId===p.id?'selected':''}" data-project-card="${p.id}" role="button" tabindex="0"><div class="project-card-head"><div class="project-name"><span class="dot" style="background:${p.color||'#6366f1'}"></span><span>${escapeHTML(p.name)}</span>${p.archived?'<span class="archive-tag">архив</span>':''}</div><div><button class="tiny-btn" data-edit-project="${p.id}" title="Редактировать">•••</button></div></div><div class="project-desc">${escapeHTML(p.description||'Без описания')}</div><div class="project-meta"><span>${tasks.length} задач · ${done} готово</span><span>${pct}%</span></div><div class="bar"><span style="width:${pct}%;background:${p.color||'#6366f1'}"></span></div><div class="project-finance"><div><span>Время</span><strong>${msHoursText(tracked)}</strong></div><div><span>Доход</span><strong>${fmt(income)}</strong></div></div></div>`;
-  }).join('');
-  const tasks=[...db.tasks].filter(t=>!selectedProjectId||t.projectId===selectedProjectId).sort((a,b)=>(a.done-b.done)||String(a.due||'9999').localeCompare(String(b.due||'9999')));
-  const selected=db.projects.find(p=>p.id===selectedProjectId);$('#projectTaskScope').textContent=selected?`Проект: ${selected.name} · нажми карточку ещё раз, чтобы показать все`:'Все проекты · нажми карточку проекта для фильтра';
-  list.innerHTML=tasks.length?tasks.map(t=>{const p=db.projects.find(p=>p.id===t.projectId);return `<div class="project-task-row"><input type="checkbox" data-project-task-check="${t.id}" ${t.done?'checked':''}><div class="project-task-copy"><strong style="${t.done?'text-decoration:line-through;color:#a1a1aa':''}">${escapeHTML(t.title)}</strong><span>${p?`<span class="swatch" style="background:${p.color}"></span>${escapeHTML(p.name)}`:'Без проекта'}${t.due?' · '+t.due:''}</span></div><button class="tiny-btn" data-project-task-edit="${t.id}">Изм.</button><button class="tiny-btn danger" data-project-task-del="${t.id}">×</button></div>`}).join(''):'<div class="empty">В этом проекте задач пока нет.</div>';
-  $$('[data-project-card]').forEach(card=>{const pick=()=>{selectedProjectId=selectedProjectId===card.dataset.projectCard?'':card.dataset.projectCard;renderProjects()};card.onclick=e=>{if(e.target.closest('[data-edit-project]'))return;pick()};card.onkeydown=e=>{if((e.key==='Enter'||e.key===' ')&&!e.target.closest('[data-edit-project]')){e.preventDefault();pick()}}});
+
+  if(!visibleProjects.length){
+    grid.innerHTML='<div class="project-empty" style="grid-column:1/-1"><strong>Проектов пока нет</strong><br><span>Создай первый проект — например, фриланс, личный продукт или YouTube.</span></div>';
+  }else{
+    grid.innerHTML=visibleProjects.map(p=>{
+      const events=db.calendar.filter(e=>e.projectId===p.id);
+      const weekEvents=events.filter(e=>e.date>=weekStartISO&&e.date<weekEndISO);
+      const done=weekEvents.filter(e=>e.done).length,pct=weekEvents.length?Math.round(done/weekEvents.length*100):0;
+      const plannedMinutes=weekEvents.reduce((sum,e)=>sum+Math.max(0,eventEndMins(e)-mins(e.start)),0);
+      let trackedWeek=db.timeEntries.filter(x=>x.projectId===p.id&&x.date>=weekStartISO&&x.date<weekEndISO).reduce((a,x)=>a+Number(x.ms||0),0);
+      if(db.timer.running&&db.timer.startedAt&&focusProjectForTask(db.timer.activeTaskId)?.id===p.id)trackedWeek+=Date.now()-db.timer.startedAt;
+      const incomeMonth=db.money.filter(m=>m.projectId===p.id&&m.type==='income'&&m.date>=monthStart&&m.date<monthEnd).reduce((a,m)=>a+Number(m.amount||0),0);
+
+      return `<div class="project-card ${selectedProjectId===p.id?'selected':''}" data-project-card="${p.id}" role="button" tabindex="0">
+        <div class="project-card-head"><div class="project-name"><span class="dot" style="background:${p.color||'#6366f1'}"></span><span>${escapeHTML(p.name)}</span>${p.archived?'<span class="archive-tag">архив</span>':''}</div><div><button class="tiny-btn" data-edit-project="${p.id}" title="Редактировать">•••</button></div></div>
+        <div class="project-desc">${escapeHTML(p.description||'Без описания')}</div>
+        <div class="project-meta"><span>Неделя: ${weekEvents.length} блоков · ${done} выполнено</span><span>${pct}%</span></div>
+        <div class="bar"><span style="width:${pct}%;background:${p.color||'#6366f1'}"></span></div>
+        <div class="project-calendar-stats">
+          <div><span>План недели</span><strong>${minutesText(plannedMinutes)}</strong></div>
+          <div><span>Фокус недели</span><strong>${msHoursText(trackedWeek)}</strong></div>
+          <div><span>Доход месяца</span><strong>${fmt(incomeMonth)}</strong></div>
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  const selected=db.projects.find(p=>p.id===selectedProjectId);
+  $('#projectTaskScope').textContent=selected?`Проект: ${selected.name} · нажми карточку ещё раз, чтобы показать все`:'Все проекты · ближайшие и последние календарные блоки';
+
+  const rows=db.calendar
+    .filter(e=>e.projectId&&(!selectedProjectId||e.projectId===selectedProjectId))
+    .sort((a,b)=>{
+      const af=a.date>=todayISO,bf=b.date>=todayISO;
+      if(af!==bf)return af?-1:1;
+      const ak=a.date+a.start,bk=b.date+b.start;
+      return af?ak.localeCompare(bk):bk.localeCompare(ak);
+    })
+    .slice(0,24);
+
+  list.innerHTML=rows.length?rows.map(e=>{
+    const p=db.projects.find(x=>x.id===e.projectId);
+    return `<div class="project-block-row ${e.done?'is-done':''}">
+      <input type="checkbox" data-project-block-done="${e.id}" ${e.done?'checked':''}>
+      <div class="project-block-copy">
+        <strong class="project-block-title">${escapeHTML(e.title)}</strong>
+        <span class="project-block-meta">${e.date} · ${e.start}–${e.end}${p?' · '+escapeHTML(p.name):''}${e.note?' · '+escapeHTML(e.note):''}</span>
+      </div>
+      <span class="muted">${minutesText(Math.max(0,eventEndMins(e)-mins(e.start)))}</span>
+      <button class="tiny-btn" data-project-block-edit="${e.id}">Изм.</button>
+    </div>`;
+  }).join(''):'<div class="empty">У проектов пока нет связанных календарных блоков.</div>';
+
+  $$('[data-project-card]').forEach(card=>{
+    const pick=()=>{selectedProjectId=selectedProjectId===card.dataset.projectCard?'':card.dataset.projectCard;renderProjects()};
+    card.onclick=e=>{if(e.target.closest('[data-edit-project]'))return;pick()};
+    card.onkeydown=e=>{if((e.key==='Enter'||e.key===' ')&&!e.target.closest('[data-edit-project]')){e.preventDefault();pick()}}
+  });
   $$('[data-edit-project]').forEach(b=>b.onclick=e=>{e.stopPropagation();openProjectDialog(b.dataset.editProject)});
-  $$('[data-project-task-edit]').forEach(b=>b.onclick=()=>openTaskDialog(b.dataset.projectTaskEdit));
-  $$('[data-project-task-del]').forEach(b=>b.onclick=()=>deleteTaskById(b.dataset.projectTaskDel));
-  $$('[data-project-task-check]').forEach(c=>c.onchange=()=>{if(setTaskDoneState(c.dataset.projectTaskCheck,c.checked)){renderProjects();renderToday();renderTasks();renderCalendar();renderFocusHistory();renderArchive();renderAnalytics();renderFocusPage();}});
+  $$('[data-project-block-edit]').forEach(b=>b.onclick=()=>openEventDialog({id:b.dataset.projectBlockEdit}));
+  $$('[data-project-block-done]').forEach(c=>c.onchange=()=>{
+    if(setCalendarEventDone(c.dataset.projectBlockDone,c.checked)){renderProjects();renderToday();renderCalendar()}
+  });
 }
 function openProjectDialog(id=''){
   const f=$('#projectForm'); f.reset(); const p=id?db.projects.find(x=>x.id===id):null;
@@ -2760,7 +2986,9 @@ $('#deleteProject').onclick=()=>{
   save();$('#projectDialog').close();renderProjects();renderToday();renderTasks();renderCalendar();renderMoney();renderFocusPage();renderAnalytics();fillProjectSelect();
 };
 $('#newProject').onclick=()=>openProjectDialog();
-$('#newProjectTask').onclick=()=>{openTaskDialog();if(selectedProjectId&&$('#taskForm')?.elements?.projectId)$('#taskForm').elements.projectId.value=selectedProjectId};
+$('#newProjectBlock').onclick=()=>openEventDialog({
+  date:todayISO,start:'19:00',end:'20:00',category:'project',projectId:selectedProjectId||''
+});
 $('#toggleArchivedProjects').onclick=()=>{showArchivedProjects=!showArchivedProjects;$('#toggleArchivedProjects').textContent=showArchivedProjects?'Скрыть архив':'Архив';renderProjects()};
 
 const categoryEmoji={work:'💼',commute:'🚇',food:'🍽',freelance:'🎬',project:'🧠',together:'♥',personal:'👤',home:'🧹',rest:'☕',sport:'🏃',other:'•'};
@@ -3022,10 +3250,13 @@ function renderCalendarMonth(){
   for(let d=new Date(start);d<end;d.setDate(d.getDate()+1)){
     const key=iso(d),outside=d.getMonth()!==calendarMonth.getMonth(),today=key===todayISO,weekend=[0,6].includes(d.getDay());
     const events=db.calendar.filter(e=>e.date===key);
-    const hasEvents=events.length>0;
-    html+=`<button class="month-day ${outside?'outside':''} ${today?'today':''} ${weekend?'weekend':''} ${hasEvents?'has-events':'empty-day'}" data-month-day="${key}" title="${hasEvents?events.length+' блоков':'Пустой день'}">
+    const important=events.filter(e=>TODAY_ATTENTION_CATEGORIES.has(e.category));
+    const workCount=important.length,level=Math.min(3,Math.max(1,workCount));
+    const dayState=workCount?`work-day work-level-${level}`:(events.length?'routine-day':'empty-day');
+    const title=workCount?`${workCount} важных блоков`:(events.length?'Только обычные дела':'Пустой день');
+    html+=`<button class="month-day ${outside?'outside':''} ${today?'today':''} ${weekend?'weekend':''} ${dayState}" data-month-day="${key}" title="${title}">
       <div class="month-day-num">${d.getDate()}</div>
-      ${hasEvents?`<span class="month-day-count">${events.length} ${events.length===1?'блок':'бл.'}</span>`:''}
+      ${workCount?`<span class="month-day-count">${workCount} ${workCount===1?'важный блок':'важн. бл.'}</span>`:''}
     </button>`;
   }
   grid.innerHTML=html;
@@ -3169,7 +3400,7 @@ $$('dialog').forEach(d=>{
 
 $$('[data-theme-choice]').forEach(b=>b.onclick=()=>setTheme(b.dataset.themeChoice));applyTheme();
 $('#budgetDay').value=db.budgets.day; $('#budgetWeek').value=(Number(db.budgets.day)||1000)*7; $('#budgetMonth').value=db.budgets.month;
-$('#saveBudgets').onclick=()=>{ db.budgets.day=Number($('#budgetDay').value)||1000; db.budgets.week=db.budgets.day*7; db.budgets.month=Number($('#budgetMonth').value)||30000; $('#budgetWeek').value=db.budgets.week; save(); renderFood(); alert('Лимиты сохранены'); };
+$('#saveBudgets').onclick=()=>{ db.budgets.day=Number($('#budgetDay').value)||1000; db.budgets.week=db.budgets.day*7; db.budgets.month=Number($('#budgetMonth').value)||30000; $('#budgetWeek').value=db.budgets.week; save(); renderFood(); alert('Ориентиры сохранены'); };
 $('#exportData').onclick=()=>{
   const blob=new Blob([JSON.stringify(db,null,2)],{type:'application/json'});
   const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='planner-backup.json'; a.click(); setTimeout(()=>URL.revokeObjectURL(a.href),1000);
@@ -3407,6 +3638,22 @@ setInterval(()=>{
   if($('#page-focus')?.classList.contains('active'))updateFocusLiveStats();
   if($('#page-tasks')?.classList.contains('active'))renderTasks();
 },1000);
+
+function refreshCurrentDateIfNeeded(){
+  const next=iso(new Date());
+  if(next===todayISO)return;
+  const old=todayISO,oldDate=new Date(old+'T12:00:00');
+  const wasFoodCurrent=iso(foodWeekStart)===iso(startOfWeek(oldDate));
+  const wasWorkoutCurrent=iso(workoutWeekStart)===iso(startOfWeek(oldDate));
+  const wasCalendarCurrent=iso(calendarWeekStart)===iso(startOfWeek(oldDate));
+  todayISO=next;
+  if(wasFoodCurrent)foodWeekStart=startOfWeek(new Date());
+  if(wasWorkoutCurrent){workoutWeekStart=startOfWeek(new Date());workoutSelectedDate=todayISO}
+  if(wasCalendarCurrent)calendarWeekStart=startOfWeek(new Date());
+  renderToday();renderCalendar();renderFood();renderWorkouts();renderProjects();renderFocusPage();drawTimer();
+}
+setInterval(refreshCurrentDateIfNeeded,60000);
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)refreshCurrentDateIfNeeded()});
 drawTimer();
 
 reconcileTaskPlanning();persistLocal(false);fillProjectSelect();renderToday(); renderMoney(); renderFood(); renderProjects(); renderTasks(); renderFocusHistory(); renderWorkouts(); renderAnalytics(); renderArchive(); renderFocusPage();
