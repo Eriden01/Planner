@@ -10,7 +10,7 @@
   <link rel="manifest" href="./manifest.webmanifest" />
   <link rel="apple-touch-icon" href="./icon-192.png" />
   <link rel="icon" href="./icon-192.png" />
-  <title>Planner v0.9.14</title>
+  <title>Planner v0.9.20</title>
   <style>
     :root{
       --bg:#f7f7f8;
@@ -102,14 +102,14 @@
     #timerDock{display:none!important}
     #page-calendar.day-mode .calendar-shell{grid-template-columns:1fr}
     #page-calendar.day-mode .calendar-shell > .today-panel{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
-    #page-calendar.day-mode .day-grid{min-width:100%;grid-template-columns:72px minmax(720px,1fr)!important;grid-template-rows:58px repeat(34,34px)!important}
+    #page-calendar.day-mode .day-grid{min-width:100%;grid-template-columns:72px minmax(720px,1fr)!important;grid-template-rows:58px repeat(1020,1.35px)!important}
     #page-calendar.day-mode .week-head{padding:12px 8px}
     #page-calendar.day-mode .week-head strong{font-size:15px}
     #page-calendar.day-mode .week-head span{font-size:12px}
     #page-calendar.day-mode .time-cell{font-size:11px;padding:7px 8px}
-    #page-calendar.day-mode .calendar-event{margin:3px 6px;padding:9px 10px;font-size:12px}
-    #page-calendar.day-mode .calendar-event strong{font-size:12px}
-    #page-calendar.day-mode .calendar-event span{font-size:11px;margin-top:4px}
+    #page-calendar.day-mode .calendar-event{margin-left:6px;margin-right:6px;font-size:12px}
+    #page-calendar.day-mode .calendar-event:not(.compact):not(.micro) strong{font-size:12px}
+    #page-calendar.day-mode .calendar-event:not(.compact):not(.micro) span{font-size:10px;margin-top:2px}
     .section-title{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:13px}
     .section-title h2{font-size:17px;margin:0;letter-spacing:-.015em}
     .section-title .small{color:var(--muted);font-size:12px}
@@ -166,21 +166,25 @@
     .food-outside-badge{display:inline-flex;align-items:center;gap:5px;margin-top:6px;padding:3px 6px;border-radius:999px;background:var(--accent-2);color:var(--accent);font-size:9px;font-weight:700}
     .food-outside-badge:before{content:"";width:5px;height:5px;border-radius:50%;background:var(--accent)}
     .calendar-view-switch{margin-left:2px}
-    .month-grid{display:grid;grid-template-columns:repeat(7,minmax(110px,1fr));grid-auto-rows:minmax(116px,auto);align-items:stretch;border:1px solid var(--border);border-radius:14px;overflow:auto;background:var(--surface)}
-    .month-weekday{padding:9px;text-align:center;font-size:11px;font-weight:650;color:var(--muted);background:var(--surface-2);border-right:1px solid var(--border);border-bottom:1px solid var(--border)}
-    .month-day{min-height:116px;padding:7px;border:0;border-right:1px solid var(--border);border-bottom:1px solid var(--border);background:var(--surface);color:var(--text);text-align:left;overflow:hidden}
-    .month-day.outside{opacity:.42}.month-day.today{box-shadow:inset 0 0 0 2px var(--accent)}
+    .month-grid{display:grid;grid-template-columns:repeat(7,minmax(110px,1fr));grid-auto-rows:minmax(116px,auto);align-items:stretch;border:1px solid var(--border);border-radius:18px;overflow:auto;background:var(--surface);box-shadow:0 10px 30px rgba(15,23,42,.08)}
+    .month-weekday{padding:10px;text-align:center;font-size:11px;font-weight:700;color:var(--muted);background:var(--surface-2);border-right:1px solid var(--border);border-bottom:1px solid var(--border)}
+    .month-day{position:relative;min-height:116px;padding:10px 9px;border:0;border-right:1px solid var(--border);border-bottom:1px solid var(--border);background:linear-gradient(180deg,rgba(255,255,255,.02),rgba(255,255,255,0));color:var(--text);text-align:left;overflow:hidden;transition:background-color .18s ease,box-shadow .18s ease,transform .18s ease}
+    .month-day:hover{transform:translateY(-1px)}
+    .month-day.outside{opacity:.42}
+    .month-day.today{box-shadow:inset 0 0 0 2px rgba(129,140,248,.95),0 0 0 1px rgba(129,140,248,.12),0 10px 24px rgba(79,70,229,.16);background:linear-gradient(180deg,rgba(99,102,241,.18),rgba(99,102,241,.06))}
     .month-weekday.weekend{background:rgba(148,163,184,.12);color:#64748b}
     .month-day.weekend{background:rgba(148,163,184,.055)}
     .month-day.empty-day{background:#f3f4f6;color:#71717a}
     .month-day.empty-day.weekend{background:#eef0f3}
-    .month-day.has-events{background:rgba(99,102,241,.10);box-shadow:inset 0 0 0 1px rgba(99,102,241,.20)}
+    .month-day.has-events{background:rgba(99,102,241,.10);box-shadow:inset 0 0 0 1px rgba(99,102,241,.18)}
     .month-day.has-events.weekend{background:rgba(99,102,241,.075)}
     .month-day.has-events:hover{background:rgba(99,102,241,.15)}
     .month-day.empty-day:hover{background:#eceef1}
-    .month-day-num{font-size:12px;font-weight:700;margin-bottom:5px}
-    .month-day-count{display:inline-flex;align-items:center;gap:5px;margin-top:8px;padding:4px 7px;border-radius:999px;font-size:10px;font-weight:650;color:var(--accent);background:var(--accent-2)}
+    .month-day-num{display:inline-flex;align-items:center;justify-content:center;min-width:38px;height:38px;padding:0 10px;border-radius:999px;font-size:24px;font-weight:800;letter-spacing:-.03em;margin-bottom:8px;color:rgba(24,24,27,.88)}
+    .month-day.today .month-day-num{background:rgba(99,102,241,.22);color:#fff;box-shadow:0 0 0 1px rgba(129,140,248,.34)}
+    .month-day-count{display:inline-flex;align-items:center;gap:5px;margin-top:4px;padding:5px 8px;border-radius:999px;font-size:10px;font-weight:700;color:var(--accent);background:var(--accent-2)}
     .month-day-count::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--accent)}
+    .month-day-today-label{position:absolute;top:12px;right:10px;padding:4px 7px;border-radius:999px;font-size:9px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;background:rgba(99,102,241,.22);color:#6366f1}
     .month-event{display:none}
     .day-grid{display:grid;grid-template-columns:58px minmax(260px,1fr);position:relative;background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden}
     .day-grid .calendar-event{grid-column:2!important}
@@ -218,22 +222,32 @@
     .calendar-toolbar .left,.calendar-toolbar .right{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
     .week-label{font-weight:700;letter-spacing:-.015em;min-width:180px;text-align:center}
     .week-scroll{overflow:auto;border:1px solid var(--border);border-radius:16px;background:#fff;box-shadow:var(--shadow)}
-    .week-grid{display:grid;grid-template-columns:64px repeat(7,minmax(126px,1fr));grid-template-rows:54px repeat(34,28px);min-width:980px;position:relative;background:#fff}
+    .week-grid{display:grid;grid-template-columns:64px repeat(7,minmax(126px,1fr));grid-template-rows:54px repeat(1020,1.2px);min-width:980px;position:relative;background:#fff}
     .week-head{padding:9px 8px;text-align:center;background:#fbfbfc;border-right:1px solid #efeff1;border-bottom:1px solid #e7e7eb;position:sticky;top:0;z-index:8}
     .week-head.today{background:#eef2ff;color:#4338ca}
-    .week-head.weekend{background:#f3f4f6;color:#64748b}
-    .week-head.weekend.today{background:#e9edff;color:#4338ca}
+    .week-head.weekend{background:linear-gradient(180deg,rgba(99,102,241,.10),rgba(99,102,241,.04));color:#4b5563;box-shadow:inset 0 -2px 0 rgba(99,102,241,.12)}
+    .week-head.weekend.today{background:linear-gradient(180deg,rgba(99,102,241,.22),rgba(99,102,241,.10));color:#3730a3;box-shadow:inset 0 -2px 0 rgba(99,102,241,.22)}
     .week-head strong{display:block;font-size:13px}.week-head span{font-size:11px;color:var(--muted)}
     .time-cell{padding:5px 7px;text-align:right;color:var(--muted);font-size:10px;background:#fcfcfd;border-right:1px solid #efeff1;border-bottom:1px solid #efeff1;z-index:1}
     .calendar-slot{border:0;border-right:1px solid #f0f0f2;border-bottom:1px solid #f3f3f5;background:#fff;padding:0;min-width:0}
-    .calendar-slot.weekend:not(.closed){background:#fafbfc}
-    .calendar-slot:hover{background:#f7f8ff}
-    .calendar-slot.closed{background:repeating-linear-gradient(135deg,#fafafa,#fafafa 7px,#f6f6f7 7px,#f6f6f7 14px);cursor:not-allowed}
+    .calendar-slot.weekend:not(.closed){background:linear-gradient(180deg,rgba(99,102,241,.055),rgba(99,102,241,.028))}
+    .calendar-slot:hover{background:#f7f8ff}.calendar-slot.weekend:hover{background:linear-gradient(180deg,rgba(99,102,241,.09),rgba(99,102,241,.04))}
+    .calendar-slot.closed{background:repeating-linear-gradient(135deg,#fafafa,#fafafa 7px,#f6f6f7 7px,#f6f6f7 14px);cursor:not-allowed}.calendar-slot.weekend.closed{background:repeating-linear-gradient(135deg,rgba(99,102,241,.05),rgba(99,102,241,.05) 7px,rgba(99,102,241,.018) 7px,rgba(99,102,241,.018) 14px)}
     .calendar-slot.hour{border-bottom-color:#e7e7eb}
-    .calendar-event{z-index:4;margin:2px 4px;border:0;border-left:3px solid;border-radius:8px;padding:6px 7px;text-align:left;overflow:hidden;box-shadow:0 2px 8px rgba(24,24,27,.06);font-size:11px;line-height:1.18;color:#27272a}
+    .calendar-event{z-index:4;margin:1px 4px;border:0;border-left:3px solid;border-radius:7px;padding:4px 6px;text-align:left;overflow:hidden;box-shadow:0 2px 8px rgba(24,24,27,.06);font-size:11px;line-height:1.08;color:#27272a;min-height:0}
     .calendar-event:hover{filter:brightness(.985);box-shadow:0 4px 12px rgba(24,24,27,.10)}
-    .calendar-event strong{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:11px}
-    .calendar-event span{display:block;margin-top:2px;color:#52525b;font-size:10px}
+    .calendar-event strong{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:10.5px;line-height:1.05}
+    .calendar-event span{display:block;margin-top:2px;color:#52525b;font-size:9px;line-height:1.05;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .calendar-event.short{padding:2px 5px}
+    .calendar-event.compact{display:flex;align-items:center;gap:4px;padding:1px 5px;border-radius:6px}
+    .calendar-event.compact strong{font-size:9.5px;line-height:1;flex:1;min-width:0}
+    .calendar-event.compact span{display:none}
+    .calendar-event.micro{display:flex;align-items:center;padding:0 4px;margin-top:0;margin-bottom:0;border-left-width:2px;border-radius:4px}
+    .calendar-event.micro strong{font-size:8.5px;line-height:1;flex:1;min-width:0}
+    .calendar-event.micro span{display:none}
+    .calendar-slot.minor{border-bottom-color:transparent}
+    .calendar-slot.half{border-bottom-color:#f0f0f2}
+    .calendar-slot.hour{border-bottom-color:#e7e7eb}
     .calendar-event.work{background:#f1f2f4;border-color:#a1a1aa}.calendar-event.commute{background:#eaf3ff;border-color:#60a5fa}.calendar-event.food{background:#eafaf0;border-color:#4ade80}.calendar-event.freelance{background:#f2edff;border-color:#a78bfa}.calendar-event.together{background:#fdebf5;border-color:#f472b6}.calendar-event.personal{background:#eaf7ff;border-color:#38bdf8}.calendar-event.project{background:#eef2ff;border-color:#6366f1}.calendar-event.home{background:#fff3e8;border-color:#fb923c}.calendar-event.rest{background:#fff8dc;border-color:#facc15}.calendar-event.sport{background:#ecfdf5;border-color:#10b981}.calendar-event.other{background:#f4f4f5;border-color:#71717a}
     .calendar-now-line{z-index:7;align-self:start;height:2px;background:#ef4444;pointer-events:none;position:relative;margin:0 5px;box-shadow:0 0 0 1px rgba(239,68,68,.06)}
     .calendar-now-line::before{content:"";position:absolute;left:-4px;top:-3px;width:8px;height:8px;border-radius:50%;background:#ef4444;box-shadow:0 0 0 2px #fff}
@@ -393,8 +407,8 @@
     html[data-theme="dark"] td{border-bottom-color:#292b30}
     html[data-theme="dark"] .week-head{background:#1b1c20;border-color:#2a2c31}
     html[data-theme="dark"] .week-head.today{background:#262a4a;color:#c7d2fe}
-    html[data-theme="dark"] .week-head.weekend{background:#202126;color:#a1a1aa}
-    html[data-theme="dark"] .week-head.weekend.today{background:#292d50;color:#c7d2fe}
+    html[data-theme="dark"] .week-head.weekend{background:linear-gradient(180deg,rgba(99,102,241,.18),rgba(99,102,241,.08));color:#c7d2fe;box-shadow:inset 0 -2px 0 rgba(129,140,248,.18)}
+    html[data-theme="dark"] .week-head.weekend.today{background:linear-gradient(180deg,rgba(99,102,241,.26),rgba(99,102,241,.14));color:#e0e7ff;box-shadow:inset 0 -2px 0 rgba(129,140,248,.24)}
     html[data-theme="dark"] .month-weekday.weekend{background:#202126;color:#a1a1aa}
     html[data-theme="dark"] .month-day.weekend{background:#18191d}
     html[data-theme="dark"] .month-day.empty-day{background:#17181b;color:#71717a}
@@ -405,9 +419,27 @@
     html[data-theme="dark"] .month-day.empty-day:hover{background:#1d1f24}
     html[data-theme="dark"] .time-cell{background:#17181b;border-color:#292b30}
     html[data-theme="dark"] .calendar-slot{background:#17181b;border-color:#25272c}
-    html[data-theme="dark"] .calendar-slot.weekend:not(.closed){background:#191a1e}
-    html[data-theme="dark"] .calendar-slot:hover{background:#202238}
-    html[data-theme="dark"] .calendar-slot.closed{background:repeating-linear-gradient(135deg,#151619,#151619 7px,#191a1e 7px,#191a1e 14px)}
+    html[data-theme="dark"] .calendar-slot.minor{border-bottom-color:transparent}
+    html[data-theme="dark"] .calendar-slot.half{border-bottom-color:#202228}
+    html[data-theme="dark"] .calendar-slot.hour{border-bottom-color:#292b30}
+    html[data-theme="dark"] .month-grid{background:#14161c;border-color:#262a33;box-shadow:0 18px 40px rgba(0,0,0,.28)}
+    html[data-theme="dark"] .month-weekday{background:#181b24;border-color:#262a33;color:#9ca3af}
+    html[data-theme="dark"] .month-weekday.weekend{background:#1b1f29;color:#a3a9b8}
+    html[data-theme="dark"] .month-day{background:linear-gradient(180deg,rgba(255,255,255,.025),rgba(255,255,255,0));border-color:#262a33;color:#f3f4f6}
+    html[data-theme="dark"] .month-day.weekend{background:rgba(148,163,184,.05)}
+    html[data-theme="dark"] .month-day.empty-day{background:#12141a;color:#717784}
+    html[data-theme="dark"] .month-day.empty-day.weekend{background:#151821}
+    html[data-theme="dark"] .month-day.has-events{background:rgba(99,102,241,.14);box-shadow:inset 0 0 0 1px rgba(129,140,248,.28)}
+    html[data-theme="dark"] .month-day.has-events.weekend{background:rgba(99,102,241,.11)}
+    html[data-theme="dark"] .month-day.has-events:hover{background:rgba(99,102,241,.18)}
+    html[data-theme="dark"] .month-day.today{background:linear-gradient(180deg,rgba(99,102,241,.28),rgba(99,102,241,.10));box-shadow:inset 0 0 0 2px rgba(129,140,248,.95),0 0 0 1px rgba(99,102,241,.12),0 14px 30px rgba(79,70,229,.28)}
+    html[data-theme="dark"] .month-day-num{color:rgba(255,255,255,.20)}
+    html[data-theme="dark"] .month-day.today .month-day-num{color:#eef2ff;background:rgba(129,140,248,.24)}
+    html[data-theme="dark"] .month-day-count{background:rgba(99,102,241,.16);color:#c7d2fe}
+    html[data-theme="dark"] .month-day-today-label{background:rgba(129,140,248,.20);color:#c7d2fe}
+    html[data-theme="dark"] .calendar-slot.weekend:not(.closed){background:linear-gradient(180deg,rgba(99,102,241,.11),rgba(99,102,241,.05))}
+    html[data-theme="dark"] .calendar-slot:hover{background:#202238} html[data-theme="dark"] .calendar-slot.weekend:hover{background:linear-gradient(180deg,rgba(99,102,241,.16),rgba(99,102,241,.08))}
+    html[data-theme="dark"] .calendar-slot.closed{background:repeating-linear-gradient(135deg,#151619,#151619 7px,#191a1e 7px,#191a1e 14px)} html[data-theme="dark"] .calendar-slot.weekend.closed{background:repeating-linear-gradient(135deg,rgba(99,102,241,.08),rgba(99,102,241,.08) 7px,rgba(99,102,241,.03) 7px,rgba(99,102,241,.03) 14px)}
     html[data-theme="dark"] .calendar-event{color:#f4f4f5;box-shadow:0 2px 8px rgba(0,0,0,.22)}
     html[data-theme="dark"] .calendar-event span{color:#c4c4ca}
     html[data-theme="dark"] .calendar-event.work{background:#292a2f;border-color:#a1a1aa}
@@ -1387,7 +1419,7 @@
     }
 
   
-    /* ===== v0.9.14 mobile-first usability pass ===== */
+    /* ===== v0.9.20 mobile-first usability pass ===== */
     @media (max-width:820px){
       html{-webkit-text-size-adjust:100%;scroll-padding-bottom:92px}
       body{padding-bottom:calc(78px + env(safe-area-inset-bottom));overscroll-behavior-y:none}
@@ -1607,6 +1639,43 @@
       .month-day-num{font-size:20px!important}
       .month-day-count{display:none}
     }
+
+  
+    @media (max-width:520px){
+      .month-grid{grid-template-columns:repeat(7,minmax(44px,1fr));grid-auto-rows:82px}
+      .month-day{min-height:82px;padding:6px 5px}
+      .month-day-num{min-width:34px;height:34px;font-size:18px;margin-bottom:4px}
+      .month-day-count{font-size:8px;padding:3px 6px}
+      .month-day-today-label{top:8px;right:6px;font-size:8px;padding:3px 5px}
+    }
+
+    /* Calendar category color settings */
+    .category-color-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+    .category-color-row{display:grid;grid-template-columns:minmax(0,1fr) 48px;align-items:center;gap:10px;padding:10px 11px;border:1px solid var(--border);border-radius:12px;background:var(--surface-2)}
+    .category-color-name{display:flex;align-items:center;gap:9px;min-width:0;font-size:12px;font-weight:700}
+    .category-color-name i{width:10px;height:10px;border-radius:50%;flex:0 0 auto}
+    .category-color-row input[type="color"]{width:48px;height:34px;padding:2px;border:1px solid var(--border);border-radius:9px;background:var(--surface);cursor:pointer}
+    @media(max-width:620px){.category-color-grid{grid-template-columns:1fr}}
+
+    /* Exact time picker: always exposes 24 hours + all 60 minutes */
+    .time-picker-dialog{width:min(440px,calc(100vw - 24px))}
+    .time-picker-inner{padding:16px}
+    .time-picker-preview{text-align:center;font-size:34px;font-weight:820;letter-spacing:-.04em;font-variant-numeric:tabular-nums;margin:4px 0 14px}
+    .time-picker-columns{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .time-picker-column>span{display:block;margin:0 0 6px;color:var(--muted);font-size:11px;font-weight:700;text-align:center}
+    .time-picker-list{height:236px;overflow:auto;padding:5px;border:1px solid var(--border);border-radius:13px;background:var(--surface-2);scrollbar-width:thin}
+    .time-picker-option{width:100%;min-height:38px;border:0;border-radius:9px;background:transparent;color:var(--text);font-size:15px;font-weight:650;font-variant-numeric:tabular-nums}
+    .time-picker-option:hover{background:var(--surface)}
+    .time-picker-option.active{background:var(--accent-2);color:var(--accent);box-shadow:inset 0 0 0 1px rgba(99,102,241,.28)}
+    @media(max-width:520px){
+      .time-picker-dialog{width:calc(100vw - 12px)}
+      .time-picker-list{height:220px}
+      .time-picker-option{min-height:42px}
+    }
+
+    /* Study fallback when inline colors are unavailable */
+    .calendar-event.study{background:#e7faf7;border-color:#14b8a6}
+    html[data-theme="dark"] .calendar-event.study{background:#123832;border-color:#2dd4bf}
 
   </style>
 </head>
@@ -1978,7 +2047,7 @@
           <div class="account-identity-main">
             <img class="account-identity-icon" src="./icon-192.png" alt="">
             <div class="account-identity-copy">
-              <span class="small">Planner v0.9.14</span>
+              <span class="small">Planner v0.9.20</span>
               <h2 id="accountIdentityTitle">Гость</h2>
               <p id="accountIdentityText">Войди или создай аккаунт, чтобы синхронизировать Planner между устройствами.</p>
             </div>
@@ -2012,6 +2081,15 @@
             <div class="cloud-actions"><button class="btn" id="saveSupabaseConfig">Сохранить техническое подключение</button></div>
             <div class="sync-config-note">Обычному пользователю этот раздел не нужен. Допустим только публичный Publishable/anon key; service role key использовать нельзя.</div>
           </details>
+        </div>
+        <div class="card">
+          <div class="section-title"><div><h2>Категории календаря</h2><span class="small">Ровно 10 категорий · меняется только цвет</span></div></div>
+          <div class="subtitle" style="margin-bottom:12px">Фриланс объединён с «Работой», а «Быт» — с «Личным». Старые события автоматически перенесены в новые категории.</div>
+          <div class="category-color-grid" id="calendarCategoryColors"></div>
+          <div class="dialog-actions">
+            <button class="btn" id="resetCategoryColors" type="button">Сбросить цвета</button>
+            <button class="btn primary" id="saveCategoryColors" type="button">Сохранить цвета</button>
+          </div>
         </div>
         <div class="card">
           <div class="section-title"><h2>Ориентиры трат</h2></div>
@@ -2078,7 +2156,7 @@
       <div class="field"><label>Дата</label><input name="date" type="date" required></div>
       <div class="field"><label>Блок</label><select name="taskId" id="focusManualTask"></select></div>
       <div class="field"><label>Длительность, минут</label><input name="minutes" type="number" min="1" max="1440" step="1" required placeholder="60"></div>
-      <div class="field"><label>Начало</label><input name="startTime" type="time" value="12:00"></div>
+      <div class="field"><label>Начало</label><input name="startTime" type="time" step="60" value="12:00"></div>
       <div class="field full"><label>Комментарий</label><input name="note" placeholder="Например, забыл включить таймер"></div>
     </div>
     <div class="dialog-help">Ручная запись попадёт в общую историю фокуса и, если выбран календарный блок, в его проект.</div>
@@ -2270,20 +2348,10 @@
     <div class="form-grid">
       <div class="field full"><label>Название</label><input name="title" required maxlength="40" placeholder="Например, Монтаж"></div>
       <div class="field"><label>Категория</label><select name="category">
-        <option value="work">Работа</option>
-        <option value="commute">Дорога</option>
-        <option value="food">Еда</option>
-        <option value="freelance">Фриланс</option>
-        <option value="project">Свой проект</option>
-        <option value="together">Время вместе</option>
-        <option value="personal">Личное время</option>
-        <option value="home">Быт</option>
-        <option value="rest">Отдых</option>
-        <option value="sport">Спорт</option>
-        <option value="other">Другое</option>
+        <option value="work">Работа</option><option value="project">Свои проекты</option><option value="study">Обучение</option><option value="commute">Дорога</option><option value="food">Еда</option><option value="sport">Спорт</option><option value="personal">Личное / быт</option><option value="together">Время вместе</option><option value="rest">Отдых</option><option value="other">Другое</option>
       </select></div>
-      <div class="field"><label>Длительность, мин</label><input name="duration" type="number" min="30" max="720" step="30" value="60" required></div>
-      <div class="field"><label>Время по умолчанию</label><input name="defaultStart" type="time" step="1800" value="19:00" required></div>
+      <div class="field"><label>Длительность, мин</label><input name="duration" type="number" min="1" max="720" step="1" value="60" required></div>
+      <div class="field"><label>Время по умолчанию</label><input name="defaultStart" type="time" step="60" value="19:00" required></div>
     </div>
     <div class="dialog-actions">
       <button type="button" class="btn" data-dialog-close="calendarPresetDialog">Отмена</button>
@@ -2300,7 +2368,7 @@
       <div class="field full"><label>Название</label><input name="title" required placeholder="Например, Фриланс"></div>
       <div class="field"><label>Дата</label><input name="date" type="date" required></div>
       <div class="field"><label>Категория</label><select name="category">
-        <option value="work">Работа</option><option value="commute">Дорога</option><option value="food">Еда</option><option value="freelance">Фриланс</option><option value="project">Свой проект</option><option value="together">Время вместе</option><option value="personal">Личное время</option><option value="home">Быт</option><option value="rest">Отдых</option><option value="sport">Спорт</option><option value="other">Другое</option>
+        <option value="work">Работа</option><option value="project">Свои проекты</option><option value="study">Обучение</option><option value="commute">Дорога</option><option value="food">Еда</option><option value="sport">Спорт</option><option value="personal">Личное / быт</option><option value="together">Время вместе</option><option value="rest">Отдых</option><option value="other">Другое</option>
       </select></div>
       <div class="field"><label>Проект</label><select name="projectId" id="eventProjectSelect"><option value="">Без проекта</option></select></div>
       <div class="field"><label>Статус</label><select name="status">
@@ -2310,15 +2378,30 @@
         <option value="missed">Не сделано</option>
       </select></div>
       
-      <div class="field"><label>Начало</label><input name="start" type="time" step="1800" required></div>
-      <div class="field"><label>Конец</label><input name="end" type="time" step="1800" required></div>
+      <div class="field"><label>Начало</label><input name="start" type="time" step="60" required></div>
+      <div class="field"><label>Конец</label><input name="end" type="time" step="60" required></div>
       <div class="field full"><label>Заметка</label><textarea name="note" placeholder="Необязательно"></textarea></div>
-      <div class="field" id="eventRepeatField"><label>Повтор</label><select name="repeat"><option value="none">Не повторять</option><option value="daily">Каждый день</option><option value="weekly">Каждую неделю</option></select></div>
+      <div class="field" id="eventRepeatField"><label>Повтор</label><select name="repeat"><option value="none">Не повторять</option><option value="daily">Каждый день</option><option value="weekdays">По будням</option><option value="weekends">По выходным</option><option value="weekly">Каждую неделю</option></select></div>
       <div class="field" id="eventRepeatUntilField"><label>Повторять до</label><input name="repeatUntil" type="date"></div>
       <div class="field full" id="eventSeriesField" style="display:none"><label class="check-line"><input name="applySeries" type="checkbox"> Применить изменения ко всей серии <span class="muted">· даты остальных событий не меняются</span></label></div>
     </div>
-    <div class="dialog-actions"><button type="button" class="btn danger" id="deleteEvent" style="margin-right:auto;display:none">Удалить</button><button type="button" class="btn danger" id="deleteEventSeries" style="display:none">Удалить серию</button><button type="button" class="btn" data-dialog-close="eventDialog">Отмена</button><button type="submit" class="btn primary">Сохранить</button></div>
+    <div class="dialog-actions"><button type="button" class="btn danger" id="deleteEventPreset" style="margin-right:auto;display:none">Удалить быстрый блок</button><button type="button" class="btn danger" id="deleteEvent" style="margin-right:auto;display:none">Удалить</button><button type="button" class="btn danger" id="deleteEventSeries" style="display:none">Удалить серию</button><button type="button" class="btn" data-dialog-close="eventDialog">Отмена</button><button type="submit" class="btn primary">Сохранить</button></div>
   </form>
+</dialog>
+
+<dialog id="timePickerDialog" class="time-picker-dialog">
+  <div class="dialog-inner time-picker-inner">
+    <div class="dialog-head"><h3 id="timePickerTitle">Выбрать время</h3><button type="button" class="icon-btn" id="timePickerClose" aria-label="Закрыть">×</button></div>
+    <div class="time-picker-preview" id="timePickerPreview">00:00</div>
+    <div class="time-picker-columns">
+      <div class="time-picker-column"><span>Часы</span><div class="time-picker-list" id="timePickerHours"></div></div>
+      <div class="time-picker-column"><span>Минуты</span><div class="time-picker-list" id="timePickerMinutes"></div></div>
+    </div>
+    <div class="dialog-actions">
+      <button type="button" class="btn" id="timePickerNow">Сейчас</button>
+      <button type="button" class="btn primary" id="timePickerDone">Готово</button>
+    </div>
+  </div>
 </dialog>
 <dialog id="workoutDialog">
   <form id="workoutForm" class="dialog-inner">
@@ -2328,7 +2411,7 @@
     <div class="form-grid">
       <div class="field full"><label>Название</label><input name="title" required placeholder="Например, Ноги + пресс"></div>
       <div class="field"><label>Дата</label><input name="date" type="date" required></div>
-      <div class="field"><label>Время в календаре</label><input name="start" type="time" step="1800" value="19:00" required></div>
+      <div class="field"><label>Время в календаре</label><input name="start" type="time" step="60" value="19:00" required></div>
       <div class="field"><label>Тип</label><select name="type"><option value="home">Дом</option><option value="outdoor">Улица</option><option value="gym">Спортзал</option></select></div>
       <div class="field"><label>Статус</label><select name="status"><option value="planned">Запланирована</option><option value="done">Выполнена</option><option value="missed">Пропущена</option></select></div>
       <div class="field"><label>Длительность, мин</label><input name="duration" type="number" min="0" step="5" placeholder="60"></div>
@@ -2390,6 +2473,35 @@ const startOfWeek = d => {
 };
 const monthKey = d => d.slice(0,7);
 
+const CALENDAR_CATEGORY_DEFS=[
+  {key:'work',label:'Работа',emoji:'💼',color:'#a1a1aa'},
+  {key:'project',label:'Свои проекты',emoji:'🧠',color:'#6366f1'},
+  {key:'study',label:'Обучение',emoji:'📚',color:'#14b8a6'},
+  {key:'commute',label:'Дорога',emoji:'🚇',color:'#60a5fa'},
+  {key:'food',label:'Еда',emoji:'🍽',color:'#4ade80'},
+  {key:'sport',label:'Спорт',emoji:'🏃',color:'#10b981'},
+  {key:'personal',label:'Личное / быт',emoji:'👤',color:'#fb923c'},
+  {key:'together',label:'Вместе',emoji:'♥',color:'#f472b6'},
+  {key:'rest',label:'Отдых',emoji:'☕',color:'#facc15'},
+  {key:'other',label:'Другое',emoji:'•',color:'#71717a'}
+];
+const DEFAULT_CALENDAR_CATEGORY_COLORS=Object.fromEntries(CALENDAR_CATEGORY_DEFS.map(x=>[x.key,x.color]));
+const calendarCategoryLabels=Object.fromEntries(CALENDAR_CATEGORY_DEFS.map(x=>[x.key,x.label]));
+const calendarCategoryEmoji=Object.fromEntries(CALENDAR_CATEGORY_DEFS.map(x=>[x.key,x.emoji]));
+function normalizeCalendarCategory(key){
+  if(key==='freelance')return 'work';
+  if(key==='home')return 'personal';
+  return CALENDAR_CATEGORY_DEFS.some(x=>x.key===key)?key:'other';
+}
+function calendarCategoryColor(key){
+  const normalized=normalizeCalendarCategory(key);
+  return db?.categoryColors?.[normalized]||DEFAULT_CALENDAR_CATEGORY_COLORS[normalized]||'#71717a';
+}
+function calendarEventInlineStyle(key){
+  const color=calendarCategoryColor(key);
+  return `--event-color:${color};background:color-mix(in srgb,${color} 18%,var(--surface));border-color:${color}`;
+}
+
 const defaults = {
   money: [],
   food: [],
@@ -2410,7 +2522,9 @@ const defaults = {
   timeEntries:[],
   weekTemplate:[],
   customCalendarPresets:[],
-  meta:{schema:20,updatedAt:null,domainUpdatedAt:{}}
+  hiddenCalendarPresets:[],
+  categoryColors:{...DEFAULT_CALENDAR_CATEGORY_COLORS},
+  meta:{schema:22,updatedAt:null,domainUpdatedAt:{}}
 };
 
 function load(){
@@ -2422,7 +2536,7 @@ function load(){
 let db=load();
 const legacyIncomingTasks=Array.isArray(db['tasks'])?db['tasks']:[];
 delete db['tasks'];
-db.calendar ??= []; db.legacyTaskArchive ??= []; db.projects ??= []; db.money ??= []; db.food ??= []; db.subscriptions ??= []; db.recurringIncome ??= []; db.calories ??=[]; db.workouts ??=[]; db.weights ??=[]; db.trainingSettings ??= structuredClone(defaults.trainingSettings); db.financeSettings ??= structuredClone(defaults.financeSettings); db.foodWeekDecisions ??= {}; db.goals ??= []; db.budgets ??= structuredClone(defaults.budgets); db.meta ??= {}; db.timeEntries ??=[]; db.weekTemplate ??=[]; db.customCalendarPresets ??=[];
+db.calendar ??= []; db.legacyTaskArchive ??= []; db.projects ??= []; db.money ??= []; db.food ??= []; db.subscriptions ??= []; db.recurringIncome ??= []; db.calories ??=[]; db.workouts ??=[]; db.weights ??=[]; db.trainingSettings ??= structuredClone(defaults.trainingSettings); db.financeSettings ??= structuredClone(defaults.financeSettings); db.foodWeekDecisions ??= {}; db.goals ??= []; db.budgets ??= structuredClone(defaults.budgets); db.meta ??= {}; db.timeEntries ??=[]; db.weekTemplate ??=[]; db.customCalendarPresets ??=[]; db.hiddenCalendarPresets=Array.isArray(db.hiddenCalendarPresets)?db.hiddenCalendarPresets:[]; db.categoryColors={...DEFAULT_CALENDAR_CATEGORY_COLORS,...(db.categoryColors||{})};
 // v0.3: удаляем только старые демонстрационные быстрые задачи из прототипа.
 if((db.meta.schema||0)<3){
   db.meta.schema=3;
@@ -2537,11 +2651,22 @@ if((db.meta.schema||0)<20){
   db.meta.domainUpdatedAt=(db.meta.domainUpdatedAt&&typeof db.meta.domainUpdatedAt==='object')?db.meta.domainUpdatedAt:{};
   const stamp=db.meta.updatedAt||new Date().toISOString();
   for(const domain of ['planning','finance','health','focus']) db.meta.domainUpdatedAt[domain]??=stamp;
-  db.meta.schema=21;
+  db.meta.schema=23;
 }
 if((db.meta.schema||0)<21){
   db.meta.domainUpdatedAt=(db.meta.domainUpdatedAt&&typeof db.meta.domainUpdatedAt==='object')?db.meta.domainUpdatedAt:{};
   db.meta.schema=21;
+}
+if((db.meta.schema||0)<22){
+  db.categoryColors={...DEFAULT_CALENDAR_CATEGORY_COLORS,...(db.categoryColors||{})};
+  db.calendar=(Array.isArray(db.calendar)?db.calendar:[]).map(e=>({...e,category:normalizeCalendarCategory(e.category)}));
+  db.weekTemplate=(Array.isArray(db.weekTemplate)?db.weekTemplate:[]).map(e=>({...e,category:normalizeCalendarCategory(e.category)}));
+  db.customCalendarPresets=(Array.isArray(db.customCalendarPresets)?db.customCalendarPresets:[]).map(e=>({...e,category:normalizeCalendarCategory(e.category)}));
+  db.meta.schema=22;
+}
+if((db.meta.schema||0)<23){
+  db.hiddenCalendarPresets=Array.isArray(db.hiddenCalendarPresets)?db.hiddenCalendarPresets:[];
+  db.meta.schema=23;
 }
 function persistLocal(touch=true){
   db.meta??={};
@@ -2565,7 +2690,7 @@ let undoToastTimer=null;
 const HISTORY_FIELDS=[
   'money','food','subscriptions','recurringIncome','calories','workouts','weights',
   'trainingSettings','financeSettings','foodWeekDecisions','goals','budgets',
-  'projects','calendar','timer','timeEntries','weekTemplate','customCalendarPresets'
+  'projects','calendar','timer','timeEntries','weekTemplate','customCalendarPresets','hiddenCalendarPresets','categoryColors'
 ];
 
 function historyState(value=db){
@@ -2738,7 +2863,7 @@ $('#restoreRecovery')?.addEventListener('click',()=>{
 function maybeWriteAutomaticRecovery(){writeRecoveryBackup('Автоматический резерв',false)}
 
 const SYNC_DOMAINS={
-  planning:['projects','calendar','weekTemplate','customCalendarPresets'],
+  planning:['projects','calendar','weekTemplate','customCalendarPresets','hiddenCalendarPresets','categoryColors'],
   finance:['money','food','subscriptions','recurringIncome','goals','budgets','financeSettings','foodWeekDecisions'],
   health:['calories','workouts','weights','trainingSettings'],
   focus:['timeEntries','timer']
@@ -2773,7 +2898,7 @@ function mergeCloudDomains(localState,remoteState){
   const legacy=[...(local.legacyTaskArchive||[]),...(remote.legacyTaskArchive||[])],seen=new Set();
   merged.legacyTaskArchive=legacy.filter(t=>t?.id&&!seen.has(t.id)&&seen.add(t.id));
   merged.meta.updatedAt=new Date().toISOString();
-  merged.meta.schema=21;
+  merged.meta.schema=23;
   return normalizeCloudData(merged);
 }
 
@@ -2811,7 +2936,7 @@ function storeCloudConfig(){
   localStorage.setItem(CLOUD_CONFIG_KEY,JSON.stringify(cfg)); return cfg;
 }
 function cloudConfigValid(cfg=loadCloudConfig()){return /^https:\/\/.+/.test(cfg.url||'')&&String(cfg.key||'').length>20}
-function dataHasContent(x){const listCount=(x?.projects?.length||0)+(x?.calendar?.length||0)+(x?.money?.length||0)+(x?.food?.length||0)+(x?.subscriptions?.length||0)+(x?.recurringIncome?.length||0)+(x?.calories?.length||0)+(x?.workouts?.length||0)+(x?.weights?.length||0)+(x?.timeEntries?.length||0)+(x?.weekTemplate?.length||0)+(x?.customCalendarPresets?.length||0)+(x?.goals?.length||0);const decisions=Object.keys(x?.foodWeekDecisions||{}).length,b=x?.budgets||{},customBudget=Number(b.day??1000)!==1000||Number(b.month??30000)!==30000,fs=x?.financeSettings||{},customOpening=Number(fs.openingBalance||0)!==0||!!fs.openingDate;return !!(listCount+decisions)||customBudget||customOpening}
+function dataHasContent(x){const listCount=(x?.projects?.length||0)+(x?.calendar?.length||0)+(x?.money?.length||0)+(x?.food?.length||0)+(x?.subscriptions?.length||0)+(x?.recurringIncome?.length||0)+(x?.calories?.length||0)+(x?.workouts?.length||0)+(x?.weights?.length||0)+(x?.timeEntries?.length||0)+(x?.weekTemplate?.length||0)+(x?.customCalendarPresets?.length||0)+(x?.goals?.length||0);const decisions=Object.keys(x?.foodWeekDecisions||{}).length,b=x?.budgets||{},customBudget=Number(b.day??1000)!==1000||Number(b.month??30000)!==30000,fs=x?.financeSettings||{},customOpening=Number(fs.openingBalance||0)!==0||!!fs.openingDate,customCategoryColors=JSON.stringify({...DEFAULT_CALENDAR_CATEGORY_COLORS,...(x?.categoryColors||{})})!==JSON.stringify(DEFAULT_CALENDAR_CATEGORY_COLORS),hiddenPresets=Array.isArray(x?.hiddenCalendarPresets)&&x.hiddenCalendarPresets.length>0;return !!(listCount+decisions)||customBudget||customOpening||customCategoryColors||hiddenPresets}
 function normalizeCloudData(raw){
   const source=(raw&&typeof raw==='object')?raw:{};
   const next={...structuredClone(defaults),...source};
@@ -2829,7 +2954,7 @@ function normalizeCloudData(raw){
     if(incomingTasks.some(t=>t.id===next.timer?.activeTaskId))next.timer={...structuredClone(defaults.timer)};
   }
   delete next.tasks;
-  next.budgets={...defaults.budgets,...(next.budgets||{})}; next.financeSettings={...defaults.financeSettings,...(next.financeSettings||{})}; next.calendar=next.calendar.map(e=>({...e,status:e.status||(e.done?'done':'planned'),done:(e.status?e.status==='done':!!e.done),movedFromId:e.movedFromId||'',movedToEventId:e.movedToEventId||''})); next.workouts=next.workouts.map(w=>({...w,calendarEventId:w.calendarEventId||'',start:w.start||'19:00'})); next.budgets.week=(Number(next.budgets.day)||1000)*7; next.foodWeekDecisions=(next.foodWeekDecisions&&typeof next.foodWeekDecisions==='object')?next.foodWeekDecisions:{}; next.timer={...defaults.timer,...(next.timer||{})}; next.trainingSettings={...defaults.trainingSettings,...(next.trainingSettings||{})}; next.weights=next.weights.map(x=>({...x,zone:x.zone||'green'})); next.food=next.food.map(x=>({...x,excludeFromLimit:!!x.excludeFromLimit})); next.meta={...defaults.meta,...(next.meta||{}),schema:21}; next.meta.domainUpdatedAt=(next.meta.domainUpdatedAt&&typeof next.meta.domainUpdatedAt==='object')?next.meta.domainUpdatedAt:{}; const domainStamp=next.meta.updatedAt||new Date().toISOString(); for(const domain of ['planning','finance','health','focus']) next.meta.domainUpdatedAt[domain]??=domainStamp; next.timer={...defaults.timer,...(next.timer||{}),sessionAccumulatedMs:Number(next.timer?.sessionAccumulatedMs||0)}; next.timeEntries=next.timeEntries.map(x=>({...x,taskTitle:x.taskTitle||'',projectName:x.projectName||''})); next.money=next.money.map(x=>({...x,goalId:x.goalId||'',seriesId:x.seriesId||'',external:!!x.external})); return next;
+  next.budgets={...defaults.budgets,...(next.budgets||{})}; next.financeSettings={...defaults.financeSettings,...(next.financeSettings||{})}; next.categoryColors={...DEFAULT_CALENDAR_CATEGORY_COLORS,...(next.categoryColors||{})}; next.hiddenCalendarPresets=Array.isArray(next.hiddenCalendarPresets)?next.hiddenCalendarPresets:[]; next.calendar=next.calendar.map(e=>({...e,category:normalizeCalendarCategory(e.category),status:e.status||(e.done?'done':'planned'),done:(e.status?e.status==='done':!!e.done),movedFromId:e.movedFromId||'',movedToEventId:e.movedToEventId||''})); next.weekTemplate=next.weekTemplate.map(e=>({...e,category:normalizeCalendarCategory(e.category)})); next.customCalendarPresets=next.customCalendarPresets.map(e=>({...e,category:normalizeCalendarCategory(e.category)})); next.workouts=next.workouts.map(w=>({...w,calendarEventId:w.calendarEventId||'',start:w.start||'19:00'})); next.budgets.week=(Number(next.budgets.day)||1000)*7; next.foodWeekDecisions=(next.foodWeekDecisions&&typeof next.foodWeekDecisions==='object')?next.foodWeekDecisions:{}; next.timer={...defaults.timer,...(next.timer||{})}; next.trainingSettings={...defaults.trainingSettings,...(next.trainingSettings||{})}; next.weights=next.weights.map(x=>({...x,zone:x.zone||'green'})); next.food=next.food.map(x=>({...x,excludeFromLimit:!!x.excludeFromLimit})); next.meta={...defaults.meta,...(next.meta||{}),schema:23}; next.meta.domainUpdatedAt=(next.meta.domainUpdatedAt&&typeof next.meta.domainUpdatedAt==='object')?next.meta.domainUpdatedAt:{}; const domainStamp=next.meta.updatedAt||new Date().toISOString(); for(const domain of ['planning','finance','health','focus']) next.meta.domainUpdatedAt[domain]??=domainStamp; next.timer={...defaults.timer,...(next.timer||{}),sessionAccumulatedMs:Number(next.timer?.sessionAccumulatedMs||0)}; next.timeEntries=next.timeEntries.map(x=>({...x,taskTitle:x.taskTitle||'',projectName:x.projectName||''})); next.money=next.money.map(x=>({...x,goalId:x.goalId||'',seriesId:x.seriesId||'',external:!!x.external})); return next;
 }
 function dotClass(mode){return mode==='ready'?'ok':mode==='syncing'?'busy':mode==='conflict'?'warn':mode==='error'?'err':''}
 function cloudStatusCopy(){
@@ -2857,7 +2982,7 @@ function updateCloudUI(message=''){
   const meta=$('#cloudMeta'); if(meta){const email=cloudUser?.email||loadCloudConfig().email||'';const stamp=cloudLastSync?new Intl.DateTimeFormat('ru-RU',{hour:'2-digit',minute:'2-digit',second:'2-digit'}).format(cloudLastSync):'—';meta.textContent=signed?`Аккаунт: ${email||cloudUser.id} · устройство ${DEVICE_ID.slice(0,8)} · последняя синхронизация ${stamp}`:(cloudConfigValid()?'Синхронизация готова. Войди в аккаунт, чтобы включить её.':'Техническое подключение не настроено.')}
 }
 function renderAfterRemote(){
-  try{persistLocal(false);renderToday();renderMoney();renderFood();renderProjects();renderCalendar();renderWorkouts();renderArchive();renderFocusPage();drawTimer();fillProjectSelect();renderRecoveryStatus();}catch(err){console.error('renderAfterRemote',err)}
+  try{persistLocal(false);renderToday();renderMoney();renderFood();renderProjects();renderCalendar();renderWorkouts();renderArchive();renderFocusPage();drawTimer();fillProjectSelect();renderRecoveryStatus();renderCategorySettings();}catch(err){console.error('renderAfterRemote',err)}
   if($('#budgetDay'))$('#budgetDay').value=db.budgets.day;if($('#budgetWeek'))$('#budgetWeek').value=(Number(db.budgets.day)||1000)*7;if($('#budgetMonth'))$('#budgetMonth').value=db.budgets.month;
 }
 function applyCloudState(row){
@@ -2991,7 +3116,7 @@ function showPage(name){
   if(name==='projects') renderProjects();
   if(name==='workouts') renderWorkouts();
   if(name==='archive') renderArchive();
-  if(name==='account'){updateCloudUI();renderFinanceSettings();}
+  if(name==='account'){updateCloudUI();renderFinanceSettings();renderCategorySettings();}
   $('#globalSearchResults')?.classList.remove('show');
 }
 $$('[data-page]').forEach(b=>b.addEventListener('click',()=>showPage(b.dataset.page)));
@@ -3088,14 +3213,14 @@ function renderToday(){
   const finalCount=events.filter(e=>['done','moved','missed'].includes(calendarEventStatus(e))).length;
   const progress=events.length?Math.round(finalCount/events.length*100):0;
   $('#todayTasksCount').textContent=events.length;$('#todayTasksCaption').textContent=events.length===1?'рабочий блок':'рабочих блоков';$('#todayPlanned').textContent=minutesText(totalMinutes);$('#todayTracked').textContent=msHoursText(entryMsOnDate(todayISO));$('#todayProgressPercent').textContent=`${progress}%`;$('#todayProgressBar').style.width=`${progress}%`;$('#todayProgressCaption').textContent=`${doneCount} выполнено · ${events.filter(e=>calendarEventStatus(e)==='moved').length} перенесено · ${events.filter(e=>calendarEventStatus(e)==='missed').length} не сделано`;
-  const categoryColor={work:'#a1a1aa',project:'#6366f1',freelance:'#22c55e'},box=$('#quickTasks');
+  const box=$('#quickTasks');
   box.innerHTML=events.length?events.map(e=>{
     const focusId=calendarFocusId(e.id),tracked=trackedTaskMs(focusId),project=e.projectId?db.projects.find(p=>p.id===e.projectId):null,status=calendarEventStatus(e);
     const canFocus=status==='planned';
     return `<div class="today-task-row today-calendar-task status-${status} ${status==='done'?'is-done':''}">
       <input type="checkbox" data-calendar-done="${e.id}" ${status==='done'?'checked':''} ${status==='moved'||status==='missed'?'disabled':''}>
       <div class="today-task-main">
-        <button class="today-task-title" data-today-event-edit="${e.id}"><i class="today-task-category-dot" style="background:${categoryColor[e.category]||'#71717a'}"></i> ${escapeHTML(e.title)}</button>
+        <button class="today-task-title" data-today-event-edit="${e.id}"><i class="today-task-category-dot" style="background:${calendarCategoryColor(e.category)}"></i> ${escapeHTML(e.title)}</button>
         <div class="today-task-meta">
           <span class="today-task-badge">${escapeHTML(categoryLabels[e.category]||'Другое')}</span>
           <span class="today-task-badge scheduled">${e.start}–${e.end}</span>
@@ -3202,6 +3327,32 @@ function weekRangeText(startDate){const end=new Date(startDate);end.setDate(end.
 function sameViewedWorkoutWeek(date){const start=iso(workoutWeekStart);const end=new Date(workoutWeekStart);end.setDate(end.getDate()+6);return date>=start && date<=iso(end)}
 let moneyPeriod='month';
 let moneyCursor=new Date();
+
+function renderCategorySettings(){
+  const box=$('#calendarCategoryColors');if(!box)return;
+  box.innerHTML=CALENDAR_CATEGORY_DEFS.map(x=>`
+    <label class="category-color-row">
+      <span class="category-color-name"><i style="background:${calendarCategoryColor(x.key)}"></i>${escapeHTML(x.label)}</span>
+      <input type="color" data-category-color="${x.key}" value="${calendarCategoryColor(x.key)}" aria-label="Цвет категории ${escapeHTML(x.label)}">
+    </label>`).join('');
+  $$('[data-category-color]',box).forEach(input=>input.addEventListener('input',()=>{
+    const dot=input.closest('.category-color-row')?.querySelector('.category-color-name i');
+    if(dot)dot.style.background=input.value;
+  }));
+}
+$('#saveCategoryColors')?.addEventListener('click',()=>{
+  const next={...DEFAULT_CALENDAR_CATEGORY_COLORS};
+  $$('[data-category-color]').forEach(input=>next[input.dataset.categoryColor]=input.value);
+  db.categoryColors=next;
+  save('Цвета категорий сохранены');
+  renderCategorySettings();renderCalendar();renderToday();
+});
+$('#resetCategoryColors')?.addEventListener('click',()=>{
+  db.categoryColors={...DEFAULT_CALENDAR_CATEGORY_COLORS};
+  save('Цвета категорий сброшены');
+  renderCategorySettings();renderCalendar();renderToday();
+});
+
 function renderFinanceSettings(){
   const fs=db.financeSettings||defaults.financeSettings;
   if($('#financeOpeningDate'))$('#financeOpeningDate').value=fs.openingDate||'';
@@ -4189,7 +4340,7 @@ $('#redoAction')?.addEventListener('click',redoLastAction);
 document.addEventListener('click',e=>{if(!e.target.closest('.search'))$('#globalSearchResults')?.classList.remove('show')});
 
 let calendarWeekStart = startOfWeek(new Date());
-const categoryLabels={work:'Работа',commute:'Дорога',food:'Еда',freelance:'Фриланс',project:'Свой проект',together:'Вместе',personal:'Личное',home:'Быт',rest:'Отдых',sport:'Спорт',other:'Другое'};
+const categoryLabels=calendarCategoryLabels;
 const CALENDAR_PRESETS={
   lunch:{title:'Обед',category:'food',duration:60,defaultStart:'14:00',defaultEnd:'15:00'},
   'to-work':{title:'Путь до работы',category:'commute',duration:60,defaultStart:'08:00',defaultEnd:'09:00'},
@@ -4199,29 +4350,23 @@ const CALENDAR_PRESETS={
   sleep:{title:'Сон',category:'rest',duration:480,defaultStart:'23:00',defaultEnd:'07:00',allowOvernight:true},
   project:{title:'Проект',category:'project',duration:60,defaultStart:'19:00',defaultEnd:'20:00'}
 };
-const CALENDAR_CATEGORY_COLORS={
-  work:'#a1a1aa',commute:'#60a5fa',food:'#4ade80',freelance:'#a78bfa',
-  project:'#6366f1',together:'#f472b6',personal:'#38bdf8',home:'#fb923c',
-  rest:'#facc15',sport:'#10b981',other:'#71717a'
-};
+const CALENDAR_CATEGORY_COLORS=DEFAULT_CALENDAR_CATEGORY_COLORS;
 function getCalendarPreset(presetId){
   return CALENDAR_PRESETS[presetId]||db.customCalendarPresets.find(x=>x.id===presetId)||null;
 }
 function renderCalendarPresetTray(){
   const tray=$('#calendarPresetTray');if(!tray)return;
-  const base=Object.entries(CALENDAR_PRESETS).map(([id,p])=>`
+  const hidden=new Set(db.hiddenCalendarPresets||[]);
+  const base=Object.entries(CALENDAR_PRESETS).filter(([id])=>!hidden.has(id)).map(([id,p])=>`
     <button type="button" draggable="true" class="calendar-preset" data-calendar-preset="${id}">
-      <i style="background:${CALENDAR_CATEGORY_COLORS[p.category]||'#71717a'}"></i>
+      <i style="background:${calendarCategoryColor(p.category)}"></i>
       <span>${escapeHTML(p.title)}</span><small>${p.defaultStart}–${p.defaultEnd}</small>
     </button>`).join('');
   const custom=db.customCalendarPresets.map(p=>`
-    <span class="calendar-preset-wrap">
-      <button type="button" draggable="true" class="calendar-preset custom" data-calendar-preset="${p.id}">
-        <i style="background:${CALENDAR_CATEGORY_COLORS[p.category]||'#71717a'}"></i>
-        <span>${escapeHTML(p.title)}</span><small>${minutesText(Number(p.duration||60))}</small>
-      </button>
-      <button type="button" class="calendar-preset-remove" data-remove-calendar-preset="${p.id}" title="Удалить быстрый блок">×</button>
-    </span>`).join('');
+    <button type="button" draggable="true" class="calendar-preset custom" data-calendar-preset="${p.id}">
+      <i style="background:${calendarCategoryColor(p.category)}"></i>
+      <span>${escapeHTML(p.title)}</span><small>${minutesText(Number(p.duration||60))}</small>
+    </button>`).join('');
   tray.innerHTML=base+custom+`<button type="button" class="calendar-preset calendar-preset-add" id="addCalendarPreset">＋ Свой блок</button>`;
 }
 function calendarPresetFallbackDate(){
@@ -4246,7 +4391,7 @@ function createCalendarPresetAt(presetId,date,start,openEditor=false){
   const event={
     id:uid(),
     title:preset.title,
-    category:preset.category,
+    category:normalizeCalendarCategory(preset.category),
     date,
     start:hhmm(st),
     end:hhmm(endMinute),
@@ -4368,7 +4513,7 @@ $('#newProjectBlock').onclick=()=>openEventDialog({
 });
 $('#toggleArchivedProjects').onclick=()=>{showArchivedProjects=!showArchivedProjects;$('#toggleArchivedProjects').textContent=showArchivedProjects?'Скрыть архив':'Архив';renderProjects()};
 
-const categoryEmoji={work:'💼',commute:'🚇',food:'🍽',freelance:'🎬',project:'🧠',together:'♥',personal:'👤',home:'🧹',rest:'☕',sport:'🏃',other:'•'};
+const categoryEmoji=calendarCategoryEmoji;
 function mins(v){const [h,m]=String(v).split(':').map(Number);return h*60+m}
 function eventEndMins(e){let end=mins(e.end);const start=mins(e.start);if(end<=start)end+=1440;return end}
 function hhmm(m){m=(m+1440)%1440;return String(Math.floor(m/60)).padStart(2,'0')+':'+String(m%60).padStart(2,'0')}
@@ -4383,7 +4528,7 @@ function dayOpenClose(date){
 }
 function roundedNow30(){
   const n=new Date(),m=n.getHours()*60+n.getMinutes();
-  return Math.ceil(m/30)*30;
+  return Math.ceil(m);
 }
 function findTaskCalendarSlot(date,duration,ignoreEventId=''){
   const {open,close}=dayOpenClose(date);
@@ -4398,7 +4543,7 @@ function findTaskCalendarSlot(date,duration,ignoreEventId=''){
     if(e<=cursor)continue;
     if(s-cursor>=duration)return {start:cursor,end:cursor+duration};
     cursor=Math.max(cursor,e);
-    cursor=Math.ceil(cursor/30)*30;
+    cursor=Math.ceil(cursor);
   }
   if(close-cursor>=duration)return {start:cursor,end:cursor+duration};
   return null;
@@ -4412,16 +4557,17 @@ function weekDates(){return Array.from({length:7},(_,i)=>{const d=new Date(calen
 let calendarView='week';let calendarDay=new Date();let calendarMonth=new Date(new Date().getFullYear(),new Date().getMonth(),1);
 function inViewedWeek(date){const a=iso(calendarWeekStart), end=new Date(calendarWeekStart);end.setDate(end.getDate()+7);return date>=a&&date<iso(end)}
 function calendarRangeText(){const dates=weekDates();const f=new Intl.DateTimeFormat('ru-RU',{day:'numeric',month:'short'});return `${f.format(dates[0])} — ${f.format(dates[6])}`}
-let activeEventId='';
+let activeEventId='',activeEventPresetId='';
 function openEventDialog(pref={}){
   const form=$('#eventForm'); form.reset();
   const existing=pref.id ? db.calendar.find(x=>x.id===pref.id) : null;
   const data=existing||pref;
   activeEventId=existing?.id||'';
+  activeEventPresetId=!existing&&pref.presetId?String(pref.presetId):'';
   form.elements.namedItem('id').value=activeEventId;
   form.elements.title.value=data.title||'';
   form.elements.date.value=data.date||iso(calendarWeekStart);
-  form.elements.category.value=data.category||'project';
+  form.elements.category.value=normalizeCalendarCategory(data.category||'project');
   form.elements.status.value=calendarEventStatus(data);
   fillProjectSelect(); $('#eventProjectSelect').innerHTML=projectOptions(data.projectId||'');$('#eventProjectSelect').value=data.projectId||'';
   form.elements.repeat.value='none'; form.elements.repeatUntil.value=''; form.elements.applySeries.checked=false;
@@ -4435,6 +4581,7 @@ function openEventDialog(pref={}){
   $('#deleteEventSeries').style.display=isSeries?'inline-flex':'none';
   $('#eventDialogTitle').textContent=existing?(isSeries?'Редактировать событие серии':'Редактировать событие'):'Новое событие';
   $('#deleteEvent').style.display=existing?'inline-flex':'none';
+  $('#deleteEventPreset').style.display=activeEventPresetId?'inline-flex':'none';
   $('#eventDialog').showModal();
   setTimeout(()=>form.elements.title.focus(),0);
 }
@@ -4459,16 +4606,141 @@ function renderCalendar(){
   $$('[data-calendar-view]').forEach(b=>b.classList.toggle('active',b.dataset.calendarView===calendarView));
   const right=$('.calendar-toolbar .right');if(right)right.style.display=calendarView==='week'?'flex':'none';
   if(calendarView==='month'){renderCalendarMonth();bindCalendarPresets();renderCalendarSide();return}
-  const dates=calendarView==='day'?[new Date(calendarDay)]:weekDates(),dayNames=['Пн','Вт','Ср','Чт','Пт','Сб','Вс'];
-  $('#calendarWeekLabel').textContent=calendarView==='day'?new Intl.DateTimeFormat('ru-RU',{day:'numeric',month:'long',year:'numeric'}).format(dates[0]):calendarRangeText();
-  grid.className=calendarView==='day'?'day-grid':'week-grid';grid.style.gridTemplateColumns=calendarView==='day'?'72px minmax(720px,1fr)':'';grid.style.gridTemplateRows=calendarView==='day'?'58px repeat(34,34px)':'54px repeat(34,28px)';
+
+  const dates=calendarView==='day'?[new Date(calendarDay)]:weekDates(),
+        dayNames=['Пн','Вт','Ср','Чт','Пт','Сб','Вс'],
+        minuteTrack=calendarView==='day'?'1.35px':'1.2px';
+
+  $('#calendarWeekLabel').textContent=calendarView==='day'
+    ? new Intl.DateTimeFormat('ru-RU',{day:'numeric',month:'long',year:'numeric'}).format(dates[0])
+    : calendarRangeText();
+
+  grid.className=calendarView==='day'?'day-grid':'week-grid';
+  grid.style.gridTemplateColumns=calendarView==='day'?'72px minmax(720px,1fr)':'';
+  grid.style.gridTemplateRows=`${calendarView==='day'?58:54}px repeat(1020,${minuteTrack})`;
+
   let html='<div class="week-head" style="grid-column:1;grid-row:1"></div>';
-  dates.forEach((d,i)=>{const isToday=iso(d)===todayISO,di=(d.getDay()+6)%7,weekend=[0,6].includes(d.getDay());html+=`<div class="week-head ${isToday?'today':''} ${weekend?'weekend':''}" style="grid-column:${i+2};grid-row:1"><strong>${dayNames[di]}</strong><span>${d.getDate()} ${new Intl.DateTimeFormat('ru-RU',{month:'short'}).format(d)}</span></div>`});
-  for(let half=0;half<34;half++){const minute=420+half*30,row=half+2;if(half%2===0)html+=`<div class="time-cell" style="grid-column:1;grid-row:${row}/span 2">${hhmm(minute)}</div>`;dates.forEach((d,day)=>{const weekend=[0,6].includes(d.getDay()),open=weekend?minute>=480&&minute<1440:minute>=420&&minute<1380;html+=`<button type="button" class="calendar-slot ${weekend?'weekend':''} ${open?'':'closed'} ${half%2===1?'hour':''}" ${open?'':'disabled'} data-slot-date="${iso(d)}" data-slot-time="${hhmm(minute)}" style="grid-column:${day+2};grid-row:${row}"></button>`})}
-  const bounds=calendarVisibleBounds(),events=db.calendar.filter(e=>e.date>=bounds.start&&e.date<bounds.end);events.forEach(e=>{const day=dates.findIndex(d=>iso(d)===e.date);if(day<0)return;const sm=Math.max(420,mins(e.start)),em=Math.min(1440,eventEndMins(e)),row=2+Math.floor((sm-420)/30),span=Math.max(1,Math.ceil((em-sm)/30));html+=`<button type="button" draggable="true" class="calendar-event ${e.category||'other'} status-${calendarEventStatus(e)} ${calendarEventStatus(e)==='done'?'is-done':''}" data-calendar-event="${e.id}" style="grid-column:${day+2};grid-row:${row}/span ${span}"><strong>${escapeHTML(e.title)}</strong><span>${e.start}–${e.end}${e.note?' · '+escapeHTML(e.note):''}</span></button>`});
-  const now=new Date(),ti=dates.findIndex(d=>iso(d)===iso(now)),nm=now.getHours()*60+now.getMinutes();if(ti>=0&&nm>=420&&nm<=1440){const row=2+Math.floor((nm-420)/30),off=((nm-420)%30)/30*28;html+=`<div class="calendar-now-line" style="grid-column:${ti+2};grid-row:${row};transform:translateY(${off}px)"></div><div class="calendar-now-label" style="grid-column:1;grid-row:${row};transform:translateY(${off-1}px)">${hhmm(nm)}</div>`}
-  grid.innerHTML=html;bindCalendarGrid(grid);bindCalendarPresets();renderCalendarSide();mobileCalendarAutoScroll();
+
+  dates.forEach((d,i)=>{
+    const isToday=iso(d)===todayISO,di=(d.getDay()+6)%7,weekend=[0,6].includes(d.getDay());
+    html+=`<div class="week-head ${isToday?'today':''} ${weekend?'weekend':''}" style="grid-column:${i+2};grid-row:1"><strong>${dayNames[di]}</strong><span>${d.getDate()} ${new Intl.DateTimeFormat('ru-RU',{month:'short'}).format(d)}${weekend?' · выходной':''}</span></div>`;
+  });
+
+  // Шкала календаря теперь непрерывная по минутам.
+  // Слоты для клика/drag-and-drop остаются удобными — по 10 минут,
+  // но вручную событие можно поставить на любую минуту.
+  for(let minute=420;minute<1440;minute+=10){
+    const offset=minute-420,row=2+offset;
+
+    if(minute%60===0){
+      html+=`<div class="time-cell" style="grid-column:1;grid-row:${row}/span 60">${hhmm(minute)}</div>`;
+    }
+
+    dates.forEach((d,day)=>{
+      const weekend=[0,6].includes(d.getDay()),
+            open=weekend?minute>=480&&minute<1440:minute>=420&&minute<1380,
+            boundary=(minute+10)%60===0?'hour':((minute+10)%30===0?'half':'minor');
+      html+=`<button type="button" class="calendar-slot ${weekend?'weekend':''} ${open?'':'closed'} ${boundary}" ${open?'':'disabled'} data-slot-date="${iso(d)}" data-slot-time="${hhmm(minute)}" style="grid-column:${day+2};grid-row:${row}/span 10"></button>`;
+    });
+  }
+
+  const bounds=calendarVisibleBounds(),
+        events=db.calendar.filter(e=>e.date>=bounds.start&&e.date<bounds.end);
+
+  events.forEach(e=>{
+    const day=dates.findIndex(d=>iso(d)===e.date);
+    if(day<0)return;
+
+    const sm=Math.max(420,mins(e.start)),
+          em=Math.min(1440,eventEndMins(e)),
+          duration=Math.max(1,em-sm),
+          row=2+(sm-420),
+          density=duration<15?'micro':duration<30?'compact':duration<45?'short':'',
+          status=calendarEventStatus(e),
+          label=`${e.title} · ${e.start}–${e.end}${e.note?' · '+e.note:''}`;
+
+    html+=`<button type="button" draggable="true" aria-label="${escapeHTML(label)}" title="${escapeHTML(label)}" class="calendar-event ${density} ${e.category||'other'} status-${status} ${status==='done'?'is-done':''}" data-calendar-event="${e.id}" data-duration-minutes="${duration}" style="grid-column:${day+2};grid-row:${row}/span ${duration};${calendarEventInlineStyle(e.category)}"><strong>${escapeHTML(e.title)}</strong><span>${e.start}–${e.end}${e.note?' · '+escapeHTML(e.note):''}</span></button>`;
+  });
+
+  const now=new Date(),
+        ti=dates.findIndex(d=>iso(d)===iso(now)),
+        nm=now.getHours()*60+now.getMinutes();
+
+  if(ti>=0&&nm>=420&&nm<=1440){
+    const row=2+(nm-420);
+    html+=`<div class="calendar-now-line" style="grid-column:${ti+2};grid-row:${row}"></div><div class="calendar-now-label" style="grid-column:1;grid-row:${row}">${hhmm(nm)}</div>`;
+  }
+
+  grid.innerHTML=html;
+  bindCalendarGrid(grid);
+  bindCalendarPresets();
+  renderCalendarSide();
+  mobileCalendarAutoScroll();
 }
+let activeTimePickerInput=null,timePickerHour=0,timePickerMinute=0;
+function renderExactTimePicker(){
+  const h=$('#timePickerHours'),m=$('#timePickerMinutes');if(!h||!m)return;
+  h.innerHTML=Array.from({length:24},(_,i)=>`<button type="button" class="time-picker-option ${i===timePickerHour?'active':''}" data-time-hour="${i}">${String(i).padStart(2,'0')}</button>`).join('');
+  m.innerHTML=Array.from({length:60},(_,i)=>`<button type="button" class="time-picker-option ${i===timePickerMinute?'active':''}" data-time-minute="${i}">${String(i).padStart(2,'0')}</button>`).join('');
+  $('#timePickerPreview').textContent=`${String(timePickerHour).padStart(2,'0')}:${String(timePickerMinute).padStart(2,'0')}`;
+  $$('[data-time-hour]',h).forEach(b=>b.onclick=()=>{timePickerHour=Number(b.dataset.timeHour);renderExactTimePickerSelection()});
+  $$('[data-time-minute]',m).forEach(b=>b.onclick=()=>{timePickerMinute=Number(b.dataset.timeMinute);renderExactTimePickerSelection()});
+  requestAnimationFrame(()=>{
+    h.querySelector('.active')?.scrollIntoView({block:'center'});
+    m.querySelector('.active')?.scrollIntoView({block:'center'});
+  });
+}
+function renderExactTimePickerSelection(){
+  const dialog=$('#timePickerDialog');if(!dialog)return;
+  $$('[data-time-hour]',dialog).forEach(b=>b.classList.toggle('active',Number(b.dataset.timeHour)===timePickerHour));
+  $$('[data-time-minute]',dialog).forEach(b=>b.classList.toggle('active',Number(b.dataset.timeMinute)===timePickerMinute));
+  $('#timePickerPreview').textContent=`${String(timePickerHour).padStart(2,'0')}:${String(timePickerMinute).padStart(2,'0')}`;
+}
+function openExactTimePicker(input){
+  if(!input||input.disabled||input.readOnly)return;
+  activeTimePickerInput=input;
+  const current=input.value||'00:00',[h,m]=current.split(':').map(Number);
+  timePickerHour=Number.isFinite(h)?Math.max(0,Math.min(23,h)):0;
+  timePickerMinute=Number.isFinite(m)?Math.max(0,Math.min(59,m)):0;
+  const label=input.closest('.field')?.querySelector('label')?.textContent?.trim();
+  $('#timePickerTitle').textContent=label?`Выбрать: ${label}`:'Выбрать время';
+  renderExactTimePicker();
+  $('#timePickerDialog').showModal();
+}
+function applyExactTimePicker(){
+  if(!activeTimePickerInput)return;
+  activeTimePickerInput.value=`${String(timePickerHour).padStart(2,'0')}:${String(timePickerMinute).padStart(2,'0')}`;
+  activeTimePickerInput.dispatchEvent(new Event('input',{bubbles:true}));
+  activeTimePickerInput.dispatchEvent(new Event('change',{bubbles:true}));
+  $('#timePickerDialog').close();
+}
+function enhanceNativeDateTimeInputs(){
+  const canShow=typeof HTMLInputElement!=='undefined' && 'showPicker' in HTMLInputElement.prototype;
+  document.addEventListener('pointerdown',e=>{
+    const time=e.target.closest('input[type="time"]');
+    if(time&&!time.disabled&&!time.readOnly){
+      e.preventDefault();
+      openExactTimePicker(time);
+      return;
+    }
+    const date=e.target.closest('input[type="date"]');
+    if(date&&canShow&&!date.disabled&&!date.readOnly){
+      try{date.showPicker()}catch(_){ }
+    }
+  },true);
+  document.addEventListener('keydown',e=>{
+    const input=e.target;
+    if(!input?.matches?.('input[type="time"]'))return;
+    if(e.key==='Enter'||e.key===' '){e.preventDefault();openExactTimePicker(input)}
+  });
+  $('#timePickerDone')?.addEventListener('click',applyExactTimePicker);
+  $('#timePickerClose')?.addEventListener('click',()=>$('#timePickerDialog').close());
+  $('#timePickerNow')?.addEventListener('click',()=>{
+    const now=new Date();timePickerHour=now.getHours();timePickerMinute=now.getMinutes();renderExactTimePickerSelection();
+  });
+  $('#timePickerDialog')?.addEventListener('close',()=>{activeTimePickerInput=null});
+}
+
 function bindCalendarPresets(){
   $$('[data-calendar-preset]').forEach(chip=>{
     if(chip.dataset.boundPreset==='1')return;
@@ -4484,6 +4756,7 @@ function bindCalendarPresets(){
       if(!preset)return;
       const date=calendarPresetFallbackDate();
       openEventDialog({
+        presetId:chip.dataset.calendarPreset,
         title:preset.title,
         category:preset.category,
         date,
@@ -4501,15 +4774,6 @@ function bindCalendarPresets(){
     form.elements.defaultStart.value='19:00';
     $('#calendarPresetDialog').showModal();
     setTimeout(()=>form.elements.title.focus(),0);
-  });
-  $$('[data-remove-calendar-preset]').forEach(b=>b.onclick=e=>{
-    e.stopPropagation();
-    const item=db.customCalendarPresets.find(x=>x.id===b.dataset.removeCalendarPreset);
-    if(!item)return;
-    if(!confirm(`Удалить быстрый блок «${item.title}»?`))return;
-    db.customCalendarPresets=db.customCalendarPresets.filter(x=>x.id!==item.id);
-    save(`Быстрый блок «${item.title}» удалён`);
-    renderCalendar();
   });
 }
 function bindCalendarGrid(grid){
@@ -4567,6 +4831,7 @@ function renderCalendarMonth(){
     const title=workCount?`${workCount} важных блоков`:(events.length?'Только обычные дела':'Пустой день');
     html+=`<button class="month-day ${outside?'outside':''} ${today?'today':''} ${weekend?'weekend':''} ${dayState}" data-month-day="${key}" title="${title}">
       <div class="month-day-num">${d.getDate()}</div>
+      ${today?`<span class="month-day-today-label">Сегодня</span>`:''}
       ${workCount?`<span class="month-day-count">${workCount} ${workCount===1?'важный блок':'важн. бл.'}</span>`:''}
     </button>`;
   }
@@ -4591,7 +4856,7 @@ function renderCalendarMonth(){
 function renderCalendarSide(){
   const bounds=calendarVisibleBounds(),events=db.calendar.filter(e=>e.date>=bounds.start&&e.date<bounds.end),total=events.reduce((a,e)=>a+eventHours(e),0),occupied=occupiedHours(events);let available=calendarView==='day'?16:calendarView==='week'?112:0;if(calendarView==='month'){for(let d=new Date(bounds.start+'T12:00:00');iso(d)<bounds.end;d.setDate(d.getDate()+1))available+=16}
   $('#calendarSideTitle').textContent=calendarView==='day'?'Этот день':calendarView==='month'?'Этот месяц':'Эта неделя';$('#plannedHours').textContent=`${total.toLocaleString('ru-RU',{maximumFractionDigits:1})} ч`;$('#freeHours').textContent=`${Math.max(0,available-occupied).toLocaleString('ru-RU',{maximumFractionDigits:1})} ч`;
-  const groups=[['work','Работа','#a1a1aa'],['commute','Дорога','#60a5fa'],['food','Еда','#4ade80'],['freelance','Фриланс','#a78bfa'],['project','Свои проекты','#6366f1'],['together','Вместе','#f472b6'],['personal','Личное','#38bdf8'],['home','Быт','#fb923c'],['rest','Отдых','#facc15'],['sport','Спорт','#10b981'],['other','Другое','#71717a']];$('#calendarBalance').innerHTML=groups.map(([key,label,color])=>{const h=events.filter(e=>e.category===key).reduce((a,e)=>a+eventHours(e),0);return `<div class="bar-row"><div class="bar-head"><span>${label}</span><span>${h.toLocaleString('ru-RU',{maximumFractionDigits:1})} ч</span></div><div class="bar"><span style="width:${Math.min(100,h/Math.max(1,total)*100)}%;background:${color}"></span></div></div>`}).join('');
+  const groups=CALENDAR_CATEGORY_DEFS.map(x=>[x.key,x.label,calendarCategoryColor(x.key)]);$('#calendarBalance').innerHTML=groups.map(([key,label,color])=>{const h=events.filter(e=>normalizeCalendarCategory(e.category)===key).reduce((a,e)=>a+eventHours(e),0);return `<div class="bar-row"><div class="bar-head"><span>${label}</span><span>${h.toLocaleString('ru-RU',{maximumFractionDigits:1})} ч</span></div><div class="bar"><span style="width:${Math.min(100,h/Math.max(1,total)*100)}%;background:${color}"></span></div></div>`}).join('');
 }
 function seedViewedWorkWeek(){
   if(!confirm('Добавить базовые будни в эту неделю? Текущие события не удалятся. После добавления действие можно отменить через ⌘Z.'))return;
@@ -4612,10 +4877,17 @@ function renderTodaySchedule(){
   box.innerHTML=events.length?events.map(e=>`<button class="mini-item" data-today-event="${e.id}" style="width:100%;text-align:left;${['moved','missed'].includes(calendarEventStatus(e))?'opacity:.58':''}"><div class="left"><span>${categoryEmoji[e.category]||'•'}</span><div><strong>${escapeHTML(e.title)}</strong><div class="meta">${e.start}–${e.end} · ${calendarEventStatusLabel(calendarEventStatus(e))}${e.note?' · '+escapeHTML(e.note):''}</div></div></div><span class="muted">${eventHours(e).toLocaleString('ru-RU',{maximumFractionDigits:1})} ч</span></button>`).join(''):'<div class="empty">На сегодня ничего не запланировано. Открой календарь и распланируй день.</div>';
   $$('[data-today-event]',box).forEach(b=>b.onclick=()=>openEventDialog({id:b.dataset.todayEvent}));
 }
+function repeatDateAllowed(date,repeat){
+  const dow=new Date(date+'T12:00:00').getDay();
+  if(repeat==='weekdays')return dow>=1&&dow<=5;
+  if(repeat==='weekends')return dow===0||dow===6;
+  return true;
+}
+
 $('#eventForm').addEventListener('submit',e=>{
   e.preventDefault();
   const f=e.currentTarget,id=activeEventId||f.elements.namedItem('id')?.value||'';
-  const title=f.elements.title.value.trim(),date=f.elements.date.value,category=f.elements.category.value,start=f.elements.start.value,end=f.elements.end.value,note=f.elements.note.value.trim(),status=f.elements.status.value||'planned';
+  const title=f.elements.title.value.trim(),date=f.elements.date.value,category=normalizeCalendarCategory(f.elements.category.value),start=f.elements.start.value,end=f.elements.end.value,note=f.elements.note.value.trim(),status=f.elements.status.value||'planned';
   if(!title||!date||!start||!end)return;
 
   const dow=new Date(date+'T12:00:00').getDay(),weekend=dow===0||dow===6,open=weekend?480:420,close=weekend?1440:1380,startM=mins(start),endM=eventEndMins({start,end}),overnight=mins(end)<=startM;
@@ -4624,7 +4896,12 @@ $('#eventForm').addEventListener('submit',e=>{
   if(overnight&&endM-startM>720){alert('Ночной блок не может быть длиннее 12 часов.');return}
 
   const taskId='',projectId=f.elements.projectId.value||'',existing=id?db.calendar.find(x=>x.id===id):null;
-  if(!existing&&f.elements.repeat.value!=='none'&&!f.elements.repeatUntil.value){alert('Для повторяющегося события укажи дату «Повторять до».');return}
+  const repeatMode=f.elements.repeat.value;
+  if(!existing&&repeatMode!=='none'&&!f.elements.repeatUntil.value){alert('Для повторяющегося события укажи дату «Повторять до».');return}
+  if(!existing&&repeatMode!=='none'&&!repeatDateAllowed(date,repeatMode)){
+    alert(repeatMode==='weekdays'?'Для повтора по будням выбери будний день.':'Для повтора по выходным выбери субботу или воскресенье.');
+    return;
+  }
   const base={title,date,category,start,end,note,taskId,projectId,status,done:status==='done'};
 
   if(existing){
@@ -4643,16 +4920,35 @@ $('#eventForm').addEventListener('submit',e=>{
     db.calendar.push(first);
     if(seriesId){
       let d=new Date(date+'T12:00:00'),limit=new Date(until+'T12:00:00'),guard=0;
-      while(guard++<400){
-        d.setDate(d.getDate()+(repeat==='daily'?1:7));
+      while(guard++<800){
+        d.setDate(d.getDate()+(repeat==='weekly'?7:1));
         if(d>limit)break;
-        db.calendar.push({...first,id:uid(),date:iso(d),status:'planned',done:false});
+        const nextDate=iso(d);
+        if(repeatDateAllowed(nextDate,repeat))db.calendar.push({...first,id:uid(),date:nextDate,status:'planned',done:false});
       }
     }
   }
 
   
   save();$('#eventDialog').close();renderCalendar();renderToday();renderProjects();renderWorkouts();
+});
+$('#deleteEventPreset').addEventListener('click',()=>{
+  const presetId=activeEventPresetId;
+  if(!presetId)return;
+  const preset=getCalendarPreset(presetId);
+  if(!preset)return;
+  if(!confirm(`Удалить быстрый блок «${preset.title}»?\n\nЭто уберёт только плашку из «Быстрых блоков». Уже созданные события календаря останутся.`))return;
+
+  if(presetId.startsWith('custom-')){
+    db.customCalendarPresets=db.customCalendarPresets.filter(x=>x.id!==presetId);
+  }else{
+    db.hiddenCalendarPresets=Array.from(new Set([...(db.hiddenCalendarPresets||[]),presetId]));
+  }
+
+  activeEventPresetId='';
+  save(`Быстрый блок «${preset.title}» удалён`);
+  $('#eventDialog').close();
+  renderCalendar();
 });
 $('#deleteEvent').addEventListener('click',()=>{
   const id=activeEventId||$('#eventForm').elements.namedItem('id')?.value||'';
@@ -4675,7 +4971,7 @@ $('#deleteEventSeries').addEventListener('click',()=>{
   activeEventId='';save();
   $('#eventDialog').close();renderCalendar();renderToday();renderProjects();
 });
-$('#eventDialog').addEventListener('close',()=>{activeEventId=''});
+$('#eventDialog').addEventListener('close',()=>{activeEventId='';activeEventPresetId='';});
 $('#prevWeek').onclick=()=>{if(calendarView==='day')calendarDay.setDate(calendarDay.getDate()-1);else if(calendarView==='month')calendarMonth=new Date(calendarMonth.getFullYear(),calendarMonth.getMonth()-1,1);else calendarWeekStart.setDate(calendarWeekStart.getDate()-7);renderCalendar()};
 $('#nextWeek').onclick=()=>{if(calendarView==='day')calendarDay.setDate(calendarDay.getDate()+1);else if(calendarView==='month')calendarMonth=new Date(calendarMonth.getFullYear(),calendarMonth.getMonth()+1,1);else calendarWeekStart.setDate(calendarWeekStart.getDate()+7);renderCalendar()};
 $('#currentWeek').onclick=()=>{calendarWeekStart=startOfWeek(new Date());calendarDay=new Date();calendarMonth=new Date(new Date().getFullYear(),new Date().getMonth(),1);renderCalendar()};
@@ -4685,8 +4981,8 @@ $('#calendarPresetForm').addEventListener('submit',e=>{
   e.preventDefault();
   const f=e.currentTarget;
   const title=f.elements.title.value.trim();
-  const category=f.elements.category.value||'other';
-  const duration=Math.max(30,Math.min(720,Number(f.elements.duration.value||60)));
+  const category=normalizeCalendarCategory(f.elements.category.value||'other');
+  const duration=Math.max(1,Math.min(720,Math.round(Number(f.elements.duration.value||60))));
   const defaultStart=f.elements.defaultStart.value||'19:00';
   if(!title)return;
   const defaultEnd=hhmm(mins(defaultStart)+duration);
@@ -4723,7 +5019,7 @@ $('#resetData').onclick=()=>{ if(confirm('Сбросить данные на э�
 
 const FREE_FOCUS_ID='__free_focus__';
 const CAL_FOCUS_PREFIX='__calendar_focus__:';
-const TODAY_ATTENTION_CATEGORIES=new Set(['work','project','freelance']);
+const TODAY_ATTENTION_CATEGORIES=new Set(['work','project','study']);
 let focusStatsPeriod='week';
 let workoutWeekStart=startOfWeek(new Date());
 let workoutSelectedDate=todayISO;
@@ -4994,6 +5290,8 @@ function refreshCurrentDateIfNeeded(){
 setInterval(refreshCurrentDateIfNeeded,60000);
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)refreshCurrentDateIfNeeded()});
 drawTimer();
+
+enhanceNativeDateTimeInputs();
 
 persistLocal(false);renderRecoveryStatus();writeRecoveryBackup('Автоматический резерв',false);fillProjectSelect();renderToday(); renderMoney(); renderFood(); renderProjects(); renderWorkouts();  renderArchive(); renderFocusPage();
 
