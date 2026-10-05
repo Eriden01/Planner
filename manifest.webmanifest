@@ -1,20 +1,25 @@
 {
   "name": "Planner",
   "short_name": "Planner",
+  "description": "Личный Planner: время, проекты, деньги, траты и тренировки.",
+  "lang": "ru",
   "start_url": "./",
+  "scope": "./",
   "display": "standalone",
-  "background_color": "#f7f7f8",
-  "theme_color": "#f7f7f8",
+  "background_color": "#0f1012",
+  "theme_color": "#0f1012",
   "icons": [
     {
-      "src": "icon-192.png",
+      "src": "./icon-192.png",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     },
     {
-      "src": "icon-512.png",
+      "src": "./icon-512.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     }
   ]
 }
