@@ -10,7 +10,7 @@
   <link rel="manifest" href="./manifest.webmanifest" />
   <link rel="apple-touch-icon" href="./icon-192.png" />
   <link rel="icon" href="./icon-192.png" />
-  <title>Planner v0.9.11</title>
+  <title>Planner v0.9.14</title>
   <style>
     :root{
       --bg:#f7f7f8;
@@ -1109,21 +1109,522 @@
       .sidebar-footer-v2{padding-top:7px;padding-bottom:7px}
     }
 
+  
+    /* ===== v0.9.13 responsive system: desktop, compact laptops, tablets, phones ===== */
+    .page,.card,.today-block,.title-wrap,.actions,.money-insights-grid>*,.settings-grid>*,.grid-2>*,.grid-equal>*,.workout-side>*,.calendar-shell>*{min-width:0}
+    input,select,textarea{max-width:100%}
+    .actions .btn,.section-title .btn,.section-title .tiny-btn{max-width:100%}
+
+    /* Compact desktop / 13-inch laptops. Breakpoints account for the sidebar width. */
+    @media (min-width:821px) and (max-width:1380px){
+      :root{--sidebar:190px;--right:250px}
+      .content{padding:12px 14px 26px}
+      .page{max-width:none}
+      .topbar{gap:10px;margin-bottom:12px;flex-wrap:wrap}
+      .title-wrap h1{font-size:26px;margin-bottom:4px}
+      .subtitle{font-size:12px;line-height:1.35}
+      .actions{gap:6px}
+      .btn{padding:8px 10px;font-size:12px;border-radius:9px}
+      .segmented button{padding:6px 9px;font-size:12px}
+      .cards{gap:9px;margin-bottom:10px}
+      .card{padding:13px;border-radius:14px}
+      .metric .label{font-size:11px;margin-bottom:7px}
+      .metric .value{font-size:21px}
+      .metric .hint{font-size:10px;margin-top:5px}
+      .section-title{margin-bottom:10px}
+      .section-title h2{font-size:15px}
+
+      /* Today: execution first, rail moves below instead of squeezing the list. */
+      .today-hero{padding:13px;margin-bottom:10px}
+      .today-summary-hero{gap:8px}
+      .hero-mini{padding:11px 10px}
+      .hero-mini strong{font-size:17px}
+      .today-main-grid{grid-template-columns:1fr;gap:10px;margin-bottom:10px}
+      .today-right-rail{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+      .today-tasks-card{padding:13px}
+      .today-task-list{gap:8px}
+      .today-task-row{padding:12px;gap:10px;border-radius:14px}
+      .today-task-title{font-size:17px}
+      .today-task-meta{gap:6px;margin-top:6px;font-size:10px}
+      .today-task-badge{padding:5px 8px}
+
+      /* Calendar: full width is more useful than a narrow timetable plus rail. */
+      .calendar-shell{grid-template-columns:1fr;gap:10px}
+      .calendar-shell>.today-panel{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:0}
+      .calendar-toolbar{margin-bottom:8px}
+      .calendar-preset-panel{padding:8px;margin-bottom:8px}
+      .calendar-preset{min-height:31px;padding:6px 9px;font-size:11px}
+
+      /* Money: goals get full width, secondary insights stay side by side. */
+      .money-insights-grid{grid-template-columns:1fr 1fr;gap:10px}
+      .money-goals-block{grid-column:1/-1}
+      .savings-showcase-block{padding:16px;border-radius:22px}
+      .goal-card{padding:17px;border-radius:20px}
+      .goal-card-total{font-size:16px}
+      .goal-title-main{font-size:16px}
+      .goal-actions .tiny-btn{min-height:40px;padding:0 15px}
+
+      /* Spending / review */
+      .food-review{grid-template-columns:1fr;gap:10px;margin-top:10px}
+      .food-review-main{padding:13px}
+
+      /* Workouts: 7 columns are too dense once the sidebar is present. */
+      .workout-week-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+      .workout-day-card{min-height:205px;padding:10px;border-radius:15px}
+      .workout-side{gap:10px}
+
+      /* History / settings */
+      .history-kpis{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+      .history-kpis>div{padding:11px}
+      .history-kpis strong{font-size:17px}
+      .settings-grid{gap:10px}
+    }
+
+    /* Narrow desktop / small browser window, still with sidebar. */
+    @media (min-width:821px) and (max-width:1100px){
+      :root{--sidebar:176px}
+      .content{padding-left:11px;padding-right:11px}
+      .cards{grid-template-columns:repeat(2,minmax(0,1fr))}
+      .today-summary-hero,.today-summary-compact{grid-template-columns:repeat(2,minmax(0,1fr))}
+      .today-right-rail{grid-template-columns:1fr}
+      .calendar-shell>.today-panel{grid-template-columns:1fr}
+      .money-insights-grid{grid-template-columns:1fr}
+      .money-goals-block{grid-column:auto}
+      .settings-grid,.grid-equal,.grid-2{grid-template-columns:1fr}
+      .workout-week-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+      .focus-hero,.focus-layout{grid-template-columns:1fr;gap:12px}
+      .more-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+    }
+
+    /* Short screens (1280x720, 1366x768, browser bars included). */
+    @media (min-width:821px) and (max-height:780px){
+      .content{padding-top:9px;padding-bottom:18px}
+      .topbar{margin-bottom:9px}
+      .title-wrap h1{font-size:24px}
+      .subtitle{font-size:11px}
+      .cards{margin-bottom:9px}
+      .card,.today-block{padding-top:11px;padding-bottom:11px}
+      .metric .label{margin-bottom:5px}
+      .metric .value{font-size:20px}
+      .today-hero{padding:10px 12px}
+      .hero-mini{padding:9px}
+      .hero-mini strong{font-size:16px}
+      .today-task-row{padding:10px 11px}
+      .today-task-title{font-size:16px}
+      .today-task-meta{margin-top:5px}
+      .savings-showcase-head{margin-bottom:12px}
+      .savings-showcase-icon{width:48px;height:48px;border-radius:16px;font-size:25px}
+      .savings-showcase-copy h3{font-size:17px}
+      .savings-showcase-copy p{font-size:11px;margin-top:3px}
+      .goal-card{padding-top:14px;padding-bottom:13px}
+      .goal-track{margin-bottom:12px}
+      .workout-day-card{min-height:190px}
+    }
+
+    /* Very narrow phone / PWA safety pass. */
+    @media (max-width:820px){
+      .content{max-width:100%;overflow-x:hidden}
+      .topbar{display:block}
+      .topbar .actions{width:100%;margin-top:10px}
+      .topbar .actions>.btn{flex:1 1 auto;justify-content:center}
+      .section-title{align-items:flex-start;flex-wrap:wrap}
+      .section-title .section-inline{width:100%}
+      .today-right-rail{display:grid;grid-template-columns:1fr;gap:10px}
+      .calendar-preset-panel{flex-wrap:wrap}
+      .money-insights-grid,.settings-grid,.grid-2,.grid-equal{min-width:0}
+      .history-row{grid-template-columns:auto minmax(0,1fr)}
+      .history-row-value{grid-column:2;justify-self:start}
+      .goal-card-side{max-width:100%}
+      .goal-card-total{white-space:normal}
+      .goal-contributors{width:100%}
+      .goal-contrib-chip{max-width:100%}
+      .goal-free-card{min-width:0}
+      .workout-type-row{align-items:flex-start;flex-wrap:wrap}
+    }
+
+    @media (max-width:520px){
+      .content{padding-left:9px;padding-right:9px}
+      .title-wrap h1{font-size:24px}
+      .subtitle{font-size:12px}
+      .cards{gap:7px}
+      .metric .value{font-size:18px}
+      .metric .label,.metric .hint{font-size:10px}
+      .today-summary-4,.today-summary-hero,.today-summary-compact{grid-template-columns:1fr 1fr}
+      .food-review-kpis{grid-template-columns:1fr}
+      .calendar-preset-tray{grid-template-columns:1fr}
+      .goal-card{padding:14px}
+      .goal-card-side{gap:8px}
+      .goal-card-total{width:100%}
+      .goal-contrib-chip{width:100%;justify-content:space-between}
+      .goal-actions{display:grid;grid-template-columns:1fr 1fr;width:100%}
+      .goal-actions .tiny-btn{justify-content:center;padding:0 10px}
+      .goal-free-card{padding:14px}
+      .money-ledger-row{grid-template-columns:58px minmax(0,1fr)}
+      .money-ledger-amount{grid-column:2;justify-self:start}
+      .money-ledger-row .tiny-btn{grid-column:2;justify-self:start}
+      .focus-session{grid-template-columns:68px minmax(0,1fr)}
+      .focus-session-duration,.focus-session .delete-row{grid-column:2!important;justify-self:start}
+      dialog{width:calc(100vw - 12px);max-height:92vh}
+      .dialog-inner{padding:13px}
+    }
+
+  
+    /* ===== Account-first sidebar ===== */
+    .sidebar-account{
+      width:100%;
+      display:grid;
+      grid-template-columns:40px minmax(0,1fr) auto;
+      gap:10px;
+      align-items:center;
+      padding:8px 9px;
+      border:1px solid transparent;
+      border-radius:14px;
+      background:transparent;
+      color:var(--text);
+      text-align:left;
+      cursor:pointer;
+      min-width:0;
+    }
+    .sidebar-account:hover{
+      background:rgba(99,102,241,.06);
+      border-color:rgba(99,102,241,.12);
+    }
+    .sidebar-account.active{
+      background:rgba(99,102,241,.10);
+      border-color:rgba(99,102,241,.18);
+    }
+    .sidebar-account-icon{
+      width:40px;
+      height:40px;
+      border-radius:12px;
+      object-fit:cover;
+      box-shadow:0 8px 20px rgba(76,79,225,.18);
+    }
+    .sidebar-account-copy{min-width:0;display:block}
+    .sidebar-account-copy strong{
+      display:block;
+      font-size:14px;
+      font-weight:760;
+      line-height:1.15;
+    }
+    .sidebar-account-copy small{
+      display:block;
+      margin-top:4px;
+      color:var(--muted);
+      font-size:9.5px;
+      line-height:1.25;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+    .sidebar-account-arrow{
+      color:#6f7694;
+      font-size:22px;
+      line-height:1;
+      margin-left:1px;
+    }
+    .sidebar-footer-status{padding-top:8px}
+    .search-v2 input{
+      padding-right:12px!important;
+      min-width:0;
+      font-size:13px;
+    }
+    .search-v2 .search-shortcut{display:none!important}
+    .search-v2 span{pointer-events:none}
+    .account-identity-card{
+      grid-column:1/-1;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:18px;
+      background:
+        radial-gradient(circle at 12% 20%,rgba(99,102,241,.14),transparent 28%),
+        linear-gradient(180deg,rgba(20,22,34,.98),rgba(14,16,25,.98));
+    }
+    .account-identity-main{display:flex;align-items:center;gap:14px;min-width:0}
+    .account-identity-icon{
+      width:58px;
+      height:58px;
+      border-radius:18px;
+      flex:0 0 auto;
+      box-shadow:0 14px 28px rgba(76,79,225,.18);
+    }
+    .account-identity-copy{min-width:0}
+    .account-identity-copy h2{margin:3px 0 4px;font-size:18px}
+    .account-identity-copy p{margin:0;color:var(--muted);font-size:11px;line-height:1.45}
+    .account-identity-state{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      flex:0 0 auto;
+      padding:8px 10px;
+      border:1px solid var(--border);
+      border-radius:999px;
+      color:var(--muted);
+      font-size:10px;
+      white-space:nowrap;
+    }
+    @media (min-width:821px) and (max-width:1050px){
+      .sidebar-account{
+        grid-template-columns:36px minmax(0,1fr) auto;
+        gap:8px;
+        padding-left:7px;
+        padding-right:7px;
+      }
+      .sidebar-account-icon{width:36px;height:36px;border-radius:11px}
+      .sidebar-account-copy strong{font-size:13px}
+      .sidebar-account-copy small{font-size:9px}
+      .search-v2 input{font-size:12.5px}
+    }
+    @media (min-width:821px) and (max-height:700px){
+      .sidebar-account{padding-top:5px;padding-bottom:5px}
+      .sidebar-account-icon{width:34px;height:34px}
+      .sidebar-account-copy small{margin-top:2px}
+    }
+    @media(max-width:720px){
+      .account-identity-card{align-items:flex-start;flex-direction:column}
+      .account-identity-state{align-self:flex-start}
+    }
+
+  
+    /* ===== v0.9.14 mobile-first usability pass ===== */
+    @media (max-width:820px){
+      html{-webkit-text-size-adjust:100%;scroll-padding-bottom:92px}
+      body{padding-bottom:calc(78px + env(safe-area-inset-bottom));overscroll-behavior-y:none}
+      button,.btn,.tiny-btn,input,select,textarea{font-size:max(16px,1em)}
+      button,.btn,.tiny-btn{touch-action:manipulation}
+      .content{padding:12px 10px calc(104px + env(safe-area-inset-bottom));overflow-x:hidden}
+      .page{width:100%;max-width:100%;overflow:visible}
+      .topbar{margin-bottom:12px;gap:8px}
+      .title-wrap h1{font-size:25px;line-height:1.08;letter-spacing:-.035em}
+      .subtitle{font-size:11px;line-height:1.4}
+      .topbar .actions{display:grid;width:100%;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin-top:10px;min-width:0}
+      .topbar .actions>.btn{width:100%;min-width:0;min-height:44px;padding:9px 10px;font-size:12px;white-space:normal;text-align:center}
+      .card,.today-block{border-radius:16px;padding:13px}
+      .cards{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-bottom:10px}
+      .metric{min-height:108px}
+      .metric .label{font-size:10px;line-height:1.2}
+      .metric .value{font-size:20px;line-height:1.05;overflow-wrap:anywhere}
+      .metric .hint{font-size:9.5px;line-height:1.35}
+      .section-title{gap:8px;margin-bottom:10px}
+      .section-title h2,.section-title h3{font-size:15px;line-height:1.2}
+      .section-title .small{font-size:10px;line-height:1.35}
+      .section-title>.btn,.section-title .section-actions,.section-title .section-actions .btn{max-width:100%}
+      .section-title .section-actions{width:100%;display:flex;gap:7px;flex-wrap:wrap}
+      .section-title .section-actions .btn{flex:1 1 150px;min-height:42px}
+
+      /* Today */
+      #page-today .today-top-actions{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+      #page-today .today-top-actions .btn{width:100%;min-height:44px;font-size:12px}
+      .today-summary-hero,.today-summary-compact{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+      .hero-mini{padding:10px;min-height:92px}
+      .hero-mini span{font-size:10px}
+      .hero-mini strong{font-size:18px}
+      .hero-mini em{font-size:9.5px;line-height:1.25}
+      .today-task-row{grid-template-columns:24px minmax(0,1fr);gap:8px;padding:11px;border-radius:14px}
+      .today-task-row>input{grid-column:1;grid-row:1;margin-top:4px;width:20px;height:20px}
+      .today-task-main{grid-column:2;grid-row:1;min-width:0}
+      .today-task-title{font-size:15px;line-height:1.25;white-space:normal;text-align:left}
+      .today-task-meta{gap:5px;flex-wrap:wrap}
+      .today-task-badge{font-size:9px;padding:4px 6px}
+      .today-status-actions{overflow-x:auto;flex-wrap:nowrap;padding-bottom:3px;scrollbar-width:none}
+      .today-status-actions::-webkit-scrollbar{display:none}
+      .today-status-actions button{white-space:nowrap;min-height:36px;padding:7px 9px;flex:0 0 auto}
+      .today-task-time{grid-column:2;grid-row:2;display:flex;align-items:center;gap:7px;min-width:0;text-align:left;padding:7px 9px}
+      .today-task-time strong,.today-task-time span{font-size:10px}
+      .today-task-actions{grid-column:2;grid-row:3;display:flex;flex-direction:row;justify-content:flex-end;gap:7px}
+      .today-task-actions button{min-width:42px;min-height:42px}
+      .focus-hero{padding:14px;gap:14px}
+      .focus-big-time{font-size:clamp(38px,13vw,56px);letter-spacing:-.055em;white-space:nowrap}
+      .focus-main-actions{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+      .focus-main-actions .btn{min-height:46px;padding-inline:8px}
+      .today-focus-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}
+      .today-schedule-full .mini-item{align-items:flex-start;gap:8px}
+
+      /* Calendar */
+      #page-calendar>.topbar .actions{grid-template-columns:1fr}
+      #page-calendar .calendar-toolbar{display:block}
+      #page-calendar .calendar-toolbar .left{display:grid;grid-template-columns:44px minmax(0,1fr) 44px;gap:7px;width:100%;align-items:center}
+      #page-calendar #prevWeek{grid-column:1}
+      #page-calendar #currentWeek{grid-column:2}
+      #page-calendar #nextWeek{grid-column:3}
+      #page-calendar .calendar-view-switch{grid-column:1/-1;display:grid!important;grid-template-columns:repeat(3,1fr);width:100%;order:initial}
+      #page-calendar .calendar-view-switch button{min-height:40px;padding:7px 4px;font-size:11px}
+      #page-calendar .week-label{grid-column:1/-1;order:initial;width:100%;padding:2px 0;text-align:left;font-size:12px;white-space:normal}
+      #page-calendar .calendar-toolbar .right{width:100%;margin-top:7px}
+      #page-calendar .calendar-toolbar .right .btn{width:100%;min-height:40px}
+      .calendar-preset-panel{display:block;padding:9px 0;border:0;background:transparent;box-shadow:none}
+      .calendar-preset-label{display:block;margin-bottom:7px;padding-left:2px}
+      .calendar-preset-tray{display:flex!important;overflow-x:auto;gap:7px;padding:0 2px 6px;scroll-snap-type:x proximity;scrollbar-width:none}
+      .calendar-preset-tray::-webkit-scrollbar{display:none}
+      .calendar-preset{flex:0 0 auto;scroll-snap-align:start;min-height:38px;padding:7px 10px}
+      .week-scroll{border-radius:14px;overflow:auto;overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch;scrollbar-width:thin}
+      .week-grid{min-width:860px;grid-template-columns:52px repeat(7,116px)!important}
+      .day-grid{min-width:0!important;grid-template-columns:52px minmax(260px,1fr)!important;width:100%}
+      .week-head{font-size:10px}
+      .time-cell,.calendar-now-label{position:sticky;left:0;z-index:6;background:var(--surface);font-size:9px}
+      .week-grid>.week-head:first-child,.day-grid>.week-head:first-child{position:sticky;left:0;z-index:8;background:var(--surface)}
+      .month-grid{width:100%;min-width:0;grid-template-columns:repeat(7,minmax(0,1fr))!important;grid-auto-rows:minmax(62px,auto)!important;border-radius:14px;overflow:hidden}
+      .month-weekday{font-size:9px;padding:7px 1px}
+      .month-day{min-height:62px;padding:4px 2px;border-radius:0}
+      .month-day-num{font-size:24px!important}
+      .month-day-count{font-size:7.5px!important;line-height:1.1;text-align:center;max-width:100%;white-space:normal}
+      .legend{display:flex;overflow-x:auto;flex-wrap:nowrap;gap:10px;padding-bottom:4px;scrollbar-width:none}
+      .legend::-webkit-scrollbar{display:none}
+      .legend span{white-space:nowrap;flex:0 0 auto;font-size:9px}
+      .calendar-shell>.today-panel{display:grid;grid-template-columns:1fr;gap:9px;margin-top:10px}
+
+      /* Projects */
+      #page-projects>.topbar .actions{grid-template-columns:1fr 1fr}
+      #page-projects #newProject{grid-column:1/-1}
+      .project-grid{grid-template-columns:1fr;gap:9px}
+      .project-card{padding:13px;border-radius:15px}
+      .project-card .project-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}
+      #projectTasksList .mini-item,.project-block-row{align-items:flex-start}
+
+      /* Money */
+      #page-money>.topbar .actions{grid-template-columns:44px minmax(0,1fr) 44px}
+      #page-money #moneyPrevPeriod{grid-column:1}
+      #page-money #moneyCurrentPeriod{grid-column:2}
+      #page-money #moneyNextPeriod{grid-column:3}
+      #page-money #moneyPeriod{grid-column:1/-1;display:grid!important;grid-template-columns:repeat(4,1fr);width:100%}
+      #page-money #moneyPeriod button{padding:8px 3px;min-height:38px;font-size:10px}
+      #page-money #openMoneyLedger{grid-column:1/3}
+      #page-money [data-open="money"]{grid-column:3/4}
+      #page-money .today-summary{display:grid;grid-template-columns:1fr;gap:7px}
+      .money-insights-grid{grid-template-columns:1fr!important;gap:10px}
+      .savings-showcase-block{padding:14px;border-radius:20px}
+      .savings-showcase-head{grid-template-columns:46px minmax(0,1fr);gap:10px}
+      .savings-showcase-icon{width:46px;height:46px;border-radius:15px;font-size:24px}
+      .savings-showcase-copy h3{font-size:17px}
+      .savings-showcase-copy p{font-size:10px;line-height:1.35}
+      .savings-showcase-add{grid-column:1/-1;width:100%;min-height:42px}
+      .goal-card{padding:14px;border-radius:18px}
+      .goal-card-head{grid-template-columns:1fr;gap:8px}
+      .goal-card-side{justify-content:flex-start;flex-wrap:wrap}
+      .goal-card-total{width:auto;font-size:16px;white-space:normal}
+      .goal-percent-chip{height:38px;min-width:60px;font-size:14px}
+      .goal-edit-btn{margin-left:auto}
+      .goal-contributors{display:grid;grid-template-columns:1fr;width:100%}
+      .goal-contrib-chip{width:100%;max-width:none;justify-content:space-between;padding:9px 11px}
+      .goal-contrib-chip .label{max-width:none;flex:1}
+      .goal-actions{display:grid;grid-template-columns:1fr 1fr;width:100%;gap:7px}
+      .goal-actions .tiny-btn{min-height:42px;width:100%;padding:0 8px}
+      .goal-free-card{grid-template-columns:1fr;gap:10px;padding:14px;border-radius:18px}
+      .goal-free-total{justify-self:start}
+
+      /* Spending */
+      #page-food>.topbar .actions{grid-template-columns:44px minmax(0,1fr) 44px}
+      #page-food #foodPrevWeek{grid-column:1}
+      #page-food #foodCurrentWeek{grid-column:2}
+      #page-food #foodNextWeek{grid-column:3}
+      #page-food #foodNavRange{grid-column:1/-1;text-align:left}
+      #page-food [data-open="food"]{grid-column:1/-1}
+      .food-week{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(230px,78vw);grid-template-columns:none!important;overflow-x:auto;gap:9px;scroll-snap-type:x mandatory;padding:1px 1px 8px;scrollbar-width:none}
+      .food-week::-webkit-scrollbar{display:none}
+      .food-week>.day-col{scroll-snap-align:start}
+      .food-review-kpis{grid-template-columns:1fr!important}
+      .recurring-money-grid{grid-template-columns:1fr!important;gap:10px}
+      .recurring-summary{grid-template-columns:repeat(3,minmax(0,1fr));gap:5px}
+      .recurring-summary strong{font-size:13px}
+      .recurring-row{align-items:flex-start}
+
+      /* Workouts */
+      #page-workouts>.topbar .actions{grid-template-columns:44px minmax(0,1fr) 44px}
+      #page-workouts #workoutPrevWeek{grid-column:1}
+      #page-workouts #workoutCurrentWeek{grid-column:2}
+      #page-workouts #workoutNextWeek{grid-column:3}
+      #page-workouts #workoutRange{grid-column:1/-1;text-align:left}
+      #page-workouts #addCaloriesGlobal,#page-workouts #addWeightGlobal,#page-workouts #addWorkoutGlobal{grid-column:auto}
+      #page-workouts #addWorkoutGlobal{grid-column:1/-1}
+      .workout-week-grid{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(245px,80vw);grid-template-columns:none!important;overflow-x:auto;gap:9px;scroll-snap-type:x mandatory;padding:1px 1px 8px;scrollbar-width:none}
+      .workout-week-grid::-webkit-scrollbar{display:none}
+      .workout-day-card{scroll-snap-align:center;min-height:220px}
+      .workout-side{grid-template-columns:1fr;gap:10px}
+      .workout-row,.calorie-row,.weight-row{display:block}
+      .workout-row .row-actions,.calorie-row .row-actions,.weight-row .row-actions{margin-top:9px;display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-start}
+      .workout-goal-box{display:grid;grid-template-columns:1fr;gap:8px}
+      .workout-goal-box .field{min-width:0;width:100%}
+
+      /* History */
+      #page-archive>.topbar .actions{grid-template-columns:44px minmax(0,1fr) 44px}
+      #page-archive #historyPrevWeek{grid-column:1}
+      #page-archive #historyCurrentWeek{grid-column:2}
+      #page-archive #historyNextWeek{grid-column:3}
+      #page-archive #historyWeekLabel{grid-column:1/-1;text-align:left}
+      .history-kpis{grid-template-columns:1fr 1fr;gap:7px}
+      .history-kpis>div{padding:10px}
+      .history-kpis strong{font-size:16px}
+      .history-row{grid-template-columns:10px minmax(0,1fr);gap:8px}
+      .history-row-value{grid-column:2;justify-self:start;margin-top:2px}
+
+      /* More / account */
+      .more-grid{grid-template-columns:1fr;gap:9px}
+      .more-card{min-height:76px;padding:14px;text-align:left}
+      .settings-grid{grid-template-columns:1fr!important;gap:10px}
+      .account-identity-card{padding:14px;gap:12px}
+      .account-identity-main{align-items:flex-start}
+      .account-identity-icon{width:50px;height:50px;border-radius:15px}
+      .cloud-actions{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+      .cloud-actions .btn{width:100%;min-height:44px;padding:8px;font-size:11px}
+      .cloud-advanced .form-grid{grid-template-columns:1fr}
+
+      /* Mobile navigation */
+      .mobile-nav{grid-template-columns:repeat(5,1fr);padding:6px 6px calc(6px + env(safe-area-inset-bottom));min-height:68px;background:rgba(13,14,20,.94);box-shadow:0 -10px 34px rgba(0,0,0,.24)}
+      .mobile-nav button{min-height:52px;border-radius:13px;padding:6px 2px;font-size:9.5px;font-weight:650}
+      .mobile-nav button.active{background:rgba(99,102,241,.10)}
+      .mobile-nav .mi{width:22px;height:22px;margin-bottom:3px}
+
+      /* Dialogs become bottom sheets and survive the on-screen keyboard. */
+      dialog{width:100%;max-width:none;margin:auto 0 0;border-radius:22px 22px 0 0;max-height:92dvh;border-left:0;border-right:0;border-bottom:0;overflow:auto}
+      dialog::backdrop{background:rgba(4,5,9,.62)}
+      .dialog-inner{padding:16px 13px calc(14px + env(safe-area-inset-bottom))}
+      .dialog-head{position:sticky;top:0;z-index:5;background:var(--surface);padding:2px 0 10px;margin-bottom:8px}
+      .dialog-actions{position:sticky;bottom:0;z-index:6;background:linear-gradient(180deg,rgba(24,25,29,.82),#18191d 24%);margin:14px -13px -14px;padding:10px 13px calc(10px + env(safe-area-inset-bottom));display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+      .dialog-actions .btn{width:100%;min-height:44px;margin:0!important}
+      .dialog-actions .danger:first-child{grid-column:1/-1}
+      dialog input,dialog select,dialog textarea{font-size:16px!important;min-height:44px}
+      input[type="date"],input[type="time"]{width:100%;min-width:0}
+    }
+
+    @media (max-width:430px){
+      .content{padding-left:8px;padding-right:8px}
+      .title-wrap h1{font-size:23px}
+      .cards{gap:6px}
+      .metric{padding:11px;min-height:100px}
+      .metric .value{font-size:18px}
+      .today-summary-hero,.today-summary-compact{gap:6px}
+      .hero-mini{padding:9px;min-height:86px}
+      #page-today .today-top-actions{grid-template-columns:1fr}
+      .focus-main-actions{grid-template-columns:1fr}
+      .history-kpis{grid-template-columns:1fr}
+      .cloud-actions{grid-template-columns:1fr}
+      .recurring-summary{grid-template-columns:1fr 1fr}
+      .recurring-summary>div:last-child{grid-column:1/-1}
+      #page-workouts #addCaloriesGlobal,#page-workouts #addWeightGlobal{grid-column:span 1}
+      .goal-card-side{display:grid;grid-template-columns:1fr auto auto;width:100%}
+      .goal-card-total{grid-column:1/-1}
+      .month-day-num{font-size:20px!important}
+      .month-day-count{display:none}
+    }
+
   </style>
 </head>
 <body>
 <div class="app">
   <aside class="sidebar sidebar-v2">
     <div class="sidebar-main">
-    <div class="brand brand-v2 brand-minimal">
-      <div class="brand-copy">
-        <strong>Planner</strong>
-        <small>v0.9.11</small>
-      </div>
-    </div>
+    <button class="sidebar-account" id="sidebarAccount" data-page="account" type="button">
+      <img class="sidebar-account-icon" src="./icon-192.png" alt="" aria-hidden="true">
+      <span class="sidebar-account-copy">
+        <strong>Аккаунт</strong>
+        <small id="sidebarAccountMeta">Гость · войти или зарегистрироваться</small>
+      </span>
+      <span class="sidebar-account-arrow" aria-hidden="true">›</span>
+    </button>
     <div class="search search-v2">
       <span>⌕</span>
-      <input id="globalSearch" placeholder="Поиск по планировщику…" autocomplete="off" />
+      <input id="globalSearch" placeholder="Поиск по Planner…" autocomplete="off" />
       <em class="search-shortcut">⌘K</em>
       <div class="global-search-results" id="globalSearchResults"></div>
     </div>
@@ -1139,9 +1640,8 @@
     <div class="sidebar-section sidebar-section-row"><span>Проекты</span><button class="sidebar-add-project" data-page="projects" title="Открыть проекты">＋</button></div>
     <div class="project-list project-list-v2" id="sidebarProjects"></div>
     </div>
-    <div class="sidebar-footer sidebar-footer-v2">
+    <div class="sidebar-footer sidebar-footer-v2 sidebar-footer-status">
       <div class="cloud-indicator cloud-indicator-v2"><span class="sync-dot" id="sidebarSyncDot"></span><span id="sidebarSyncText">Только локально</span></div>
-      <button data-page="settings" class="sidebar-settings-btn">⚙ Настройки</button>
     </div>
   </aside>
 
@@ -1465,17 +1965,28 @@
         <button class="more-card" data-more-page="food"><strong>Траты</strong><span>Повседневные расходы и ориентиры</span></button>
         <button class="more-card" data-more-page="projects"><strong>Проекты</strong><span>Календарные блоки, прогресс, время и доход</span></button>
         <button class="more-card" data-more-page="archive"><strong>История</strong><span>Итоги недель, выполненная работа и архивные проекты</span></button>
-        <button class="more-card" data-more-page="settings"><strong>Настройки</strong><span>Синхронизация, данные и ориентиры</span></button>
+        <button class="more-card" data-more-page="account"><strong>Аккаунт</strong><span>Вход, синхронизация, данные и ориентиры</span></button>
       </div>
     </section>
 
-    <section class="page" id="page-settings">
+    <section class="page" id="page-account">
       <div class="topbar">
-        <div class="title-wrap"><h1>Настройки</h1><div class="subtitle">Синхронизация, локальные данные и бюджеты — только тёмная тема</div></div>
+        <div class="title-wrap"><h1>Аккаунт</h1><div class="subtitle">Вход, синхронизация и все настройки Planner в одном месте</div></div>
       </div>
       <div class="settings-grid">
+        <div class="card account-identity-card">
+          <div class="account-identity-main">
+            <img class="account-identity-icon" src="./icon-192.png" alt="">
+            <div class="account-identity-copy">
+              <span class="small">Planner v0.9.14</span>
+              <h2 id="accountIdentityTitle">Гость</h2>
+              <p id="accountIdentityText">Войди или создай аккаунт, чтобы синхронизировать Planner между устройствами.</p>
+            </div>
+          </div>
+          <div class="account-identity-state"><span class="sync-dot" id="accountIdentityDot"></span><span id="accountIdentityState">Только локально</span></div>
+        </div>
         <div class="card cloud-card">
-          <div class="cloud-head"><div><h2 style="margin:0;font-size:17px">Облачная синхронизация</h2><div class="subtitle" style="margin-top:4px">Один Planner на Mac и iPhone</div></div><div class="cloud-state"><span class="sync-dot" id="cloudSyncDot"></span><span id="cloudStatus">Не настроено</span></div></div>
+          <div class="cloud-head"><div><h2 style="margin:0;font-size:17px">Вход и синхронизация</h2><div class="subtitle" style="margin-top:4px">Аккаунт нужен для одной базы на всех устройствах</div></div><div class="cloud-state"><span class="sync-dot" id="cloudSyncDot"></span><span id="cloudStatus">Не настроено</span></div></div>
           <div class="form-grid">
             <div class="field"><label>Email</label><input id="supabaseEmail" type="email" placeholder="you@example.com" autocomplete="username"></div>
             <div class="field"><label>Пароль</label><input id="supabasePassword" type="password" placeholder="Пароль не сохраняется" autocomplete="current-password"></div>
@@ -2332,8 +2843,14 @@ function cloudStatusCopy(){
 }
 function updateCloudUI(message=''){
   const text=message||cloudStatusCopy(),cls=dotClass(cloudMode);
-  for(const id of ['sidebarSyncDot','cloudSyncDot']){const el=$('#'+id);if(el)el.className='sync-dot'+(cls?' '+cls:'')}
+  for(const id of ['sidebarSyncDot','cloudSyncDot','accountIdentityDot']){const el=$('#'+id);if(el)el.className='sync-dot'+(cls?' '+cls:'')}
   const st=$('#cloudStatus');if(st)st.textContent=text; const side=$('#sidebarSyncText');if(side)side.textContent=text;
+  const sidebarMeta=$('#sidebarAccountMeta');
+  if(sidebarMeta)sidebarMeta.textContent=cloudUser?(cloudUser.email||'Аккаунт подключён'):'Гость · войти или зарегистрироваться';
+  const accountTitle=$('#accountIdentityTitle'),accountText=$('#accountIdentityText'),accountState=$('#accountIdentityState');
+  if(accountTitle)accountTitle.textContent=cloudUser?(cloudUser.email||'Аккаунт'):'Гость';
+  if(accountText)accountText.textContent=cloudUser?'Данные этого аккаунта синхронизируются между устройствами.':'Войди или создай аккаунт, чтобы синхронизировать Planner между устройствами.';
+  if(accountState)accountState.textContent=text;
   const signed=!!cloudUser; const out=$('#supabaseSignOut'),inn=$('#supabaseSignIn'),up=$('#supabaseSignUp'),sync=$('#syncNow');
   if(out)out.style.display=signed?'inline-flex':'none'; if(inn)inn.style.display=signed?'none':'inline-flex'; if(up)up.style.display=signed?'none':'inline-flex'; if(sync)sync.disabled=!signed||cloudMode==='conflict'||cloudBusy;
   const conflict=cloudMode==='conflict'; $('#cloudConflict')?.classList.toggle('show',conflict); if($('#cloudConflictActions'))$('#cloudConflictActions').style.display=conflict?'flex':'none';
@@ -2445,7 +2962,7 @@ async function initializeCloudClient(){
   }catch(err){console.error(err);cloudMode='error';updateCloudUI('Ошибка подключения к Supabase')}
 }
 $('#saveSupabaseConfig')?.addEventListener('click',async()=>{storeCloudConfig();cloudUser=null;cloudMode='local';updateCloudUI('Подключение сохранено');await initializeCloudClient()});
-$('#supabaseSignUp')?.addEventListener('click',async()=>{storeCloudConfig();if(!cloudClient)await initializeCloudClient();const email=($('#supabaseEmail')?.value||'').trim(),password=$('#supabasePassword')?.value||'';if(!email||password.length<6){alert('Укажи email и пароль минимум из 6 символов.');return}if(!cloudClient){alert('Облачное подключение Planner сейчас недоступно.');return}const {data,error}=await cloudClient.auth.signUp({email,password});if(error){alert(error.message);return}if(!data.session)alert('Аккаунт создан. Если в Supabase включено подтверждение email — подтверди письмо, затем нажми «Войти».');else{cloudUser=data.user;await beginCloudSession()}});
+$('#supabaseSignUp')?.addEventListener('click',async()=>{storeCloudConfig();if(!cloudClient)await initializeCloudClient();const email=($('#supabaseEmail')?.value||'').trim(),password=$('#supabasePassword')?.value||'';if(!email||password.length<6){alert('Укажи email и пароль минимум из 6 символов.');return}if(!cloudClient){alert('Облачное подключение Planner сейчас недоступно.');return}const {data,error}=await cloudClient.auth.signUp({email,password});if(error){alert(error.message);return}if(!data.session)alert('Аккаунт создан. Если сервис запросит подтверждение почты, подтверди её и затем нажми «Войти».');else{cloudUser=data.user;await beginCloudSession()}});
 $('#supabaseSignIn')?.addEventListener('click',async()=>{storeCloudConfig();if(!cloudClient)await initializeCloudClient();const email=($('#supabaseEmail')?.value||'').trim(),password=$('#supabasePassword')?.value||'';if(!email||!password){alert('Укажи email и пароль.');return}if(!cloudClient){alert('Облачное подключение Planner сейчас недоступно.');return}const {data,error}=await cloudClient.auth.signInWithPassword({email,password});if(error){alert(error.message);return}cloudUser=data.user;await beginCloudSession()});
 $('#supabaseSignOut')?.addEventListener('click',async()=>{if(cloudClient)await cloudClient.auth.signOut();cloudUser=null;stopCloudRealtime();cloudMode='local';updateCloudUI()});
 $('#syncNow')?.addEventListener('click',reconcileCloud);
@@ -2458,9 +2975,15 @@ updateCloudUI();
 setTimeout(initializeCloudClient,0);
 
 function showPage(name){
+  if(name==='settings')name='account';
   if(name==='focus'||name==='tasks'||name==='analytics')name='today';
   $$('.page').forEach(p=>p.classList.toggle('active',p.id==='page-'+name));
-  $$('[data-page]').forEach(b=>b.classList.toggle('active',b.dataset.page===name));
+  const secondaryMobilePages=new Set(['food','projects','archive','account','more']);
+  $$('[data-page]').forEach(b=>{
+    const mobileMore=b.closest('#mobileNav')&&b.dataset.page==='more'&&secondaryMobilePages.has(name);
+    b.classList.toggle('active',b.dataset.page===name||mobileMore);
+  });
+  if(window.innerWidth<=820)window.scrollTo(0,0);
   if(name==='money') renderMoney();
   if(name==='food') renderFood();
   if(name==='today') renderToday();
@@ -2468,7 +2991,7 @@ function showPage(name){
   if(name==='projects') renderProjects();
   if(name==='workouts') renderWorkouts();
   if(name==='archive') renderArchive();
-  if(name==='settings'){updateCloudUI();renderFinanceSettings();}
+  if(name==='account'){updateCloudUI();renderFinanceSettings();}
   $('#globalSearchResults')?.classList.remove('show');
 }
 $$('[data-page]').forEach(b=>b.addEventListener('click',()=>showPage(b.dataset.page)));
@@ -3478,6 +4001,7 @@ function renderWorkouts(){
   const types=['home','outdoor','gym'];
   const typeBox=$('#workoutTypesStats');
   typeBox.innerHTML=types.map(type=>{const rows=weekWorkouts.filter(x=>x.type===type),done=rows.filter(x=>x.status==='done'),mins=done.reduce((a,b)=>a+Number(b.duration||0),0);return `<div class="workout-type-row"><div class="left"><span class="type-dot type-${type}"></span><div><strong>${workoutTypeLabel(type)}</strong><div class="small">${done.length} выполнено · ${rows.length} всего</div></div></div><strong>${minutesText(mins)}</strong></div>`}).join('');
+  if(window.innerWidth<=820)requestAnimationFrame(()=>{const active=board.querySelector('.workout-day-card.active');if(active)board.scrollLeft=Math.max(0,active.offsetLeft-(board.clientWidth-active.clientWidth)/2)});
 }
 $('#workoutPrevWeek')?.addEventListener('click',()=>{workoutWeekStart=new Date(workoutWeekStart);workoutWeekStart.setDate(workoutWeekStart.getDate()-7); if(!sameViewedWorkoutWeek(workoutSelectedDate)) workoutSelectedDate=iso(workoutWeekStart); renderWorkouts()});
 $('#workoutNextWeek')?.addEventListener('click',()=>{workoutWeekStart=new Date(workoutWeekStart);workoutWeekStart.setDate(workoutWeekStart.getDate()+7); if(!sameViewedWorkoutWeek(workoutSelectedDate)) workoutSelectedDate=iso(workoutWeekStart); renderWorkouts()});
@@ -3919,6 +4443,15 @@ function calendarVisibleBounds(){
   if(calendarView==='month'){const d=new Date(calendarMonth.getFullYear(),calendarMonth.getMonth(),1);const e=new Date(calendarMonth.getFullYear(),calendarMonth.getMonth()+1,1);return {start:iso(d),end:iso(e)}}
   const e=new Date(calendarWeekStart);e.setDate(e.getDate()+7);return {start:iso(calendarWeekStart),end:iso(e)};
 }
+let mobileCalendarAutoKey='';
+function mobileCalendarAutoScroll(){
+  if(window.innerWidth>820||calendarView!=='week')return;
+  const wrap=$('.week-scroll'),grid=$('#weekGrid');if(!wrap||!grid)return;
+  const dates=weekDates(),idx=dates.findIndex(d=>iso(d)===todayISO);
+  const key=calendarRangeText();if(idx<0||mobileCalendarAutoKey===key)return;
+  mobileCalendarAutoKey=key;
+  requestAnimationFrame(()=>{const dayWidth=116;wrap.scrollLeft=Math.max(0,idx*dayWidth-24)});
+}
 function renderCalendar(){
   renderCalendarPresetTray();
   const grid=$('#weekGrid');if(!grid)return;
@@ -3934,7 +4467,7 @@ function renderCalendar(){
   for(let half=0;half<34;half++){const minute=420+half*30,row=half+2;if(half%2===0)html+=`<div class="time-cell" style="grid-column:1;grid-row:${row}/span 2">${hhmm(minute)}</div>`;dates.forEach((d,day)=>{const weekend=[0,6].includes(d.getDay()),open=weekend?minute>=480&&minute<1440:minute>=420&&minute<1380;html+=`<button type="button" class="calendar-slot ${weekend?'weekend':''} ${open?'':'closed'} ${half%2===1?'hour':''}" ${open?'':'disabled'} data-slot-date="${iso(d)}" data-slot-time="${hhmm(minute)}" style="grid-column:${day+2};grid-row:${row}"></button>`})}
   const bounds=calendarVisibleBounds(),events=db.calendar.filter(e=>e.date>=bounds.start&&e.date<bounds.end);events.forEach(e=>{const day=dates.findIndex(d=>iso(d)===e.date);if(day<0)return;const sm=Math.max(420,mins(e.start)),em=Math.min(1440,eventEndMins(e)),row=2+Math.floor((sm-420)/30),span=Math.max(1,Math.ceil((em-sm)/30));html+=`<button type="button" draggable="true" class="calendar-event ${e.category||'other'} status-${calendarEventStatus(e)} ${calendarEventStatus(e)==='done'?'is-done':''}" data-calendar-event="${e.id}" style="grid-column:${day+2};grid-row:${row}/span ${span}"><strong>${escapeHTML(e.title)}</strong><span>${e.start}–${e.end}${e.note?' · '+escapeHTML(e.note):''}</span></button>`});
   const now=new Date(),ti=dates.findIndex(d=>iso(d)===iso(now)),nm=now.getHours()*60+now.getMinutes();if(ti>=0&&nm>=420&&nm<=1440){const row=2+Math.floor((nm-420)/30),off=((nm-420)%30)/30*28;html+=`<div class="calendar-now-line" style="grid-column:${ti+2};grid-row:${row};transform:translateY(${off}px)"></div><div class="calendar-now-label" style="grid-column:1;grid-row:${row};transform:translateY(${off-1}px)">${hhmm(nm)}</div>`}
-  grid.innerHTML=html;bindCalendarGrid(grid);bindCalendarPresets();renderCalendarSide();
+  grid.innerHTML=html;bindCalendarGrid(grid);bindCalendarPresets();renderCalendarSide();mobileCalendarAutoScroll();
 }
 function bindCalendarPresets(){
   $$('[data-calendar-preset]').forEach(chip=>{
