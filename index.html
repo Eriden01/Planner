@@ -10,7 +10,7 @@
   <link rel="manifest" href="./manifest.webmanifest" />
   <link rel="apple-touch-icon" href="./icon-192.png" />
   <link rel="icon" href="./icon-192.png" />
-  <title>Planner v0.9.32</title>
+  <title>Planner v0.9.35</title>
   <script>
   (()=>{let mode='system';try{const saved=localStorage.getItem('artemPlanner.theme.v1');if(['system','dark','light'].includes(saved))mode=saved}catch{}const resolved=mode==='system'?(window.matchMedia?.('(prefers-color-scheme: dark)').matches?'dark':'light'):mode;document.documentElement.dataset.theme=resolved;document.documentElement.style.colorScheme=resolved})();
   </script>
@@ -1422,7 +1422,7 @@
     }
 
   
-    /* ===== v0.9.32 mobile-first usability pass ===== */
+    /* ===== v0.9.35 mobile-first usability pass ===== */
     @media (max-width:820px){
       html{-webkit-text-size-adjust:100%;scroll-padding-bottom:92px}
       body{padding-bottom:calc(78px + env(safe-area-inset-bottom));overscroll-behavior-y:none}
@@ -1518,7 +1518,7 @@
       #projectTasksList .mini-item,.project-block-row{align-items:flex-start}
 
       /* Money */
-      #page-money>.topbar .actions{grid-template-columns:44px minmax(0,1fr) 44px}
+      #moneyOverview>.topbar .actions{grid-template-columns:44px minmax(0,1fr) 44px}
       #page-money #moneyPrevPeriod{grid-column:1}
       #page-money #moneyCurrentPeriod{grid-column:2}
       #page-money #moneyNextPeriod{grid-column:3}
@@ -1711,7 +1711,7 @@
     @media(max-width:820px){.project-folder-row{padding:17px 14px}.project-notes-card{padding:12px 14px}.project-task-note{width:100vw;max-width:100vw;height:100dvh;max-height:100dvh;margin:0;border:0;border-radius:0}.project-note-editor{padding:calc(16px + env(safe-area-inset-top)) 18px calc(18px + env(safe-area-inset-bottom))}.project-note-nav .btn{padding:9px 10px}#projectNoteTitle{font-size:25px}}
 
 
-    /* v0.9.32 compact project cards */
+    /* v0.9.35 compact project cards */
     #projectsGrid.project-folders{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,245px),1fr));gap:18px;background:none;border:0;border-radius:0;overflow:visible;padding:0}
     #projectsGrid[hidden]{display:none!important}
     .project-overview-card{position:relative;isolation:isolate;min-width:0;aspect-ratio:1/1;background:#17191e;border:1px solid #30333c;border-radius:22px;box-shadow:0 10px 24px rgba(0,0,0,.14);transition:border-color .18s,transform .18s,box-shadow .18s}
@@ -1742,7 +1742,7 @@
     @media(prefers-reduced-motion:reduce){.project-overview-card{transition:none}.project-overview-card:hover{transform:none}}
 
 
-    /* v0.9.32 account profile */
+    /* v0.9.35 account profile */
     .account-profile-card{grid-column:1/-1;padding:28px}
     #accountProfile [hidden],.sidebar-profile-avatar [hidden]{display:none!important}
     .account-profile-photo-block{display:flex;flex-direction:column;align-items:center;gap:12px;max-width:520px;margin:0 auto 28px}
@@ -1762,7 +1762,7 @@
     @media(max-width:820px){.account-profile-card{padding:22px 16px}.account-profile-avatar{width:96px;height:96px}.sidebar-profile-avatar{width:34px;height:34px}.account-profile-fields{max-width:none}.account-profile-sync{align-items:flex-start}}
 
 
-    /* v0.9.32 task types and themes */
+    /* v0.9.35 task types and themes */
     .task-area-type-label{display:block!important;color:var(--project-color)!important;font-size:10px!important;font-weight:600;letter-spacing:.02em;margin:0 0 4px!important}
     .task-area-continuous{font-size:50px;line-height:1;color:var(--project-color);opacity:.45;margin-right:16px}
     .theme-settings-card{grid-column:1/-1}
@@ -1982,7 +1982,41 @@
       #page-today .today-note-preview{max-width:160px}#page-today .today-secondary{padding:0 12px}
     }
 
-</style>
+
+.training-note{width:100%;margin-top:6px}.training-note summary{cursor:pointer}.training-note p{white-space:pre-wrap;overflow-wrap:anywhere;color:var(--text)}
+/* Compact training workspace: common theme tokens, no per-day metric boxes. */
+.training-navigation{display:flex;justify-content:space-between;align-items:center;gap:16px;margin:12px 0 20px;flex-wrap:wrap}
+.training-tabs{display:flex;gap:4px}.training-tabs .active{background:var(--accent-2);color:var(--accent);border-color:var(--accent)}
+.training-overview{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-bottom:20px;padding:22px 26px}
+.training-overview>div{display:flex;flex-direction:column;gap:8px}.training-overview strong{font-size:26px;letter-spacing:-.7px}.training-overview .bar{height:4px;margin-top:4px}
+.training-layout{display:grid;grid-template-columns:minmax(0,1fr) 280px;gap:20px}.training-main,.training-rail{min-width:0}.training-rail{display:flex;flex-direction:column;gap:20px}
+.training-main .card{margin-bottom:16px}.training-day-strip{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:8px}
+.training-day{border:1px solid transparent;background:var(--surface-2);color:var(--text);border-radius:14px;padding:12px 5px;display:flex;flex-direction:column;align-items:center;gap:8px;cursor:pointer}.training-day span{font-size:12px;color:var(--muted)}.training-day strong{font-size:20px}.training-day.today{border-color:var(--border)}.training-day.active{background:var(--accent-2);border-color:var(--accent);color:var(--accent)}
+.training-day i{width:5px;height:5px;border-radius:50%;background:var(--border)}.training-day i.done{background:var(--success)}.training-day i.planned{background:var(--accent)}
+.training-day-title{margin-top:24px}.training-rest{display:flex;flex-direction:column;gap:8px;padding:36px 10px}.training-rest strong{color:var(--text);font-size:20px}.training-rest span{font-size:13px}
+.training-week-row{display:flex;align-items:center;gap:12px;width:100%;padding:15px 0;border:0;border-bottom:1px solid var(--border);background:transparent;color:var(--text);text-align:left;cursor:pointer}.training-week-row:last-child{border-bottom:0}.training-week-row>span:nth-child(2){flex:1;min-width:0}.training-week-row strong{display:block;overflow-wrap:anywhere}.training-week-row small{display:block;color:var(--muted);margin-top:5px}.training-row-status{font-size:12px;color:var(--muted)}.training-row-icon{width:30px;height:30px;display:grid;place-items:center;border-radius:50%;background:var(--accent-2);color:var(--accent);flex-shrink:0}.training-row-icon.done{background:var(--success-bg);color:var(--success)}
+.training-rhythm{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin:20px 0 12px}.training-rhythm span{font-size:10px;text-align:center;display:flex;flex-direction:column;gap:8px;color:var(--muted)}.training-rhythm span:before{content:'';width:12px;height:12px;background:var(--border);border-radius:50%;align-self:center}.training-rhythm .done:before{background:var(--success)}.training-rhythm .planned:before{background:var(--accent)}
+.training-goal-settings{margin-top:20px;font-size:12px;color:var(--muted)}.training-goal-settings .field{margin:12px 0}.training-weight{font-size:32px;font-weight:650}.training-disclosure>summary{display:flex;justify-content:space-between;cursor:pointer;font-weight:600;gap:12px}.training-disclosure>summary:after{content:'＋';color:var(--muted)}.training-disclosure[open]>summary:after{content:'−'}.training-detail{padding-top:20px}
+.training-row-menu{flex-shrink:0}.training-row-menu>summary{cursor:pointer;list-style:none;padding:8px 12px;font-size:20px}.training-row-menu[open]{max-width:220px}.training-row-menu .row-actions{flex-wrap:wrap}.training-row-menu .row-actions .btn{font-size:11px}
+#projectNoteCommit{margin-left:auto;flex-shrink:0;min-width:96px;justify-content:center}.project-note-nav{flex-shrink:0}.project-note-editor textarea{min-height:80px}.project-note-footer{flex-shrink:0}
+@media(max-width:1050px){.training-layout{grid-template-columns:minmax(0,1fr) 240px}}
+@media(max-width:820px){.training-layout{grid-template-columns:1fr}.training-rail{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}.training-overview{gap:12px;padding:16px}.training-overview strong{font-size:21px}.training-overview .small{font-size:11px}.training-day-strip{gap:4px}.training-day{padding:10px 2px}.training-row-status{display:none}.training-row-menu[open]{max-width:160px}}
+@media(max-width:500px){.training-rail{grid-template-columns:1fr}.project-note-nav .btn{padding:8px;font-size:12px}#projectNoteCommit{min-width:78px}}
+
+  
+    .project-note-draft-schedule{display:grid;grid-template-columns:1.5fr 1fr 1fr;gap:10px;flex-shrink:0}
+    .project-note-draft-schedule[hidden]{display:none}
+    #projectNoteCommit{color:#fff}
+    #projectNoteBody{min-height:80px}
+    @media(max-width:500px){.project-note-draft-schedule{grid-template-columns:1fr 1fr}.project-note-draft-schedule .field:first-child{grid-column:1/-1}.project-note-editor{gap:10px}}
+  
+    .finance-overview{margin-top:40px;padding-top:28px;border-top:1px solid var(--border)}
+    .finance-heading{font-size:24px;margin:0;letter-spacing:-.6px}
+    .profile-plan{font-size:12px;color:var(--muted);margin-top:5px}
+    .profile-plan.is-premium,#moreAccountPlan.is-premium{color:var(--accent);font-weight:600}
+    .learning-placeholder{min-height:360px}
+    @media(max-width:820px){.finance-overview{margin-top:28px;padding-top:22px}.learning-placeholder{min-height:55vh}}
+  </style>
 </head>
 <body>
 <div class="app">
@@ -1992,7 +2026,7 @@
       <span class="sidebar-profile-avatar" aria-hidden="true"><img id="sidebarProfilePhoto" alt="" hidden><span id="sidebarProfileInitials">Г</span></span>
       <span class="sidebar-account-copy">
         <strong id="sidebarAccountName">Гость</strong>
-        <small id="sidebarAccountMeta">Гость · войти или зарегистрироваться</small>
+        <small id="sidebarAccountMeta" class="profile-plan">Free</small>
       </span>
       <span class="sidebar-account-arrow" aria-hidden="true">›</span>
     </button>
@@ -2007,8 +2041,8 @@
       <button data-page="calendar"><span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2.5"/><path d="M8 3v4M16 3v4M3 10h18"/></svg></span>Календарь</button>
       <button data-page="projects"><span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7.5A2.5 2.5 0 0 1 5.5 5h4l2 2h7A2.5 2.5 0 0 1 21 9.5v8A2.5 2.5 0 0 1 18.5 20h-13A2.5 2.5 0 0 1 3 17.5z"/><path d="M3 9h18"/></svg></span>Задачи</button>
       <button data-page="money"><span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7.5A2.5 2.5 0 0 1 6.5 5h11A2.5 2.5 0 0 1 20 7.5v9a2.5 2.5 0 0 1-2.5 2.5h-11A2.5 2.5 0 0 1 4 16.5z"/><path d="M4 9h16"/><circle cx="15.5" cy="13.5" r="1.5"/></svg></span>Деньги</button>
-      <button data-page="food"><span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4v7"/><path d="M10 4v7"/><path d="M7 8h3"/><path d="M8.5 11v9"/><path d="M15 4c2 2 2 5.5 0 7.5l-1 1v7.5"/><path d="M15 4v16"/></svg></span>Траты</button>
       <button data-page="workouts"><span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 9v6"/><path d="M19 9v6"/><path d="M8 7v10"/><path d="M16 7v10"/><path d="M5 12h14"/></svg></span>Тренировки</button>
+      <button data-page="learning"><span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5c-3-2-6-2-9-1v15c3-1 6-1 9 1 3-2 6-2 9-1V4c-3-1-6-1-9 1Z"/><path d="M12 5v15"/></svg></span>Обучение</button>
       <button data-page="archive"><span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16"/><path d="M6 7v10.5A2.5 2.5 0 0 0 8.5 20h7a2.5 2.5 0 0 0 2.5-2.5V7"/><rect x="3" y="4" width="18" height="4" rx="1.5"/><path d="M10 12h4"/></svg></span>История</button>
     </div>
     <div class="sidebar-section sidebar-section-row"><span>Задачи</span></div>
@@ -2101,54 +2135,9 @@
     </section>
 
     <section class="page" id="page-money">
+<div id="page-food">
       <div class="topbar">
-        <div class="title-wrap"><h1>Деньги</h1><div class="subtitle">Доходы, расходы и накопления</div></div>
-        <div class="actions">
-          <button class="btn" id="moneyPrevPeriod">←</button>
-          <button class="btn" id="moneyCurrentPeriod">Текущий</button>
-          <button class="btn" id="moneyNextPeriod">→</button>
-          <div class="segmented" id="moneyPeriod"><button data-money-period="day">День</button><button data-money-period="week">Неделя</button><button class="active" data-money-period="month">Месяц</button><button data-money-period="year">Год</button></div>
-          <button class="btn" id="openMoneyLedger">Все операции</button>
-          <button class="btn primary" data-open="money">＋ Добавить запись</button>
-        </div>
-      </div>
-
-      <div class="cards">
-        <div class="card metric green"><div class="label">Заработано</div><div class="value money-total" id="moneyIncome">0 ₽</div><div class="hint" id="incomeHint">0 источников дохода</div></div>
-        <div class="card metric red"><div class="label">Потрачено</div><div class="value money-total" id="moneyExpense">0 ₽</div><div class="hint" id="expenseHint">Расходы за период</div></div>
-        <div class="card metric blue"><div class="label">Отложено</div><div class="value money-total" id="moneySaved">0 ₽</div><div class="hint" id="savedHint">Накопления за период</div></div>
-        <div class="card metric purple"><div class="label">Осталось</div><div class="value money-total" id="moneyBalance">0 ₽</div><div class="hint" id="moneyBalanceHint">Баланс переносится между периодами</div></div>
-      </div>
-
-      <div class="card" style="margin-bottom:14px">
-        <div class="section-title"><h2>Сравнение с предыдущим периодом</h2><span class="small" id="moneyCompareLabel">—</span></div>
-        <div class="today-summary"><div class="mini"><span>Доход</span><strong id="moneyIncomeDelta">—</strong></div><div class="mini"><span>Расход</span><strong id="moneyExpenseDelta">—</strong></div><div class="mini"><span>Свободный остаток</span><strong id="moneyBalanceDelta">—</strong></div></div>
-      </div>
-
-      <div class="money-insights-grid">
-        <div class="today-block money-goals-block savings-showcase-block">
-          <div class="savings-showcase-head">
-            <div class="savings-showcase-icon">◎</div>
-            <div class="savings-showcase-copy">
-              <h3>Цели и накопления</h3>
-              <p>Копите на важные цели вместе — шаг за шагом к большему.</p>
-            </div>
-            <button class="btn primary savings-showcase-add" id="newGoal">＋ Цель</button>
-          </div>
-          <div id="moneyGoals" class="goal-cards-stack"></div>
-          <div id="unallocatedSavings" class="goal-unallocated"></div>
-        </div>
-        <div class="today-block"><h3>По задачам</h3><div id="moneyProjects"></div></div>
-        <div class="today-block">
-          <h3>Категории расходов</h3>
-          <div id="moneyCategories"></div>
-        </div>
-      </div>
-    </section>
-
-    <section class="page" id="page-food">
-      <div class="topbar">
-        <div class="title-wrap"><h1>Траты</h1><div class="subtitle">Повседневные расходы, дневной ориентир и связь с общими финансами</div></div>
+        <div class="title-wrap"><h1>Деньги</h1><div class="subtitle">Повседневные расходы, доходы и накопления</div></div>
         <div class="actions">
           <button class="btn" id="foodPrevWeek">←</button>
           <button class="btn" id="foodCurrentWeek">Текущая</button>
@@ -2216,81 +2205,80 @@
           <div id="foodCategories"></div>
         </div>
       </div>
-    </section>
+    </div>
 
-
-    <section class="page" id="page-workouts">
+<div class="finance-overview" id="moneyOverview">
       <div class="topbar">
-        <div class="title-wrap"><h1>Тренировки</h1><div class="subtitle">Календарь активности, калории и вес — всё в одном рабочем экране</div></div>
+        <div class="title-wrap"><h2 class="finance-heading">Доходы и накопления</h2><div class="subtitle">Доходы, расходы и накопления</div></div>
         <div class="actions">
-          <button class="btn" id="workoutPrevWeek">←</button>
-          <button class="btn" id="workoutCurrentWeek">Текущая</button>
-          <button class="btn" id="workoutNextWeek">→</button>
-          <span class="subtitle" id="workoutRange"></span>
-          <button class="btn" id="addCaloriesGlobal">＋ Калории</button>
-          <button class="btn" id="addWeightGlobal">＋ Вес</button>
-          <button class="btn primary" id="addWorkoutGlobal">＋ Тренировка</button>
+          <button class="btn" id="moneyPrevPeriod">←</button>
+          <button class="btn" id="moneyCurrentPeriod">Текущий</button>
+          <button class="btn" id="moneyNextPeriod">→</button>
+          <div class="segmented" id="moneyPeriod"><button data-money-period="day">День</button><button data-money-period="week">Неделя</button><button class="active" data-money-period="month">Месяц</button><button data-money-period="year">Год</button></div>
+          <button class="btn" id="openMoneyLedger">Все операции</button>
+          <button class="btn primary" data-open="money">＋ Добавить запись</button>
         </div>
       </div>
 
       <div class="cards">
-        <div class="card metric green"><div class="label">Калории сегодня</div><div class="value" id="workoutCaloriesToday">0 ккал</div><div class="hint" id="workoutCaloriesHint">0 записей за день</div></div>
-        <div class="card metric blue"><div class="label">Выполнено за неделю</div><div class="value" id="workoutDoneWeek">0</div><div class="hint" id="workoutDoneWeekHint">0 из 0 тренировок</div></div>
-        <div class="card metric body-metric-card"><button class="metric-edit" id="editHeightTop" type="button">Изм.</button><div class="label">Рост</div><div class="value" id="workoutHeight">— см</div><div class="hint">постоянный параметр</div></div>
-        <div class="card metric body-metric-card"><button class="metric-edit" id="editWeightTop" type="button">Изм.</button><div class="label">Текущий вес</div><div class="value weight-zone-green" id="workoutCurrentWeight">— кг</div><div class="hint" id="workoutWeightHint">цвет зоны выбираешь сам</div></div>
+        <div class="card metric green"><div class="label">Заработано</div><div class="value money-total" id="moneyIncome">0 ₽</div><div class="hint" id="incomeHint">0 источников дохода</div></div>
+        <div class="card metric red"><div class="label">Потрачено</div><div class="value money-total" id="moneyExpense">0 ₽</div><div class="hint" id="expenseHint">Расходы за период</div></div>
+        <div class="card metric blue"><div class="label">Отложено</div><div class="value money-total" id="moneySaved">0 ₽</div><div class="hint" id="savedHint">Накопления за период</div></div>
+        <div class="card metric purple"><div class="label">Осталось</div><div class="value money-total" id="moneyBalance">0 ₽</div><div class="hint" id="moneyBalanceHint">Баланс переносится между периодами</div></div>
       </div>
 
-      <div class="workout-shell">
-        <div class="card">
-          <div class="section-title"><div><h2>Неделя тренировок</h2><span class="small" id="workoutWeekHint">Планируй, отмечай выполнение и держи калории рядом</span></div><span class="small">Клик по дню открывает детали</span></div>
-          <div class="workout-week-grid" id="workoutWeekBoard"></div>
-        </div>
-        <div class="workout-side">
-          <div class="card">
-            <div class="section-title"><div><h2 id="workoutSelectedDayTitle">Выбранный день</h2><span class="small" id="workoutSelectedDaySubtitle">—</span></div><span class="calorie-total-pill" id="selectedCaloriesTotal">0 ккал</span></div>
-            <div class="workout-summary" id="workoutSelectedSummary"></div>
-          </div>
-          <div class="card">
-            <div class="section-title"><h2>Настройка недели</h2><span class="small">для понятного плана, а не жёсткой обязаловки</span></div>
-            <div class="workout-goal-box">
-              <div class="field"><label>Рост, см</label><input id="trainingHeightCm" type="number" min="100" max="250" step="1" placeholder="Например, 182"></div>
-              <div class="field"><label>Цель тренировок в неделю</label><input id="trainingWeeklyGoal" type="number" min="1" max="14"></div>
-              <button class="btn primary" id="saveTrainingSettings">Сохранить</button>
+      <div class="card" style="margin-bottom:14px">
+        <div class="section-title"><h2>Сравнение с предыдущим периодом</h2><span class="small" id="moneyCompareLabel">—</span></div>
+        <div class="today-summary"><div class="mini"><span>Доход</span><strong id="moneyIncomeDelta">—</strong></div><div class="mini"><span>Расход</span><strong id="moneyExpenseDelta">—</strong></div><div class="mini"><span>Свободный остаток</span><strong id="moneyBalanceDelta">—</strong></div></div>
+      </div>
+
+      <div class="money-insights-grid">
+        <div class="today-block money-goals-block savings-showcase-block">
+          <div class="savings-showcase-head">
+            <div class="savings-showcase-icon">◎</div>
+            <div class="savings-showcase-copy">
+              <h3>Цели и накопления</h3>
+              <p>Копите на важные цели вместе — шаг за шагом к большему.</p>
             </div>
-            <div class="mini-item" style="margin-top:12px"><span>Прогресс недельной цели</span><strong id="workoutGoalInline">0 из 4 · 0%</strong></div>
-            <div class="weight-zone-legend">
-              <span class="zone-dot-label"><i style="background:#22c55e"></i>зелёная зона</span>
-              <span class="zone-dot-label"><i style="background:#eab308"></i>жёлтая зона</span>
-              <span class="zone-dot-label"><i style="background:#ef4444"></i>красная зона</span>
-            </div>
-            <div class="note" style="margin-top:10px">Цвет веса — твоя ручная зона для ориентира. Planner не определяет её автоматически и не трактует как медицинскую оценку.</div>
+            <button class="btn primary savings-showcase-add" id="newGoal">＋ Цель</button>
           </div>
+          <div id="moneyGoals" class="goal-cards-stack"></div>
+          <div id="unallocatedSavings" class="goal-unallocated"></div>
+        </div>
+        <div class="today-block"><h3>По задачам</h3><div id="moneyProjects"></div></div>
+        <div class="today-block">
+          <h3>Категории расходов</h3>
+          <div id="moneyCategories"></div>
         </div>
       </div>
+    </div>
+    </section>
 
-      <div class="grid-equal" style="margin-top:14px">
-        <div class="card">
-          <div class="section-title"><div><h2>Тренировки дня</h2><span class="small" id="workoutListHint">запланированные, выполненные и пропущенные</span></div><button class="btn soft" id="addWorkoutSelected">＋ Добавить</button></div>
-          <div id="workoutList" class="list-stack"></div>
+    <section class="page" id="page-workouts">
+      <div class="topbar"><div class="title-wrap"><h1>Тренировки</h1><div class="subtitle">Планируй занятия. Отмечай результат.</div></div><div class="actions"><button class="btn" id="workoutParameters">Параметры</button><button class="btn primary" id="addWorkoutGlobal">＋ Тренировка</button></div></div>
+      <div class="training-navigation"><div class="actions"><button class="btn" id="workoutPrevWeek" aria-label="Предыдущая неделя">‹</button><strong id="workoutRange"></strong><button class="btn" id="workoutNextWeek" aria-label="Следующая неделя">›</button><button class="btn" id="workoutCurrentWeek">Текущая</button></div><div class="training-tabs" role="tablist" aria-label="Тренировки"><button class="btn active" id="workoutPlanTab" role="tab" aria-selected="true" aria-controls="workoutPlanPanel">План</button><button class="btn" id="workoutHistoryTab" role="tab" aria-selected="false" aria-controls="workoutHistoryPanel">История</button></div></div>
+      <div class="card training-overview"><div><span class="small">Цель недели</span><strong id="workoutDoneWeek"></strong><span class="small" id="workoutDoneWeekHint"></span><div class="bar"><span id="workoutGoalBar"></span></div></div><div><span class="small">Время выполненных тренировок</span><strong id="workoutWeekMinutes"></strong><span class="small">за выбранную неделю</span></div><div><span class="small">Последний вес</span><strong id="workoutCurrentWeight"></strong><span class="small" id="workoutWeightHint"></span></div></div>
+      <div class="training-layout">
+        <div class="training-main">
+          <div id="workoutPlanPanel" role="tabpanel" aria-labelledby="workoutPlanTab">
+            <div class="card"><div class="training-day-strip" id="workoutWeekBoard" aria-label="Дни недели"></div><div class="section-title training-day-title"><div><h2 id="workoutSelectedDayTitle"></h2><span class="small" id="workoutSelectedDaySubtitle"></span></div></div><div class="small" id="workoutListHint"></div><div id="workoutList" class="list-stack"></div></div>
+            <div class="card training-week-list"><div class="section-title"><h2>На этой неделе</h2><span class="small" id="workoutWeekCount"></span></div><div id="workoutWeekList" class="list-stack"></div></div>
+          </div>
+          <div class="card" id="workoutHistoryPanel" role="tabpanel" aria-labelledby="workoutHistoryTab" hidden><div class="section-title"><h2>Результаты недели</h2><span class="small">Выполненные и пропущенные занятия</span></div><div id="workoutHistoryList" class="list-stack"></div></div>
+          <details class="card training-disclosure"><summary>Питание и калории <span id="selectedCaloriesTotal"></span></summary><div class="training-detail"><div class="section-title"><div><h2>Калории выбранного дня</h2><span class="small" id="workoutCaloriesHint"></span></div><button class="btn" id="addCaloriesSelected">＋ Запись</button></div><div id="calorieList" class="list-stack"></div><span class="small">Сегодня: <span id="workoutCaloriesToday"></span></span></div></details>
+          <details class="card training-disclosure"><summary>История веса</summary><div class="training-detail"><div class="section-title"><div><strong id="weightBigValue"></strong><div class="small" id="weightBigHint"></div></div><button class="btn" id="addWeightSelected">＋ Замер</button></div><div id="weightList" class="list-stack"></div></div></details>
+          <details class="card training-disclosure"><summary>Виды тренировок</summary><div class="training-detail" id="workoutTypesStats"></div></details>
         </div>
-        <div class="card">
-          <div class="section-title"><div><h2>Калории дня</h2><span class="small">что и сколько съел за выбранную дату</span></div><button class="btn soft" id="addCaloriesSelected">＋ Добавить</button></div>
-          <div id="calorieList" class="list-stack"></div>
-        </div>
+        <aside class="training-rail">
+          <div class="card"><div class="section-title"><h2>Ритм недели</h2></div><strong id="workoutGoalInline"></strong><div class="training-rhythm" id="workoutRhythm"></div><div class="small" id="workoutRhythmHint"></div><details class="training-goal-settings"><summary>Изменить цель</summary><div class="field"><label for="trainingWeeklyGoal">Тренировок в неделю</label><input id="trainingWeeklyGoal" type="number" min="1" max="14" step="1"></div><button class="btn" id="saveTrainingSettings">Сохранить</button></details></div>
+          <div class="card"><div class="section-title"><h2>Вес</h2><button class="btn" id="editWeightTop">Изменить</button></div><div class="training-weight" id="workoutRailWeight"></div><p class="small" id="workoutRailWeightDate"></p><button class="btn" id="addWeightGlobal">＋ Добавить замер</button></div>
+        </aside>
       </div>
+    </section>
 
-      <div class="grid-equal" style="margin-top:14px">
-        <div class="card">
-          <div class="section-title"><div><h2>Вес</h2><span class="small">последние записи и динамика</span></div><button class="btn soft" id="addWeightSelected">＋ Добавить</button></div>
-          <div class="weight-big" id="weightBigValue">—</div>
-          <div class="subtitle" id="weightBigHint" style="margin:4px 0 14px">Добавь первую запись веса</div>
-          <div id="weightList" class="list-stack"></div>
-        </div>
-        <div class="card">
-          <div class="section-title"><div><h2>Виды тренировок</h2><span class="small">срез по текущей неделе</span></div><span class="small" id="workoutTypeHint">дом · улица · спортзал</span></div>
-          <div id="workoutTypesStats" class="workout-types-grid"></div>
-        </div>
-      </div>
+    <section class="page" id="page-learning">
+      <div class="topbar"><div class="title-wrap"><h1>Обучение</h1></div></div>
+      <div class="card learning-placeholder" aria-label="Пустой раздел обучения"></div>
     </section>
 
     <section class="page" id="page-archive">
@@ -2343,18 +2331,19 @@
     <section class="page" id="page-more">
       <div class="topbar"><div class="title-wrap"><h1>Ещё</h1><div class="subtitle">Дополнительные разделы</div></div></div>
       <div class="more-grid">
-        <button class="more-card" data-more-page="food"><strong>Траты</strong><span>Повседневные расходы и ориентиры</span></button>
+        <button class="more-card" data-more-page="learning"><strong>Обучение</strong><span>Раздел пока пуст</span></button>
         <button class="more-card" data-more-page="projects"><strong>Задачи</strong><span>Цели, проекты и постоянные направления</span></button>
         <button class="more-card" data-more-page="archive"><strong>История</strong><span>Итоги недель, выполненная работа и архивные задачи</span></button>
-        <button class="more-card" data-more-page="account"><strong id="moreAccountName">Мой профиль</strong><span>Вход, синхронизация, данные и ориентиры</span></button>
+        <button class="more-card" data-more-page="account"><strong id="moreAccountName">Мой профиль</strong><span id="moreAccountPlan">Free</span></button>
       </div>
     </section>
 
     <section class="page" id="page-account">
       <div class="topbar">
-        <div class="title-wrap"><h1 id="accountPageTitle">Мой профиль</h1><div class="subtitle">Вход, синхронизация и все настройки Planner в одном месте</div></div>
+        <div class="title-wrap"><h1 id="accountPageTitle">Мой профиль</h1><div class="profile-plan" id="accountSubscriptionPlan">Free</div></div>
       </div>
       <div class="settings-grid">
+
         <div class="card cloud-card account-profile-card" id="accountProfile">
           <div class="account-profile-photo-block">
             <div class="account-profile-avatar"><img id="profilePhoto" alt="Фото профиля" hidden><span id="profileInitials">Г</span></div>
@@ -2391,6 +2380,8 @@
             <div class="sync-config-note">Обычному пользователю этот раздел не нужен. Допустим только публичный Publishable/anon key; service role key использовать нельзя.</div>
           </details>
         </div>
+        <div class="card" id="profileBodyParameters"><div class="section-title"><h2>Параметры тела</h2></div><div class="field"><label for="trainingHeightCm">Рост, см</label><input id="trainingHeightCm" type="number" min="100" max="250" step="1" placeholder="Например, 182"></div><p class="small">Общий параметр профиля. Не зависит от недели.</p><button class="btn" id="saveProfileHeight">Сохранить рост</button><p class="small" id="profileHeightStatus" role="status"></p></div>
+
         <div class="card theme-settings-card">
           <div class="section-title"><h2>Тема оформления</h2></div>
           <div class="theme-choices" role="group" aria-label="Тема оформления">
@@ -2682,12 +2673,17 @@
 
 <dialog id="projectNoteDialog" class="project-task-note" aria-label="Подзадача и заметка">
   <div class="project-note-editor">
-    <div class="project-note-nav"><button class="btn" id="projectNoteClose">‹ Назад</button><button class="btn" id="projectNoteSchedule">Дата и время</button><button class="btn" id="projectNoteCalendar">В календарь ↗</button></div>
+    <div class="project-note-nav"><button class="btn" id="projectNoteClose">‹ Назад</button><button class="btn" id="projectNoteSchedule">Дата и время</button><button class="btn" id="projectNoteCalendar">В календарь ↗</button><button type="button" class="btn primary" id="projectNoteCommit">Готово</button></div>
     <label class="field"><span class="small">Название подзадачи</span><input id="projectNoteTitle" placeholder="Новая подзадача" autocomplete="off"></label>
     <div class="project-note-info" id="projectNoteInfo"></div>
+    <div class="project-note-draft-schedule" id="projectNoteDraftSchedule" hidden>
+      <div class="field"><label for="projectNoteDraftDate">Дата</label><input type="date" id="projectNoteDraftDate" required></div>
+      <div class="field"><label for="projectNoteDraftStart">Начало</label><input type="time" id="projectNoteDraftStart" required></div>
+      <div class="field"><label for="projectNoteDraftEnd">Конец</label><input type="time" id="projectNoteDraftEnd" required></div>
+    </div>
     <div class="plan-actual" id="projectNotePlanActual" hidden></div>
     <textarea id="projectNoteBody" aria-label="Текст заметки" placeholder="Идеи, ссылки, планы, списки — пиши здесь…" spellcheck="true"></textarea>
-    <div class="project-note-footer"><button class="tiny-btn" id="projectNoteBullet" aria-label="Добавить пункт списка">＋ Список</button><button class="tiny-btn" id="projectNoteChecklist" aria-label="Добавить пункт чек-листа">☐ Чек-лист</button><label class="check-line"><input type="checkbox" id="projectNoteDone"> Выполнено</label><span id="projectNoteSaveStatus" role="status">Сохранено на устройстве</span></div>
+    <div class="project-note-footer"><button class="tiny-btn" id="projectNoteBullet" aria-label="Добавить пункт списка">＋ Список</button><button class="tiny-btn" id="projectNoteChecklist" aria-label="Добавить пункт чек-листа">☐ Чек-лист</button><label class="check-line"><input type="checkbox" id="projectNoteDone"> Выполнено</label><button type="button" class="tiny-btn" id="projectNoteDiscard" hidden>Удалить черновик</button><span id="projectNoteSaveStatus" role="status">Сохранено на устройстве</span></div>
   </div>
 </dialog>
 
@@ -3317,6 +3313,18 @@ function cloudStatusCopy(){
 const PROFILE_KEY='planner.profile.v1';
 let profileLoadedKey='',profileDraftDirty=false,profileEmailDirty=false,profileDraftPhoto='',profileBusy=false;
 function profileStorageKey(user=cloudUser){return PROFILE_KEY+'.'+(user?.id||'guest')}
+const PROFILE_PLANS={free:'Free',premium:'Premium'};
+const PREMIUM_OWNER_EMAIL='artkovalenko37@mail.ru';
+function profileSubscriptionPlan(user=cloudUser){
+  if(String(user?.email||'').trim().toLowerCase()===PREMIUM_OWNER_EMAIL)return 'premium';
+  return user?.app_metadata?.subscription_plan==='premium'?'premium':'free';
+}
+function renderProfileSubscription(){
+  const plan=profileSubscriptionPlan(),label=PROFILE_PLANS[plan];
+  for(const id of ['sidebarAccountMeta','moreAccountPlan','accountSubscriptionPlan']){
+    const el=$('#'+id);if(el){el.textContent=label;el.classList.toggle('is-premium',plan==='premium')}
+  }
+}
 function safeProfilePhoto(value){return typeof value==='string'&&value.length<=65536&&/^data:image\/(jpeg|png|webp);base64,[a-zA-Z0-9+/=]+$/.test(value)?value:''}
 function readLocalProfile(user=cloudUser){try{return JSON.parse(localStorage.getItem(profileStorageKey(user))||'{}')||{}}catch{return {}}}
 function currentProfile(){
@@ -3336,7 +3344,7 @@ function showProfileAvatar(imageId,initialsId,photo,name){
 function profileMessage(text,error=false){const el=$('#profileMessage');if(el){el.textContent=text;el.classList.toggle('is-error',error)}}
 function renderAccountProfile(){
   const profile=currentProfile(),name=profileDisplayName(profile),key=profileStorageKey(),changed=profileLoadedKey!==key,signed=!!cloudUser;
-  $('#accountPageTitle').textContent=(signed||profile.name)?name:'Мой профиль';$('#sidebarAccountName').textContent=name;$('#moreAccountName').textContent=signed?name:'Мой профиль';
+  $('#accountPageTitle').textContent=(signed||profile.name)?name:'Мой профиль';$('#sidebarAccountName').textContent=name;$('#moreAccountName').textContent=name;renderProfileSubscription();
   showProfileAvatar('sidebarProfilePhoto','sidebarProfileInitials',profile.photo,name);
   if(changed){profileLoadedKey=key;profileDraftDirty=false;profileEmailDirty=false;$('#supabasePassword').value='';profileMessage('')}
   if(!profileDraftDirty){$('#profileName').value=profile.name;profileDraftPhoto=profile.photo}
@@ -3411,8 +3419,7 @@ function updateCloudUI(message=''){
   const text=message||cloudStatusCopy(),cls=dotClass(cloudMode);
   for(const id of ['sidebarSyncDot','cloudSyncDot','accountIdentityDot']){const el=$('#'+id);if(el)el.className='sync-dot'+(cls?' '+cls:'')}
   const st=$('#cloudStatus');if(st)st.textContent=text; const side=$('#sidebarSyncText');if(side)side.textContent=text;
-  const sidebarMeta=$('#sidebarAccountMeta');
-  if(sidebarMeta)sidebarMeta.textContent=cloudUser?(cloudUser.email||'Аккаунт подключён'):'Гость · войти или зарегистрироваться';
+
   const accountTitle=$('#accountIdentityTitle'),accountText=$('#accountIdentityText'),accountState=$('#accountIdentityState');
   if(accountTitle)accountTitle.textContent=cloudUser?profileDisplayName():'Вход и синхронизация';
   if(accountText)accountText.textContent=cloudUser?'Данные этого аккаунта синхронизируются между устройствами.':'Войди или создай аккаунт, чтобы синхронизировать Planner между устройствами.';
@@ -3588,22 +3595,22 @@ setTimeout(initializeCloudClient,0);
 function showPage(name,options={}){
   if(name==='projects'){selectedProjectId=options.projectId||'';const search=$('#projectSearch');if(search)search.value=''}
   if(name==='settings')name='account';
+  if(name==='food')name='money';
   if(name==='focus'||name==='tasks'||name==='analytics')name='today';
   $$('.page').forEach(p=>p.classList.toggle('active',p.id==='page-'+name));
-  const secondaryMobilePages=new Set(['food','projects','archive','account','more']);
+  const secondaryMobilePages=new Set(['learning','projects','archive','account','more']);
   $$('[data-page]').forEach(b=>{
     const mobileMore=b.closest('#mobileNav')&&b.dataset.page==='more'&&secondaryMobilePages.has(name);
     b.classList.toggle('active',b.dataset.page===name||mobileMore);
   });
   if(window.innerWidth<=820)window.scrollTo(0,0);
-  if(name==='money') renderMoney();
-  if(name==='food') renderFood();
+  if(name==='money')renderMoney();
   if(name==='today') renderToday();
   if(name==='calendar') renderCalendar();
   if(name==='projects') renderProjects();
   if(name==='workouts') renderWorkouts();
   if(name==='archive') renderArchive();
-  if(name==='account'){updateCloudUI();renderFinanceSettings();renderCategorySettings();}
+  if(name==='account'){renderBodyParameters();updateCloudUI();renderFinanceSettings();renderCategorySettings();}
   $('#globalSearchResults')?.classList.remove('show');
 }
 $$('[data-page]').forEach(b=>b.addEventListener('click',()=>showPage(b.dataset.page)));
@@ -4213,6 +4220,7 @@ function renderMoney(){
   const projectTotals={};rows.forEach(x=>{if(x.projectId){projectTotals[x.projectId]??={income:0,expense:0};if(x.type==='income')projectTotals[x.projectId].income+=Number(x.amount||0);if(x.type==='expense')projectTotals[x.projectId].expense+=Number(x.amount||0)}});$('#moneyProjects').innerHTML=Object.keys(projectTotals).length?Object.entries(projectTotals).map(([id,v])=>{const p=db.projects.find(p=>p.id===id);return `<div class="mini-item"><div class="left"><i class="dot" style="background:${p?.color||'#6366f1'}"></i><span>${escapeHTML(p?.name||'Проект')}</span></div><strong>${fmt(v.income-v.expense)}</strong></div>`}).join(''):'<div class="empty">Нет операций, связанных с проектами.</div>';
   $('#moneyCategories').innerHTML = top.length ? top.map(([k,v])=>`<div class="bar-row"><div class="bar-head"><span>${escapeHTML(k)}</span><span>${fmt(v)}</span></div><div class="bar"><span style="width:${expense?Math.min(100,v/expense*100):0}%;background:#f59e0b"></span></div></div>`).join('') : '<div class="empty">Нет расходов за выбранный период.</div>';
   renderMoneyGoals();
+  renderFood();
 }
 $$('[data-money-period]').forEach(b=>b.onclick=()=>{moneyPeriod=b.dataset.moneyPeriod;renderMoney()});$('#moneyPrevPeriod').onclick=()=>shiftMoneyCursor(-1);$('#moneyNextPeriod').onclick=()=>shiftMoneyCursor(1);$('#moneyCurrentPeriod').onclick=()=>{moneyCursor=new Date();renderMoney()};
 $('#moneyForm').elements.type.addEventListener('change',updateMoneyGoalVisibility);
@@ -4573,51 +4581,45 @@ function renderWorkouts(){
   const caloriesTodayRows=caloriesForDate(todayISO);
   $('#workoutCaloriesToday').textContent=kcalText(caloriesTodayRows.reduce((a,b)=>a+Number(b.calories||0),0));
   $('#workoutCaloriesHint').textContent=`${caloriesTodayRows.length} ${caloriesTodayRows.length===1?'запись':'записей'} за день`;
-  $('#workoutDoneWeek').textContent=String(doneWeek);
-  $('#workoutDoneWeekHint').textContent=`${doneWeek} из ${plannedWeek} тренировок с активностью на неделе`;
+  $('#workoutDoneWeek').textContent=`${doneWeek} / ${weeklyGoal}`;
+  $('#workoutDoneWeekHint').textContent=`${Math.min(100,Math.round(doneWeek/weeklyGoal*100))}% выполнено`;
   const latest=latestWeightEntry();
-  const heightCm=Number(db.trainingSettings?.heightCm||0);
-  $('#workoutHeight').textContent=heightCm?`${heightCm} см`:'— см';
-  const currentWeight=$('#workoutCurrentWeight');
-  currentWeight.textContent=latest?kgText(latest.value):'— кг';
-  currentWeight.classList.remove('weight-zone-green','weight-zone-yellow','weight-zone-red');
-  currentWeight.classList.add(`weight-zone-${latest?.zone||'green'}`);
-  $('#workoutWeightHint').textContent=latest?`последняя запись: ${latest.date} · ${latest.zone==='red'?'красная':latest.zone==='yellow'?'жёлтая':'зелёная'} зона`:'добавь вес и выбери цвет зоны';
+  $('#workoutCurrentWeight').textContent=latest?kgText(latest.value):'—';
+  $('#workoutWeightHint').textContent=latest?latest.date:'Замеров пока нет';
+  $('#workoutRailWeight').textContent=latest?kgText(latest.value):'—';
+  $('#workoutRailWeightDate').textContent=latest?`Последний замер · ${latest.date}`:'Добавь первый замер';
+  $('#workoutWeekMinutes').textContent=minutesText(weekWorkouts.filter(x=>x.status==='done').reduce((n,x)=>n+Number(x.duration||0),0));
   const goalPct=Math.min(100,Math.round(doneWeek/weeklyGoal*100));
   $('#workoutGoalInline').textContent=`${doneWeek} из ${weeklyGoal} · ${goalPct}%`;
   $('#workoutRange').textContent=weekRangeText(start);
   $('#trainingWeeklyGoal').value=weeklyGoal;
-  $('#trainingHeightCm').value=heightCm||'';
+  $('#workoutGoalBar').style.width=goalPct+'%';
 
   const board=$('#workoutWeekBoard');
   board.innerHTML=days.map(d=>{
-    const date=iso(d),rows=workoutsForDate(date),cal=caloriesTotal(date),weight=weightOnDate(date),done=rows.filter(x=>x.status==='done').length,planned=rows.filter(x=>x.status==='planned').length,missed=rows.filter(x=>x.status==='missed').length;
-    const labels=new Intl.DateTimeFormat('ru-RU',{weekday:'short'}).format(d);
-    const chips=rows.slice(0,3).map(x=>`<div class="workout-chip"><div class="workout-chip-title"><span class="type-dot type-${escapeHTML(x.type||'home')}"></span><b>${escapeHTML(x.title)}</b>${x.calendarEventId?'<span class="workout-calendar-badge">календарь</span>':''}</div><span class="status-pill ${escapeHTML(x.status||'planned')}">${workoutStatusLabel(x.status)}</span></div>`).join('') || '<div class="empty" style="margin:0">Пусто</div>';
-    return `<div class="workout-day-card ${date===workoutSelectedDate?'active':''} ${date===todayISO?'today':''}" data-workout-day="${date}"><div class="workout-day-head"><div><strong>${labels[0].toUpperCase()+labels.slice(1)} · ${d.getDate()}</strong><span>${new Intl.DateTimeFormat('ru-RU',{month:'short'}).format(d)}</span></div>${weight?`<span class="weight-badge weight-zone-${weight.zone||'green'}">${kgText(weight.value)}</span>`:''}</div><div class="workout-day-metrics"><div class="mini-item"><span>Калории</span><strong>${kcalText(cal)}</strong></div><div class="mini-item"><span>Тренировки</span><strong>${done} ✓ · ${planned} план${missed?` · ${missed} проп.`:''}</strong></div></div><div class="workout-chips">${chips}</div><div class="workout-day-actions"><button class="btn soft" type="button" data-add-workout-day="${date}">＋ Трен.</button><button class="btn soft" type="button" data-add-calories-day="${date}">＋ Ккал</button></div></div>`;
+    const date=iso(d),rows=workoutsForDate(date),done=rows.some(x=>x.status==='done'),planned=rows.some(x=>x.status==='planned');
+    return `<button type="button" class="training-day ${date===workoutSelectedDate?'active':''} ${date===todayISO?'today':''}" data-workout-day="${date}" aria-pressed="${date===workoutSelectedDate}" aria-label="${date}: ${rows.length} тренировок"><span>${new Intl.DateTimeFormat('ru-RU',{weekday:'short'}).format(d)}</span><strong>${d.getDate()}</strong><i class="${done?'done':planned?'planned':'rest'}"></i></button>`;
   }).join('');
-  $$('[data-workout-day]',board).forEach(el=>el.onclick=e=>{if(e.target.closest('button'))return; workoutSelectedDate=el.dataset.workoutDay; renderWorkouts()});
-  $$('[data-add-workout-day]').forEach(b=>b.onclick=e=>{e.stopPropagation(); workoutSelectedDate=b.dataset.addWorkoutDay; openWorkoutDialog(b.dataset.addWorkoutDay)});
-  $$('[data-add-calories-day]').forEach(b=>b.onclick=e=>{e.stopPropagation(); workoutSelectedDate=b.dataset.addCaloriesDay; openCalorieDialog(b.dataset.addCaloriesDay)});
+  $$('[data-workout-day]',board).forEach(el=>el.onclick=()=>{workoutSelectedDate=el.dataset.workoutDay;renderWorkouts()});
+  $('#workoutRhythm').innerHTML=days.map(d=>{const rows=workoutsForDate(iso(d)),done=rows.some(x=>x.status==='done'),planned=rows.some(x=>x.status==='planned');return `<span title="${iso(d)}" class="${done?'done':planned?'planned':'rest'}">${new Intl.DateTimeFormat('ru-RU',{weekday:'short'}).format(d)}</span>`}).join('');
+  $('#workoutRhythmHint').textContent=`${doneWeek} выполнено · ${weekWorkouts.filter(x=>x.status==='planned').length} в плане · ${weekWorkouts.filter(x=>x.status==='missed').length} пропущено`;
+  $('#workoutWeekCount').textContent=`${weekWorkouts.length} занятий`;
+  const weekRows=[...weekWorkouts].sort((a,b)=>(a.date+(a.start||'')).localeCompare(b.date+(b.start||'')));
+  const rowsHTML=rows=>rows.map(x=>`<button type="button" class="training-week-row" data-workout-week-edit="${escapeHTML(x.id)}"><span class="training-row-icon ${escapeHTML(x.status)}">${x.status==='done'?'✓':x.status==='missed'?'—':'◷'}</span><span><strong>${escapeHTML(x.title)}</strong><small>${x.date} · ${escapeHTML(x.start||'—')} · ${minutesText(Number(x.duration||0))}</small></span><span class="training-row-status">${workoutStatusLabel(x.status)}</span></button>`).join('');
+  $('#workoutWeekList').innerHTML=rowsHTML(weekRows)||'<div class="empty">Неделя свободна. Запланируй первое занятие кнопкой «＋ Тренировка».</div>';
+  $('#workoutHistoryList').innerHTML=rowsHTML(weekRows.filter(x=>x.status==='done'||x.status==='missed'))||'<div class="empty">За эту неделю результатов пока нет.</div>';
+  $$('[data-workout-week-edit]').forEach(b=>b.onclick=()=>{const x=workoutByUIId(b.dataset.workoutWeekEdit);if(x)openWorkoutDialog(x.date,x.id)});
 
   const selectedDate=new Date(workoutSelectedDate+'T12:00:00');
   $('#workoutSelectedDayTitle').textContent=new Intl.DateTimeFormat('ru-RU',{weekday:'long',day:'numeric',month:'long'}).format(selectedDate);
   $('#workoutSelectedDaySubtitle').textContent=workoutSelectedDate===todayISO?'сегодня':'выбранная дата';
   const selectedWorkouts=workoutsForDate(workoutSelectedDate);
   const selectedCalories=caloriesForDate(workoutSelectedDate);
-  const selectedWeight=weightOnDate(workoutSelectedDate);
-  const doneMinutes=selectedWorkouts.filter(x=>x.status==='done').reduce((a,b)=>a+Number(b.duration||0),0);
-  const burned=selectedWorkouts.filter(x=>x.status==='done').reduce((a,b)=>a+Number(b.caloriesBurned||0),0);
   $('#selectedCaloriesTotal').textContent=kcalText(selectedCalories.reduce((a,b)=>a+Number(b.calories||0),0));
-  $('#workoutSelectedSummary').innerHTML=`
-    <div class="mini-item"><span>Тренировок на день</span><strong>${selectedWorkouts.length||0}</strong></div>
-    <div class="mini-item"><span>Выполнено времени</span><strong>${minutesText(doneMinutes)}</strong></div>
-    <div class="mini-item"><span>Сожжено тренировками</span><strong>${kcalText(burned)}</strong></div>
-    <div class="mini-item"><span>Вес на дату</span><strong>${selectedWeight?kgText(selectedWeight.value):'—'}</strong></div>`;
 
   $('#workoutListHint').textContent=selectedWorkouts.length?`${selectedWorkouts.filter(x=>x.status==='done').length} выполнено · ${selectedWorkouts.filter(x=>x.status==='planned').length} в плане`:'запланированные, выполненные и пропущенные';
   const workoutList=$('#workoutList');
-  workoutList.innerHTML=selectedWorkouts.length?selectedWorkouts.map(x=>`<div class="workout-row ${x.calendarEventId?'is-calendar-derived':''}"><div class="workout-row-main"><strong>${escapeHTML(x.title)} ${x.calendarEventId?'<span class="workout-calendar-badge">из календаря</span>':''}</strong><div class="workout-row-meta"><span>${workoutTypeLabel(x.type)}</span><span>${workoutStatusLabel(x.status)}</span><span>${x.start||'—'}</span><span>${minutesText(Number(x.duration||0))}</span>${Number(x.caloriesBurned||0)?`<span>${kcalText(x.caloriesBurned)} сожжено</span>`:''}${x.note?`<span>${escapeHTML(x.note)}</span>`:''}</div></div><div class="row-actions"><button class="tiny-chip ${x.status==='planned'?'active':''}" data-workout-mark="planned" data-workout-id="${x.id}">План</button><button class="tiny-chip ${x.status==='done'?'active':''}" data-workout-mark="done" data-workout-id="${x.id}">Готово</button><button class="tiny-chip ${x.status==='missed'?'active':''}" data-workout-mark="missed" data-workout-id="${x.id}">Пропуск</button><button class="btn" data-workout-edit="${x.id}">Изм.</button>${x._calendarDerived?'':`<button class="btn danger" data-workout-del="${x.id}">×</button>`}</div></div>`).join(''):'<div class="empty">На этот день тренировок пока нет.</div>';
+  workoutList.innerHTML=selectedWorkouts.length?selectedWorkouts.map(x=>`<div class="workout-row ${x.calendarEventId?'is-calendar-derived':''}"><div class="workout-row-main"><strong>${escapeHTML(x.title)} ${x.calendarEventId?'<span class="workout-calendar-badge">из календаря</span>':''}</strong><div class="workout-row-meta"><span>${workoutTypeLabel(x.type)}</span><span>${workoutStatusLabel(x.status)}</span><span>${x.start||'—'}</span><span>${minutesText(Number(x.duration||0))}</span>${Number(x.caloriesBurned||0)?`<span>${kcalText(x.caloriesBurned)} сожжено</span>`:''}${x.note?`<details class="training-note"><summary>Заметка</summary><p>${escapeHTML(x.note)}</p></details>`:''}</div></div><details class="training-row-menu"><summary aria-label="Действия с тренировкой">⋯</summary><div class="row-actions"><button class="tiny-chip ${x.status==='planned'?'active':''}" data-workout-mark="planned" data-workout-id="${x.id}">План</button><button class="tiny-chip ${x.status==='done'?'active':''}" data-workout-mark="done" data-workout-id="${x.id}">Готово</button><button class="tiny-chip ${x.status==='missed'?'active':''}" data-workout-mark="missed" data-workout-id="${x.id}">Пропуск</button><button class="btn" data-workout-edit="${x.id}">Изм.</button>${x._calendarDerived?'':`<button class="btn danger" data-workout-del="${x.id}">×</button>`}</div></details></div>`).join(''):'<div class="empty training-rest"><strong>Свободный день</strong><span>Отдых или новая тренировка — выбирай свой ритм.</span></div>';
   $$('[data-workout-mark]').forEach(b=>b.onclick=()=>{if(setWorkoutStatus(b.dataset.workoutId,b.dataset.workoutMark)){renderWorkouts();renderCalendar();renderToday()}});
   $$('[data-workout-edit]').forEach(b=>b.onclick=()=>openWorkoutDialog(workoutSelectedDate,b.dataset.workoutEdit));
   $$('[data-workout-del]').forEach(b=>b.onclick=()=>{const item=db.workouts.find(x=>x.id===b.dataset.workoutDel); if(!item||!confirm(`Удалить запись результата «${item.title}»? Календарный план останется.`))return; db.workouts=db.workouts.filter(x=>x.id!==item.id); save(); renderWorkouts();renderCalendar()});
@@ -4638,7 +4640,7 @@ function renderWorkouts(){
   const types=['home','outdoor','gym'];
   const typeBox=$('#workoutTypesStats');
   typeBox.innerHTML=types.map(type=>{const rows=weekWorkouts.filter(x=>x.type===type),done=rows.filter(x=>x.status==='done'),mins=done.reduce((a,b)=>a+Number(b.duration||0),0);return `<div class="workout-type-row"><div class="left"><span class="type-dot type-${type}"></span><div><strong>${workoutTypeLabel(type)}</strong><div class="small">${done.length} выполнено · ${rows.length} всего</div></div></div><strong>${minutesText(mins)}</strong></div>`}).join('');
-  if(window.innerWidth<=820)requestAnimationFrame(()=>{const active=board.querySelector('.workout-day-card.active');if(active)board.scrollLeft=Math.max(0,active.offsetLeft-(board.clientWidth-active.clientWidth)/2)});
+
 }
 $('#workoutPrevWeek')?.addEventListener('click',()=>{workoutWeekStart=new Date(workoutWeekStart);workoutWeekStart.setDate(workoutWeekStart.getDate()-7); if(!sameViewedWorkoutWeek(workoutSelectedDate)) workoutSelectedDate=iso(workoutWeekStart); renderWorkouts()});
 $('#workoutNextWeek')?.addEventListener('click',()=>{workoutWeekStart=new Date(workoutWeekStart);workoutWeekStart.setDate(workoutWeekStart.getDate()+7); if(!sameViewedWorkoutWeek(workoutSelectedDate)) workoutSelectedDate=iso(workoutWeekStart); renderWorkouts()});
@@ -4651,7 +4653,30 @@ $('#addCaloriesSelected')?.addEventListener('click',()=>openCalorieDialog(workou
 $('#addWeightSelected')?.addEventListener('click',()=>openWeightDialog(workoutSelectedDate));
 $('#editHeightTop')?.addEventListener('click',()=>{showPage('workouts');setTimeout(()=>{$('#trainingHeightCm')?.scrollIntoView({behavior:'smooth',block:'center'});$('#trainingHeightCm')?.focus()},0)});
 $('#editWeightTop')?.addEventListener('click',()=>{const latest=latestWeightEntry();openWeightDialog(latest?.date||todayISO,latest?.id||'')});
-$('#saveTrainingSettings')?.addEventListener('click',()=>{const height=Math.max(0,Number($('#trainingHeightCm').value||0)); if(height && (height<100||height>250)){alert('Проверь рост: допустимый диапазон 100–250 см.');return} db.trainingSettings={...db.trainingSettings,weeklyGoal:Math.max(1,Number($('#trainingWeeklyGoal').value||4)),heightCm:height}; save(); renderWorkouts()});
+function renderBodyParameters(){
+  $('#trainingHeightCm').value=Number(db.trainingSettings?.heightCm||0)||'';
+  $('#profileHeightStatus').textContent=db.trainingSettings?.heightCm?'Рост сохранён в профиле':'';
+}
+function saveWeeklyTrainingGoal(){
+  const goal=Number($('#trainingWeeklyGoal').value);
+  if(!Number.isInteger(goal)||goal<1||goal>14){alert('Укажи от 1 до 14 тренировок в неделю.');return false}
+  db.trainingSettings={...db.trainingSettings,weeklyGoal:goal};save();renderWorkouts();return true;
+}
+function saveProfileHeight(){
+  const height=Number($('#trainingHeightCm').value);
+  if(!Number.isInteger(height)||height<100||height>250){$('#profileHeightStatus').textContent='Укажи рост от 100 до 250 см.';return false}
+  db.trainingSettings={...db.trainingSettings,heightCm:height};save();$('#profileHeightStatus').textContent='Рост сохранён в профиле';return true;
+}
+$('#saveTrainingSettings')?.addEventListener('click',saveWeeklyTrainingGoal);
+$('#saveProfileHeight')?.addEventListener('click',saveProfileHeight);
+$('#workoutParameters')?.addEventListener('click',()=>{showPage('account');$('#profileBodyParameters').scrollIntoView({behavior:'smooth',block:'center'})});
+function setWorkoutPanel(history){
+  $('#workoutPlanPanel').hidden=history;$('#workoutHistoryPanel').hidden=!history;
+  $('#workoutPlanTab').classList.toggle('active',!history);$('#workoutHistoryTab').classList.toggle('active',history);
+  $('#workoutPlanTab').setAttribute('aria-selected',String(!history));$('#workoutHistoryTab').setAttribute('aria-selected',String(history));
+}
+$('#workoutPlanTab').addEventListener('click',()=>setWorkoutPanel(false));
+$('#workoutHistoryTab').addEventListener('click',()=>setWorkoutPanel(true));
 $('#workoutForm')?.addEventListener('submit',e=>{
   e.preventDefault();
   const f=e.target;
@@ -5071,6 +5096,7 @@ function renderProjects(){
   $('#projectsSubtitle').textContent=selected?(selected.description||'Подзадачи и заметки · связь с календарём'):'Цели, проекты и задачи — с понятным прогрессом';
   $('#projectsBack').hidden=!selected;
   $('#newProjectBlock').hidden=!selected;
+  $('#newProjectBlock').textContent=selected&&readProjectNoteDraft(selected.id)?'Продолжить черновик':'＋ Подзадача';
   grid.hidden=!!selected;
   const projects=db.projects.filter(p=>(showArchivedProjects||!p.archived)&&(!query||matches(p.name)||matches(p.description)||db.calendar.some(e=>e.projectId===p.id&&(matches(e.title)||matches(e.note)))));
   grid.innerHTML=projects.length?projects.map(p=>{
@@ -5100,42 +5126,121 @@ function renderProjects(){
   $$('[data-project-note]',list).forEach(b=>b.onclick=()=>openProjectNote(b.dataset.projectNote));
   $$('[data-project-block-done]',list).forEach(c=>c.onchange=()=>{if(setCalendarEventDone(c.dataset.projectBlockDone,c.checked)){renderProjects();renderToday();renderCalendar();renderFocusPage()}});
 }
-let activeProjectNoteId='',projectNoteSaveTimer=null,projectNoteDirty=false;
-function openProjectNote(id){
-  if(activeProjectNoteId)flushProjectNote();
-  const event=db.calendar.find(e=>e.id===id);if(!event)return;
-  activeProjectNoteId=id;projectNoteDirty=false;
+let activeProjectNoteId='',projectNoteSaveTimer=null,projectNoteDirty=false,activeProjectDraft=null;
+function projectNoteDraftKey(projectId,accountKey=profileStorageKey()){
+  return 'artemPlanner.projectNoteDraft.v1:'+accountKey+':'+projectId;
+}
+function readProjectNoteDraft(projectId){
+  try{
+    const draft=JSON.parse(localStorage.getItem(projectNoteDraftKey(projectId))||'null');
+    if(!draft||draft.accountKey!==profileStorageKey()||draft.event?.projectId!==projectId||typeof draft.event.id!=='string'||db.calendar.some(e=>e.id===draft.event.id))return null;
+    return draft;
+  }catch{return null}
+}
+function projectNoteEvent(){
+  return activeProjectDraft?.event||db.calendar.find(e=>e.id===activeProjectNoteId);
+}
+function fillProjectNoteEditor(event,creating){
+  $('#projectNoteCommit').textContent=creating?'Создать':'Готово';
+  $('#projectNoteClose').textContent=creating?'‹ Отложить':'‹ Назад';
+  $('#projectNoteCalendar').hidden=creating;
+  $('#projectNoteDiscard').hidden=!creating;
+  $('#projectNoteDraftSchedule').hidden=!creating;
+  $('#projectNoteDraftDate').value=event.date;$('#projectNoteDraftStart').value=event.start;$('#projectNoteDraftEnd').value=event.end;
   $('#projectNoteTitle').value=event.title||'';$('#projectNoteBody').value=event.note||'';
   $('#projectNoteDone').checked=calendarEventStatus(event)==='done';
-  $('#projectNoteInfo').textContent=`${projectName(event.projectId)} · ${event.date} · ${event.start}–${event.end}`;
-  $('#projectNoteSaveStatus').textContent='Сохранено на устройстве';
-  renderEventPlanActual(event,$('#projectNotePlanActual'));
+  $('#projectNoteInfo').textContent=creating?`${projectName(event.projectId)} · новая подзадача`:`${projectName(event.projectId)} · ${event.date} · ${event.start}–${event.end}`;
+  $('#projectNoteSaveStatus').textContent=creating?'Черновик · нажми «Создать», чтобы добавить задачу':'Сохранено на устройстве';
+  renderEventPlanActual(creating?null:event,$('#projectNotePlanActual'));
   if(!$('#projectNoteDialog').open)$('#projectNoteDialog').showModal();
+}
+function openProjectNote(id){
+  if(activeProjectNoteId&&!flushProjectNote())return false;
+  const event=db.calendar.find(e=>e.id===id);if(!event)return false;
+  activeProjectDraft=null;activeProjectNoteId=id;projectNoteDirty=false;
+  fillProjectNoteEditor(event,false);return true;
+}
+function beginProjectNote(){
+  const project=db.projects.find(p=>p.id===selectedProjectId);if(!project)return false;
+  if(activeProjectNoteId&&!flushProjectNote())return false;
+  activeProjectDraft=readProjectNoteDraft(project.id)||{accountKey:profileStorageKey(),event:{id:uid(),title:'',date:todayISO,start:'19:00',end:'20:00',category:TASK_AREA_TYPES[taskAreaType(project)].category,projectId:project.id,taskId:'',note:'',status:'planned',done:false}};
+  activeProjectNoteId=activeProjectDraft.event.id;projectNoteDirty=false;
+  fillProjectNoteEditor(activeProjectDraft.event,true);$('#projectNoteTitle').focus();return true;
 }
 function flushProjectNote(){
   clearTimeout(projectNoteSaveTimer);
   if(!activeProjectNoteId||!projectNoteDirty)return true;
-  const event=db.calendar.find(e=>e.id===activeProjectNoteId);
+  const event=projectNoteEvent();
   if(!event){$('#projectNoteSaveStatus').textContent='Задача удалена. Скопируй текст заметки.';return false}
-  const title=$('#projectNoteTitle').value.trim()||'Новая подзадача',note=$('#projectNoteBody').value;
-  const changed=event.title!==title||event.note!==note;
-  event.title=title;event.note=note;try{save('Заметка сохранена')}catch(err){console.error(err);$('#projectNoteSaveStatus').textContent='Не удалось сохранить. Скопируй текст.';return false}
+  const title=$('#projectNoteTitle').value.trim(),note=$('#projectNoteBody').value;
+  if(activeProjectDraft){
+    event.title=title;event.note=note;event.date=$('#projectNoteDraftDate').value;event.start=$('#projectNoteDraftStart').value;event.end=$('#projectNoteDraftEnd').value;
+    event.done=$('#projectNoteDone').checked;event.status=event.done?'done':'planned';
+    try{localStorage.setItem(projectNoteDraftKey(event.projectId,activeProjectDraft.accountKey),JSON.stringify(activeProjectDraft))}
+    catch(err){console.error(err);$('#projectNoteSaveStatus').textContent='Не удалось сохранить черновик. Оставь окно открытым или скопируй текст.';return false}
+    projectNoteDirty=false;$('#projectNoteSaveStatus').textContent='Черновик сохранён · нажми «Создать»';return true;
+  }
+  const changed=event.title!==(title||'Новая подзадача')||event.note!==note;
+  event.title=title||'Новая подзадача';event.note=note;
+  try{save('Заметка сохранена')}catch(err){console.error(err);$('#projectNoteSaveStatus').textContent='Не удалось сохранить. Скопируй текст.';return false}
   projectNoteDirty=false;$('#projectNoteSaveStatus').textContent='Сохранено на устройстве';
   if(changed){renderProjects();renderCalendar();renderToday();renderFocusPage()}
   return true;
 }
 function queueProjectNoteSave(){projectNoteDirty=true;$('#projectNoteSaveStatus').textContent='Сохранение…';clearTimeout(projectNoteSaveTimer);projectNoteSaveTimer=setTimeout(flushProjectNote,450)}
-function closeProjectNote(){if(!flushProjectNote())return false;$('#projectNoteDialog').close();activeProjectNoteId='';return true}
+function closeProjectNote(){
+  if(!flushProjectNote())return false;
+  $('#projectNoteDialog').close();activeProjectNoteId='';activeProjectDraft=null;renderProjects();return true;
+}
+function commitProjectNote(){
+  if(!activeProjectDraft)return closeProjectNote();
+  projectNoteDirty=true;if(!flushProjectNote())return false;
+  const draft=activeProjectDraft,event=draft.event;
+  if(draft.accountKey!==profileStorageKey()||!db.projects.some(p=>p.id===event.projectId)){
+    $('#projectNoteSaveStatus').textContent='Профиль или папка изменились. Вернись к исходной папке; черновик сохранён.';return false;
+  }
+  if(!event.title){$('#projectNoteSaveStatus').textContent='Укажи название подзадачи.';$('#projectNoteTitle').focus();return false}
+  if(!/^\d{4}-\d{2}-\d{2}$/.test(event.date)||Number.isNaN(new Date(event.date+'T12:00:00').getTime())||iso(new Date(event.date+'T12:00:00'))!==event.date||!/^([01]\d|2[0-3]):[0-5]\d$/.test(event.start)||!/^([01]\d|2[0-3]):[0-5]\d$/.test(event.end)){
+    $('#projectNoteSaveStatus').textContent='Проверь дату, начало и конец подзадачи.';return false;
+  }
+  if(db.calendar.some(e=>e.id===event.id)){ $('#projectNoteSaveStatus').textContent='Подзадача уже создана. Открой её из списка.';return false }
+  const created={...event};if(created.done)created.completedAt=new Date().toISOString();
+  const previousMeta=structuredClone(db.meta);db.calendar.push(created);
+  try{save('Подзадача создана')}
+  catch(err){
+    console.error(err);let persisted=false;
+    try{persisted=JSON.parse(localStorage.getItem('artemPlanner.v01')||'null')?.calendar?.some(e=>e.id===created.id)}catch{}
+    if(!persisted){db.calendar=db.calendar.filter(e=>e!==created);db.meta=previousMeta;$('#projectNoteSaveStatus').textContent='Не удалось создать подзадачу. Черновик сохранён, попробуй ещё раз.';return false}
+  }
+  try{localStorage.removeItem(projectNoteDraftKey(event.projectId,draft.accountKey))}catch{}
+  projectNoteDirty=false;activeProjectDraft=null;
+  closeProjectNote();renderCalendar();renderToday();renderFocusPage();return true;
+}
 $('#projectNoteTitle').addEventListener('input',queueProjectNoteSave);
 $('#projectNoteBody').addEventListener('input',queueProjectNoteSave);
+['projectNoteDraftDate','projectNoteDraftStart','projectNoteDraftEnd'].forEach(id=>$('#'+id).addEventListener('input',queueProjectNoteSave));
 $('#projectNoteClose').onclick=closeProjectNote;
+$('#projectNoteCommit').onclick=commitProjectNote;
+$('#projectNoteDiscard').onclick=()=>{
+  if(!activeProjectDraft)return;
+  if(($('#projectNoteTitle').value.trim()||$('#projectNoteBody').value)&&!confirm('Удалить этот черновик?'))return;
+  try{localStorage.removeItem(projectNoteDraftKey(activeProjectDraft.event.projectId,activeProjectDraft.accountKey))}
+  catch{$('#projectNoteSaveStatus').textContent='Не удалось удалить черновик. Попробуй ещё раз.';return}
+  clearTimeout(projectNoteSaveTimer);projectNoteDirty=false;activeProjectDraft=null;activeProjectNoteId='';$('#projectNoteDialog').close();renderProjects();
+};
 $('#projectNoteDialog').addEventListener('cancel',e=>{e.preventDefault();closeProjectNote()});
-$('#projectNoteDialog').addEventListener('close',()=>{flushProjectNote();activeProjectNoteId=''});
+$('#projectNoteDialog').addEventListener('close',()=>{flushProjectNote();activeProjectNoteId='';activeProjectDraft=null});
 window.addEventListener('pagehide',flushProjectNote);
 document.addEventListener('visibilitychange',()=>{if(document.hidden)flushProjectNote()});
-$('#projectNoteSchedule').onclick=()=>{const id=activeProjectNoteId;if(closeProjectNote())openEventDialog({id,scheduleOnly:true})};
-$('#projectNoteCalendar').onclick=()=>{const event=db.calendar.find(e=>e.id===activeProjectNoteId);if(!event||!closeProjectNote())return;calendarView='day';calendarDay=new Date(event.date+'T12:00:00');showPage('calendar');renderCalendar()};
-$('#projectNoteDone').onchange=()=>{if(!flushProjectNote())return;setCalendarEventDone(activeProjectNoteId,$('#projectNoteDone').checked);renderProjects();renderCalendar();renderToday();renderFocusPage()};
+$('#projectNoteSchedule').onclick=()=>{
+  if(activeProjectDraft){$('#projectNoteDraftDate').focus();return}
+  const id=activeProjectNoteId;if(closeProjectNote())openEventDialog({id,scheduleOnly:true});
+};
+$('#projectNoteCalendar').onclick=()=>{if(activeProjectDraft)return;const event=projectNoteEvent();if(!event||!closeProjectNote())return;calendarView='day';calendarDay=new Date(event.date+'T12:00:00');showPage('calendar');renderCalendar()};
+$('#projectNoteDone').onchange=()=>{
+  if(activeProjectDraft){queueProjectNoteSave();return}
+  if(!flushProjectNote())return;setCalendarEventDone(activeProjectNoteId,$('#projectNoteDone').checked);renderProjects();renderCalendar();renderToday();renderFocusPage();
+};
 function insertProjectNoteLine(prefix){const field=$('#projectNoteBody'),pos=field.selectionStart;field.setRangeText((pos&&field.value[pos-1]!=='\n'?'\n':'')+prefix,pos,field.selectionEnd,'end');field.focus();queueProjectNoteSave()}
 $('#projectNoteBullet').onclick=()=>insertProjectNoteLine('• ');
 $('#projectNoteChecklist').onclick=()=>insertProjectNoteLine('☐ ');
@@ -5167,11 +5272,7 @@ $('#deleteProject').onclick=()=>{
   save();$('#projectDialog').close();renderProjects();renderToday();renderCalendar();renderMoney();renderFocusPage();fillProjectSelect();
 };
 $('#newProject').onclick=()=>openProjectDialog();
-$('#newProjectBlock').onclick=()=>{
-  const project=db.projects.find(p=>p.id===selectedProjectId);if(!project)return;
-  const event={id:uid(),title:'Новая подзадача',date:todayISO,start:'19:00',end:'20:00',category:TASK_AREA_TYPES[taskAreaType(project)].category,projectId:project.id,taskId:'',note:'',status:'planned',done:false};
-  db.calendar.push(event);save('Задача добавлена');renderProjects();renderCalendar();renderToday();openProjectNote(event.id);$('#projectNoteTitle').focus();$('#projectNoteTitle').select();
-};
+$('#newProjectBlock').onclick=beginProjectNote;
 $('#toggleArchivedProjects').onclick=()=>{showArchivedProjects=!showArchivedProjects;$('#toggleArchivedProjects').textContent=showArchivedProjects?'Скрыть архив':'Архив';renderProjects()};
 
 const categoryEmoji=calendarCategoryEmoji;
