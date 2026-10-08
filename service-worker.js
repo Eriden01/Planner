@@ -1,4 +1,4 @@
-const CACHE='planner-v0935';
+const CACHE='planner-v0941';
 const CLOUD_LIBRARY='https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2';
 const CORE=['./','./index.html','./manifest.webmanifest','./icon-192.png','./icon-512.png'];
 self.addEventListener('install',e=>e.waitUntil(caches.open(CACHE).then(c=>c.addAll(CORE)).then(()=>self.skipWaiting())));
