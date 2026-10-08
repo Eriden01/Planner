@@ -1,4 +1,4 @@
-const CACHE='planner-v0943';
+const CACHE='planner-v0944';
 const CLOUD_LIBRARY='https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.1';
 const SDK_CACHE='planner-cloud-sdk-v1';
 const CORE=['./','./index.html','./manifest.webmanifest','./icon-192.png','./icon-512.png'];
