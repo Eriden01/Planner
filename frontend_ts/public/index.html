@@ -1,0 +1,809 @@
+<!doctype html>
+<html lang="ru" data-theme="dark" style="color-scheme: dark;">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content" />
+  <meta id="themeColorMeta" name="theme-color" content="#0f1012" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Planner" />
+  <link rel="manifest" href="./manifest.webmanifest" />
+  <link rel="apple-touch-icon" href="./icon-192.png" />
+  <link rel="icon" href="./icon-192.png" />
+  <title>Planner v0.9.47</title>
+  <script>
+  (()=>{let mode='system';try{const saved=localStorage.getItem('artemPlanner.theme.v1');if(['system','dark','light','beige'].includes(saved))mode=saved}catch{}const resolved=mode==='system'?(window.matchMedia?.('(prefers-color-scheme: dark)').matches?'dark':'light'):mode;document.documentElement.dataset.theme=resolved;document.documentElement.style.colorScheme=resolved==='dark'?'dark':'light'})();
+  </script>
+  <link rel="stylesheet" href="./styles/app.css">
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar sidebar-v2">
+    <div class="sidebar-main">
+    <button class="sidebar-account" id="sidebarAccount" data-page="account" type="button">
+      <span class="sidebar-profile-avatar" aria-hidden="true"><img id="sidebarProfilePhoto" alt="" hidden><span id="sidebarProfileInitials">Г</span></span>
+      <span class="sidebar-account-copy">
+        <strong id="sidebarAccountName">Гость</strong>
+        <small id="sidebarAccountMeta" class="profile-plan">Free</small>
+      </span>
+      <span class="sidebar-account-arrow" aria-hidden="true">›</span>
+    </button>
+    <div class="nav nav-v2" id="desktopNav">
+      <button data-page="today" class="active"><span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6.5A2.5 2.5 0 0 1 6.5 4h11A2.5 2.5 0 0 1 20 6.5v11a2.5 2.5 0 0 1-2.5 2.5h-11A2.5 2.5 0 0 1 4 17.5z"/><path d="M8 4v16"/><path d="M4 10h16"/></svg></span>Сегодня</button>
+      <button data-page="calendar"><span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2.5"/><path d="M8 3v4M16 3v4M3 10h18"/></svg></span>Календарь</button>
+      <button data-page="projects"><span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7.5A2.5 2.5 0 0 1 5.5 5h4l2 2h7A2.5 2.5 0 0 1 21 9.5v8A2.5 2.5 0 0 1 18.5 20h-13A2.5 2.5 0 0 1 3 17.5z"/><path d="M3 9h18"/></svg></span>Задачи</button>
+      <button data-page="money"><span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7.5A2.5 2.5 0 0 1 6.5 5h11A2.5 2.5 0 0 1 20 7.5v9a2.5 2.5 0 0 1-2.5 2.5h-11A2.5 2.5 0 0 1 4 16.5z"/><path d="M4 9h16"/><circle cx="15.5" cy="13.5" r="1.5"/></svg></span>Деньги</button>
+      <button data-page="workouts"><span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 9v6"/><path d="M19 9v6"/><path d="M8 7v10"/><path d="M16 7v10"/><path d="M5 12h14"/></svg></span>Тренировки</button>
+      <button data-page="learning"><span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5c-3-2-6-2-9-1v15c3-1 6-1 9 1 3-2 6-2 9-1V4c-3-1-6-1-9 1Z"/><path d="M12 5v15"/></svg></span>Обучение</button>
+      <button data-page="portfolio"><span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="7" width="18" height="14" rx="3"/><path d="M8 7V4h8v3M3 12h18M10 12v3h4v-3"/></svg></span>Портфолио</button>
+      <button data-page="archive"><span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16"/><path d="M6 7v10.5A2.5 2.5 0 0 0 8.5 20h7a2.5 2.5 0 0 0 2.5-2.5V7"/><rect x="3" y="4" width="18" height="4" rx="1.5"/><path d="M10 12h4"/></svg></span>История</button>
+    </div>
+    <div class="sidebar-section sidebar-section-row"><span>Задачи</span></div>
+    <div class="project-list project-list-v2" id="sidebarProjects"></div>
+    </div>
+    <div class="sidebar-footer sidebar-footer-v2 sidebar-footer-status"><button type="button" class="sidebar-settings" data-page="settings">⚙ <span>Настройки</span></button>
+      <div class="cloud-indicator cloud-indicator-v2"><span class="sync-dot" id="sidebarSyncDot"></span><span id="sidebarSyncText">Только локально</span></div>
+    </div>
+  </aside>
+
+  <main class="content">
+    <section class="page active today-page" id="page-today">
+      <div class="topbar topbar-today">
+        <div class="title-wrap"><h1>Сегодня</h1><div class="subtitle" id="todayDate"></div></div>
+        <div class="actions today-top-actions"><button class="btn soft" data-page="calendar">Открыть календарь</button><button class="btn primary glow" id="todayAddCalendarBlock">＋ Добавить блок</button></div>
+      </div>
+      <div class="today-hero card glow-card"><div class="today-summary today-summary-hero today-summary-compact">
+        <div class="mini hero-mini"><span>Задачи</span><strong id="todayTasksCount">0</strong><em id="todayTasksCaption">0 осталось</em></div>
+        <div class="mini hero-mini"><span>План</span><strong id="todayPlanned">0 ч</strong><em>по календарю</em></div>
+        <div class="mini hero-mini"><span>Факт</span><strong id="todayTracked">0 ч</strong><em>записанное время</em></div>
+        <div class="mini hero-mini progress-mini"><span>Выполнено</span><strong id="todayProgressPercent">0%</strong><div class="mini-progress"><span id="todayProgressBar"></span></div><em id="todayProgressCaption">0 из 0 блоков</em></div>
+      </div></div>
+      <div class="card today-tasks-card glow-card today-attention-card"><div class="section-title section-title-rich"><div><h2>Задачи на сегодня</h2><span class="small" id="todayRemainingCount">0 осталось</span></div><div class="section-actions"><button class="btn soft" data-page="calendar">Изменить план →</button></div></div><div id="quickTasks"></div></div>
+      <details class="today-secondary" id="todayFocusDetails"><summary>Таймер и учёт времени <small id="todayTimerCompact">Остановлен</small></summary>
+      <div class="today-focus-section">
+        <div class="section-title today-section-head"><div><h2>Фокус</h2><span class="small">Таймер работы прямо на главной странице</span></div><button class="btn soft" id="focusManualAdd">＋ Добавить время вручную</button></div>
+        <div class="focus-hero card glow-card"><div class="focus-hero-main"><div class="focus-kicker" id="focusHeroState">Таймер остановлен</div><div class="focus-big-time" id="focusBigTime">00:00:00</div><div class="focus-current-task" id="focusCurrentTask">Выбери блок из сегодняшнего календаря</div><div class="focus-current-project" id="focusCurrentProject"></div></div><div class="focus-controls-panel"><div class="field"><label>Над чем работаешь</label><select id="focusTaskSelect"></select></div><div class="focus-main-actions"><button class="btn primary focus-primary-action" id="focusToggle">▶ Начать</button><button class="btn" id="focusFinish">✓ Завершить блок</button></div><div class="focus-hint" id="focusSessionHint">В списке только важные блоки сегодняшнего календаря и свободный фокус.</div></div></div>
+        <details class="today-focus-statistics"><summary>Статистика фокуса</summary><div class="cards focus-metrics today-focus-metrics"><div class="card metric blue"><div class="label">Сегодня занят</div><div class="value" id="focusToday">0 ч</div><div class="hint" id="focusTodaySessions">0 сессий</div></div><div class="card metric purple"><div class="label">Эта неделя</div><div class="value" id="focusWeek">0 ч</div><div class="hint" id="focusWeekAvg">0 ч / активный день</div></div><div class="card metric green"><div class="label">Этот месяц</div><div class="value" id="focusMonth">0 ч</div><div class="hint" id="focusMonthDays">0 активных дней</div></div><div class="card metric red"><div class="label">За всё время</div><div class="value" id="focusAllTime">0 ч</div><div class="hint" id="focusAllSessions">0 сессий</div></div></div></details>
+      </div></details>
+      <details class="today-secondary"><summary>Всё расписание дня</summary><div class="card glow-card schedule-card today-schedule-full"><div class="section-title"><h2>Расписание дня</h2><button class="btn soft" data-page="calendar">Открыть календарь →</button></div><div class="mini-list" id="todaySchedule"></div></div></details>
+    </section>
+
+
+    <section class="page" id="page-calendar">
+      <div class="topbar">
+        <div class="title-wrap"><h1>Календарь</h1><div class="subtitle">Кликни по свободному времени, чтобы добавить блок. Клик по блоку — редактирование.</div></div>
+        <div class="actions"><button class="btn primary" id="newCalendarEvent">＋ Событие</button></div>
+      </div>
+      <div class="calendar-shell">
+        <div class="calendar-main">
+          <div class="calendar-toolbar">
+            <div class="left">
+              <button class="btn" id="prevWeek" aria-label="Назад">←</button>
+              <button class="btn" id="currentWeek">Сегодня</button>
+              <button class="btn" id="nextWeek" aria-label="Вперёд">→</button>
+              <div class="segmented calendar-view-switch" id="calendarViewSwitch"><button data-calendar-view="day">День</button><button data-calendar-view="week" class="active">Неделя</button><button data-calendar-view="month">Месяц</button></div>
+              <div class="week-label" id="calendarWeekLabel"></div>
+            </div>
+            <div class="right">
+              <button class="btn" id="clearWeek">Очистить неделю</button>
+            </div>
+          </div>
+          <div class="calendar-day-strip" id="calendarDayStrip" aria-label="Выбрать день недели" hidden></div>
+          <div class="calendar-preset-panel" id="calendarPresetPanel">
+            <span class="calendar-preset-label">Быстрые блоки</span>
+            <div class="calendar-preset-tray" id="calendarPresetTray"></div>
+          </div>
+          <div class="mobile-preset-selection" id="mobilePresetSelection" role="status" hidden><span id="mobilePresetSelectionText"></span><button type="button" class="btn" id="cancelMobilePreset">Отмена</button></div>
+          <div class="week-scroll"><div class="week-grid" id="weekGrid"></div></div>
+          <details class="mobile-calendar-agenda" id="mobileCalendarAgenda" hidden><summary id="mobileCalendarAgendaTitle">События дня</summary><div id="mobileCalendarAgendaList"></div></details>
+          <div class="legend">
+            <span><i style="background:#a1a1aa"></i>Работа</span><span><i style="background:#60a5fa"></i>Дорога</span><span><i style="background:#4ade80"></i>Еда</span><span><i style="background:#a78bfa"></i>Фриланс</span><span><i style="background:#f472b6"></i>Вместе</span><span><i style="background:#38bdf8"></i>Личное</span><span><i style="background:#6366f1"></i>Проект</span><span><i style="background:#facc15"></i>Отдых</span>
+          </div>
+        </div>
+        <div class="today-panel">
+          <div class="today-block">
+            <h3 id="calendarSideTitle">Этот период</h3>
+            <div class="mini-item"><span>Запланировано</span><strong id="plannedHours">0 ч</strong></div>
+            <div class="mini-item"><span>Свободно в сетке</span><strong id="freeHours">112 ч</strong></div>
+            <div id="calendarBalance"></div>
+          </div>
+          <div class="today-block">
+            <h3>Как пользоваться</h3>
+            <div class="note">Календарь — источник плана. Быстрые плашки можно перетаскивать на нужный день и время. Для важных рабочих блоков доступны статусы «Выполнено», «Перенесено» и «Не сделано».</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="page" id="page-projects">
+      <div class="topbar">
+        <div class="title-wrap"><h1 id="projectsTitle">Задачи</h1><div class="subtitle" id="projectsSubtitle">Проект — папка, задача — заметка с датой в календаре</div></div>
+        <div class="actions"><button class="btn" id="projectsBack" hidden>‹ Задачи</button><button class="btn" id="editSelectedProject" hidden>Изменить задачу</button><button class="btn" id="newProjectBlock">＋ Подзадача</button><button class="btn" id="toggleArchivedProjects">Архив</button><button class="btn primary" id="newProject">＋ Новая задача</button></div>
+      </div>
+      <div class="field project-search"><label for="projectSearch">Поиск задач и заметок</label><input id="projectSearch" type="search" placeholder="Найти задачу…"></div>
+      <div class="project-grid project-folders" id="projectsGrid"></div>
+      <div class="card" id="projectAnalyticsCard" hidden><div class="section-title"><h2>Показатели задачи</h2><span class="small">За всё время</span></div><div id="projectAnalytics"></div></div>
+      <div class="card project-notes-card" id="projectNotesCard" hidden>
+        <div class="section-title"><h2>Подзадачи</h2><button class="tiny-btn" id="toggleCompletedSubtasks" aria-pressed="false">Показать выполненные</button><span class="small" id="projectTaskScope"></span></div>
+        <div id="projectTasksList"></div>
+      </div>
+    </section>
+
+    <section class="page" id="page-money">
+<div id="page-food">
+      <div class="topbar">
+        <div class="title-wrap"><h1>Деньги</h1><div class="subtitle">Повседневные расходы, доходы и накопления</div></div>
+        <div class="actions">
+          <button class="btn" id="foodPrevWeek">←</button>
+          <button class="btn" id="foodCurrentWeek">Текущая</button>
+          <button class="btn" id="foodNextWeek">→</button>
+          <span class="subtitle" id="foodNavRange"></span>
+          <button class="btn primary" data-open="food">＋ Добавить расход</button>
+        </div>
+      </div>
+
+      <div class="cards">
+        <div class="card metric green"><div class="label">Сегодня</div><div class="value" id="foodToday">0 ₽</div><div class="hint" id="foodTodayHint">из 1 000 ₽</div><div class="food-limit-card"><div class="bar"><span id="foodTodayBar" style="width:0%;background:#22c55e"></span></div><div class="food-limit-state"><span id="foodTodayState">Осталось 1 000 ₽</span><span id="foodTodayPct">0%</span></div></div></div>
+        <div class="card metric red"><div class="label">Неделя</div><div class="value" id="foodWeek">0 ₽</div><div class="hint" id="foodWeekHint">из 7 000 ₽</div><div class="food-limit-card"><div class="bar"><span id="foodWeekBar" style="width:0%;background:#22c55e"></span></div><div class="food-limit-state"><span id="foodWeekState">Резерв 7 000 ₽</span><span id="foodWeekPct">0%</span></div></div></div>
+        <div class="card metric blue"><div class="label" id="foodMonthLabel">Месяц</div><div class="value" id="foodMonth">0 ₽</div><div class="hint" id="foodMonthHint">из 30 000 ₽</div><div class="forecast" id="foodForecast"></div></div>
+        <div class="card metric purple"><div class="label">Средний день</div><div class="value" id="foodAvg">0 ₽</div><div class="hint">по дням с расходами</div></div>
+      </div>
+
+      <div class="card" style="margin-bottom:14px">
+        <div class="section-title"><div><h2>Неделя</h2><span class="small" id="foodWeekRange">Текущая неделя</span></div><span class="small" id="foodWeekBudgetLabel">Ориентир 7 000 ₽</span></div>
+        <div class="food-week" id="foodWeekBoard"></div>
+      </div>
+
+      <div id="foodWeekReview"></div>
+
+      <div class="recurring-money-grid" style="margin-top:14px">
+        <div class="card subscriptions-card">
+          <div class="section-title">
+            <div>
+              <h2>Подписки и регулярные траты</h2>
+              <span class="small">Справочно. Реальные списания добавляются отдельно в день оплаты.</span>
+            </div>
+            <button class="btn soft" id="addSubscription">＋ Добавить</button>
+          </div>
+          <div class="recurring-summary">
+            <div><span>В месяц</span><strong id="subscriptionsMonthlyTotal">0 ₽</strong></div>
+            <div><span>За год</span><strong id="subscriptionsYearlyTotal">0 ₽</strong></div>
+            <div><span>Записей</span><strong id="subscriptionsCount">0</strong></div>
+          </div>
+          <div id="subscriptionsList" class="recurring-list"></div>
+        </div>
+
+        <div class="card recurring-income-card">
+          <div class="section-title">
+            <div>
+              <h2>Регулярный доход</h2>
+              <span class="small">Справочно. Здесь доход не создаёт операции в «Деньгах» автоматически.</span>
+            </div>
+            <button class="btn soft" id="addRecurringIncome">＋ Добавить</button>
+          </div>
+          <div class="recurring-summary">
+            <div><span>В месяц</span><strong id="recurringIncomeMonthlyTotal">0 ₽</strong></div>
+            <div><span>За год</span><strong id="recurringIncomeYearlyTotal">0 ₽</strong></div>
+            <div><span>Записей</span><strong id="recurringIncomeCount">0</strong></div>
+          </div>
+          <div id="recurringIncomeList" class="recurring-list"></div>
+        </div>
+      </div>
+
+      <div class="grid-equal" id="foodSecondaryPanels" style="margin-top:14px">
+        <div class="card">
+          <div class="section-title"><h2>Последние записи</h2><span class="small">Каждая запись уже учтена в «Деньгах»</span></div>
+          <div class="mini-list" id="foodRecent"></div>
+        </div>
+        <div class="card">
+          <div class="section-title"><h2>Категории</h2><span class="small" id="foodCategoriesPeriod">Этот месяц</span></div>
+          <div id="foodCategories"></div>
+        </div>
+      </div>
+    </div>
+
+<div class="finance-overview" id="moneyOverview">
+      <div class="topbar">
+        <div class="title-wrap"><h2 class="finance-heading">Доходы и накопления</h2><div class="subtitle">Доходы, расходы и накопления</div></div>
+        <div class="actions">
+          <button class="btn" id="moneyPrevPeriod">←</button>
+          <button class="btn" id="moneyCurrentPeriod">Текущий</button>
+          <button class="btn" id="moneyNextPeriod">→</button>
+          <div class="segmented" id="moneyPeriod"><button data-money-period="day">День</button><button data-money-period="week">Неделя</button><button class="active" data-money-period="month">Месяц</button><button data-money-period="year">Год</button></div>
+          <button class="btn" id="openMoneyLedger">Все операции</button>
+          <button class="btn primary" data-open="money">＋ Добавить запись</button>
+        </div>
+      </div>
+
+      <div class="cards">
+        <div class="card metric green"><div class="label">Заработано</div><div class="value money-total" id="moneyIncome">0 ₽</div><div class="hint" id="incomeHint">0 источников дохода</div></div>
+        <div class="card metric red"><div class="label">Потрачено</div><div class="value money-total" id="moneyExpense">0 ₽</div><div class="hint" id="expenseHint">Расходы за период</div></div>
+        <div class="card metric blue"><div class="label">Отложено</div><div class="value money-total" id="moneySaved">0 ₽</div><div class="hint" id="savedHint">Накопления за период</div></div>
+        <div class="card metric purple"><div class="label">Осталось</div><div class="value money-total" id="moneyBalance">0 ₽</div><div class="hint" id="moneyBalanceHint">Баланс переносится между периодами</div></div>
+      </div>
+
+      <div class="card" style="margin-bottom:14px">
+        <div class="section-title"><h2>Сравнение с предыдущим периодом</h2><span class="small" id="moneyCompareLabel">—</span></div>
+        <div class="today-summary"><div class="mini"><span>Доход</span><strong id="moneyIncomeDelta">—</strong></div><div class="mini"><span>Расход</span><strong id="moneyExpenseDelta">—</strong></div><div class="mini"><span>Свободный остаток</span><strong id="moneyBalanceDelta">—</strong></div></div>
+      </div>
+
+      <div class="money-insights-grid">
+        <div class="today-block money-goals-block savings-showcase-block">
+          <div class="savings-showcase-head">
+            <div class="savings-showcase-icon">◎</div>
+            <div class="savings-showcase-copy">
+              <h3>Цели и накопления</h3>
+              <p>Копите на важные цели вместе — шаг за шагом к большему.</p>
+            </div>
+            <button class="btn primary savings-showcase-add" id="newGoal">＋ Цель</button>
+          </div>
+          <div id="moneyGoals" class="goal-cards-stack"></div>
+          <div id="unallocatedSavings" class="goal-unallocated"></div>
+        </div>
+        <div class="today-block"><h3>По задачам</h3><div id="moneyProjects"></div></div>
+        <div class="today-block">
+          <h3>Категории расходов</h3>
+          <div id="moneyCategories"></div>
+        </div>
+      </div>
+    </div>
+    </section>
+
+    <section class="page" id="page-workouts">
+      <div class="topbar"><div class="title-wrap"><h1>Тренировки</h1><div class="subtitle">Планируй занятия. Отмечай результат.</div></div><div class="actions"><button class="btn" id="workoutParameters">Параметры</button><button class="btn primary" id="addWorkoutGlobal">＋ Тренировка</button></div></div>
+      <div class="training-navigation"><div class="actions"><button class="btn" id="workoutPrevWeek" aria-label="Предыдущая неделя">‹</button><strong id="workoutRange"></strong><button class="btn" id="workoutNextWeek" aria-label="Следующая неделя">›</button><button class="btn" id="workoutCurrentWeek">Текущая</button></div><div class="training-tabs" role="tablist" aria-label="Тренировки"><button class="btn active" id="workoutPlanTab" role="tab" aria-selected="true" aria-controls="workoutPlanPanel">План</button><button class="btn" id="workoutHistoryTab" role="tab" aria-selected="false" aria-controls="workoutHistoryPanel">История</button></div></div>
+      <div class="card training-overview"><div><span class="small">Цель недели</span><strong id="workoutDoneWeek"></strong><span class="small" id="workoutDoneWeekHint"></span><div class="bar"><span id="workoutGoalBar"></span></div></div><div><span class="small">Время выполненных тренировок</span><strong id="workoutWeekMinutes"></strong><span class="small">за выбранную неделю</span></div><div><span class="small">Последний вес</span><strong id="workoutCurrentWeight"></strong><span class="small" id="workoutWeightHint"></span></div></div>
+      <div class="training-layout">
+        <div class="training-main">
+          <div id="workoutPlanPanel" role="tabpanel" aria-labelledby="workoutPlanTab">
+            <div class="card"><div class="training-day-strip" id="workoutWeekBoard" aria-label="Дни недели"></div><div class="section-title training-day-title"><div><h2 id="workoutSelectedDayTitle"></h2><span class="small" id="workoutSelectedDaySubtitle"></span></div></div><div class="small" id="workoutListHint"></div><div id="workoutList" class="list-stack"></div></div>
+            <div class="card training-week-list"><div class="section-title"><h2>На этой неделе</h2><span class="small" id="workoutWeekCount"></span></div><div id="workoutWeekList" class="list-stack"></div></div>
+          </div>
+          <div class="card" id="workoutHistoryPanel" role="tabpanel" aria-labelledby="workoutHistoryTab" hidden><div class="section-title"><h2>Результаты недели</h2><span class="small">Выполненные и пропущенные занятия</span></div><div id="workoutHistoryList" class="list-stack"></div></div>
+          <details class="card training-disclosure"><summary>Питание и калории <span id="selectedCaloriesTotal"></span></summary><div class="training-detail"><div class="section-title"><div><h2>Калории выбранного дня</h2><span class="small" id="workoutCaloriesHint"></span></div><button class="btn" id="addCaloriesSelected">＋ Запись</button></div><div id="calorieList" class="list-stack"></div><span class="small">Сегодня: <span id="workoutCaloriesToday"></span></span></div></details>
+          <details class="card training-disclosure"><summary>История веса</summary><div class="training-detail"><div class="section-title"><div><strong id="weightBigValue"></strong><div class="small" id="weightBigHint"></div></div><button class="btn" id="addWeightSelected">＋ Замер</button></div><div id="weightList" class="list-stack"></div></div></details>
+          <details class="card training-disclosure"><summary>Виды тренировок</summary><div class="training-detail" id="workoutTypesStats"></div></details>
+        </div>
+        <aside class="training-rail">
+          <div class="card"><div class="section-title"><h2>Ритм недели</h2></div><strong id="workoutGoalInline"></strong><div class="training-rhythm" id="workoutRhythm"></div><div class="small" id="workoutRhythmHint"></div><details class="training-goal-settings"><summary>Изменить цель</summary><div class="field"><label for="trainingWeeklyGoal">Тренировок в неделю</label><input id="trainingWeeklyGoal" type="number" min="1" max="14" step="1"></div><button class="btn" id="saveTrainingSettings">Сохранить</button></details></div>
+          <div class="card"><div class="section-title"><h2>Вес</h2><button class="btn" id="editWeightTop">Изменить</button></div><div class="training-weight" id="workoutRailWeight"></div><p class="small" id="workoutRailWeightDate"></p><button class="btn" id="addWeightGlobal">＋ Добавить замер</button></div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="page" id="page-learning">
+      <div class="topbar"><div class="title-wrap"><h1>Обучение</h1><div class="subtitle">От первого шага до самостоятельной практики</div></div><div class="actions"><button type="button" class="btn primary" id="learningAddSkill">＋ Навык</button></div></div>
+      <div class="learning-tabs" id="learningMainTabs" aria-label="Разделы обучения"><button type="button" data-learning-view="skills" class="active">Мои навыки</button><button type="button" data-learning-view="materials">Материалы</button><button type="button" data-learning-view="review">Повторение <span id="learningDueCount">0</span></button></div>
+      <div class="learning-workspace" id="learningWorkspace"><aside class="learning-skills" id="learningSkillsPane"><input type="search" id="learningSearch" placeholder="Найти навык" aria-label="Поиск навыков"><div id="learningSkillList" class="learning-skill-list"></div></aside><div id="learningDetail" class="learning-detail"></div></div>
+      <div id="learningLibrary" class="learning-library" hidden><div class="learning-filter"><input type="search" id="learningMaterialSearch" placeholder="Поиск материалов" aria-label="Поиск материалов"><select id="learningMaterialSkill" aria-label="Навык материалов"></select></div><div id="learningLibraryList"></div></div>
+      <div id="learningReview" hidden><div class="card"><div class="section-title"><div><h2>Повторить сегодня</h2><span class="small">Сначала ответь по памяти, затем сравни с ответом.</span></div><button type="button" class="btn primary" id="learningStartReview">Начать повторение</button></div><div id="learningReviewList"></div></div></div>
+    </section>
+
+
+    <section class="page" id="page-portfolio">
+      <div class="topbar"><div class="title-wrap"><h1>Портфолио</h1><div class="subtitle">Работы, кейсы и коллекции</div></div><div class="actions"><button type="button" class="btn" id="portfolioPreview">◉ Предпросмотр</button><button type="button" class="btn primary" id="portfolioAddWork">＋ Добавить работу</button></div></div>
+      <div class="portfolio-layout" id="portfolioLayout"><div class="portfolio-main-column">
+      <div class="portfolio-tools"><input type="search" id="portfolioSearch" placeholder="Поиск работ…" aria-label="Поиск работ"><span class="small" id="portfolioCount"></span></div>
+      <div class="portfolio-collection-toolbar"><div id="portfolioCollections" class="portfolio-collections"></div><button type="button" class="btn" id="portfolioAddCollection">＋ Коллекция</button><button type="button" class="btn" id="portfolioDeleteCollection" hidden>Удалить коллекцию</button></div>
+        <div id="portfolioGrid" class="portfolio-grid"></div></div>
+        <aside class="portfolio-editor-placeholder"><span class="studio-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="4" y="3" width="16" height="18" rx="3"/><path d="M8 8h8M8 12h8M8 16h5"/></svg></span><h2>Редактор работы</h2><p>Выбери карточку слева или добавь работу. Здесь будут обложка, описание и ссылка на результат.</p></aside>
+        <dialog id="portfolioEditorDialog" class="portfolio-editor" aria-labelledby="portfolioEditorTitle">
+          <form id="portfolioForm"><div class="portfolio-editor-head"><h2 id="portfolioEditorTitle">Редактирование работы</h2><button type="button" class="btn" id="portfolioCloseEditor" aria-label="Закрыть редактор">×</button></div>
+            <div class="portfolio-editor-fields"><div class="field"><label for="portfolioTitle">Название</label><input id="portfolioTitle" required maxlength="120" placeholder="Название работы"></div><div class="portfolio-field-pair"><div class="field"><label for="portfolioCollectionSelect">Коллекция</label><select id="portfolioCollectionSelect"></select></div><div class="field"><label for="portfolioStatus">Статус</label><select id="portfolioStatus"><option value="draft">Черновик</option><option value="ready">Готово</option></select></div></div><div class="field"><label for="portfolioProjectSelect">Связано с задачей</label><select id="portfolioProjectSelect"></select><button type="button" class="btn" id="portfolioOpenProject" hidden>Открыть задачу ↗</button></div>
+            <div class="field"><label>Обложка</label><button type="button" id="portfolioCoverPreview" class="portfolio-cover-upload"></button><input type="file" id="portfolioFiles" accept="image/jpeg,image/png,image/webp" multiple hidden><div class="portfolio-attachments"><div id="portfolioImageGallery" class="portfolio-image-gallery"></div><button type="button" class="btn" id="portfolioAddImages" aria-label="Добавить изображения">＋</button></div></div>
+            <div class="field"><label for="portfolioDescription">Описание</label><textarea id="portfolioDescription" rows="5" maxlength="20000" placeholder="Что ты сделал, как работал и какой получился результат…"></textarea></div><div class="field"><label for="portfolioURL">Ссылка на проект</label><input id="portfolioURL" type="url" placeholder="https://…" maxlength="2048"></div></div>
+            <div class="portfolio-editor-footer"><span class="small" id="portfolioSaveStatus" role="status" aria-live="polite"></span><button type="submit" class="btn primary" id="portfolioCommit">Готово</button></div>
+          </form>
+        </dialog>
+      </div>
+    </section>
+
+    <section class="page" id="page-archive">
+      <div class="topbar">
+        <div class="title-wrap"><h1>История</h1><div class="subtitle">Что реально происходило — без оценок и советов</div></div>
+        <div class="actions">
+          <button class="btn" id="historyPrevWeek">←</button>
+          <button class="btn" id="historyCurrentWeek">Текущая</button>
+          <button class="btn" id="historyNextWeek">→</button>
+          <span class="subtitle" id="historyWeekLabel"></span>
+        </div>
+      </div>
+
+      <div class="card history-week-card">
+        <div class="section-title">
+          <div><h2>Итоги недели</h2><span class="small">Подзадачи, фактическое время, деньги и тренировки</span></div>
+          <span class="small" id="historyWeekState"></span>
+        </div>
+        <div id="weeklySummary"></div>
+        <details class="history-details"><summary>План и подробности за всю неделю</summary>
+        <div class="history-kpis">
+          <div><span>Рабочие блоки</span><strong id="historyWorkBlocks">0 / 0</strong><em>выполнено</em></div>
+          <div><span>План работы</span><strong id="historyPlannedWork">0 ч</strong><em>Работа · проект · фриланс</em></div>
+          <div><span>Фокус</span><strong id="historyFocus">0 ч</strong><em>фактическое время</em></div>
+          <div><span>Повседневные траты</span><strong id="historyEverydaySpend">0 ₽</strong><em id="historyOutsideSpend">вне рамки 0 ₽</em></div>
+          <div><span>Тренировки</span><strong id="historyWorkouts">0</strong><em id="historyWorkoutGoal">цель 0</em></div>
+          <div><span>Вес</span><strong id="historyWeight">—</strong><em>первая → последняя запись</em></div>
+        </div>
+        </details>
+        <div class="history-project-breakdown" id="historyProjectBreakdown"></div>
+      </div>
+
+      <div class="grid-equal" style="margin-top:14px">
+        <div class="card">
+          <div class="section-title"><h2>Рабочие блоки</h2><span class="small" id="historyBlockCount">0</span></div>
+          <div id="historyBlocks"></div>
+        </div>
+        <div class="card">
+          <div class="section-title"><h2>Фокус-сессии</h2><span class="small" id="historySessionCount">0</span></div>
+          <div id="historySessions"></div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:14px">
+        <div class="section-title"><h2>Архивные задачи</h2><span class="small" id="archiveProjectCount">0</span></div>
+        <div id="archiveProjects"></div>
+      </div>
+    </section>
+
+    <section class="page" id="page-more">
+      <div class="topbar"><div class="title-wrap"><h1>Ещё</h1><div class="subtitle">Дополнительные разделы</div></div></div>
+<div class="more-grid">
+<button type="button" class="more-card more-profile" data-more-page="account"><span class="more-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M5 21v-2a7 7 0 0 1 14 0v2"/></svg></span><span class="more-copy"><strong id="moreAccountName">Мой профиль</strong><span id="moreAccountPlan">Free</span></span><span class="more-chevron" aria-hidden="true">›</span></button>
+<button type="button" class="more-card" data-more-page="settings"><span class="more-icon" aria-hidden="true">⚙</span><span class="more-copy"><strong>Настройки</strong><span>Аккаунт и параметры планера</span></span><span class="more-chevron" aria-hidden="true">›</span></button>
+<button type="button" class="more-card" data-more-page="projects"><span class="more-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 7a2 2 0 0 1 2-2h5l2 3h7a2 2 0 0 1 2 2v9H3Z"/></svg></span><span class="more-copy"><strong>Задачи</strong><span>Цели и проекты</span></span><span class="more-chevron" aria-hidden="true">›</span></button>
+<button type="button" class="more-card" data-more-page="learning"><span class="more-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 5v15M12 5C8 2 3 4 3 4v15s5-2 9 1c4-3 9-1 9-1V4s-5-2-9 1Z"/></svg></span><span class="more-copy"><strong>Обучение</strong><span>Навыки, практика и повторение</span></span><span class="more-chevron" aria-hidden="true">›</span></button>
+<button type="button" class="more-card" data-more-page="portfolio"><span class="more-icon" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="7" width="18" height="14" rx="3"/><path d="M8 7V4h8v3M3 12h18M10 12v3h4v-3"/></svg></span><span class="more-copy"><strong>Портфолио</strong><span>Работы и кейсы</span></span><span class="more-chevron" aria-hidden="true">›</span></button>
+<button type="button" class="more-card" data-more-page="archive"><span class="more-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="4" rx="2"/><path d="M5 8v12h14V8M10 12h4"/></svg></span><span class="more-copy"><strong>История</strong><span>Итоги и события</span></span><span class="more-chevron" aria-hidden="true">›</span></button>
+</div>
+    </section>
+
+<section class="page" id="page-account">
+<div class="profile-scene" id="accountProfile">
+ <div class="profile-hero"><img id="accountProfilePhoto" alt="Фото профиля" hidden><span id="accountProfileInitials" class="profile-hero-initials">Г</span><div class="profile-hero-controls"><button type="button" data-page="more" aria-label="Назад">‹</button><h1 id="accountPageTitle" class="sr-only">Профиль</h1><button type="button" data-page="today" aria-label="Закрыть профиль">×</button></div>
+ <div class="profile-identity"><span class="profile-laurel"><svg viewBox="0 0 60 100" aria-hidden="true"><path d="M48 95C5 69 5 36 35 5" fill="none" stroke="currentColor" stroke-width="1.5"/><ellipse cx="29" cy="14" rx="4" ry="13" transform="rotate(35 29 14)" fill="currentColor"/><ellipse cx="20" cy="31" rx="4" ry="13" transform="rotate(25 20 31)" fill="currentColor"/><ellipse cx="15" cy="49" rx="4" ry="13" transform="rotate(0 15 49)" fill="currentColor"/><ellipse cx="20" cy="66" rx="4" ry="13" transform="rotate(-20 20 66)" fill="currentColor"/><ellipse cx="32" cy="82" rx="4" ry="13" transform="rotate(-40 32 82)" fill="currentColor"/><ellipse cx="40" cy="24" rx="4" ry="13" transform="rotate(55 40 24)" fill="currentColor"/><ellipse cx="33" cy="41" rx="4" ry="13" transform="rotate(60 33 41)" fill="currentColor"/><ellipse cx="34" cy="58" rx="4" ry="13" transform="rotate(70 34 58)" fill="currentColor"/><ellipse cx="42" cy="74" rx="4" ry="13" transform="rotate(70 42 74)" fill="currentColor"/></svg></span><div><h2 id="accountProfileName">Гость</h2><div id="accountSubscriptionPlan">Free</div></div><span class="profile-laurel right"><svg viewBox="0 0 60 100" aria-hidden="true"><path d="M48 95C5 69 5 36 35 5" fill="none" stroke="currentColor" stroke-width="1.5"/><ellipse cx="29" cy="14" rx="4" ry="13" transform="rotate(35 29 14)" fill="currentColor"/><ellipse cx="20" cy="31" rx="4" ry="13" transform="rotate(25 20 31)" fill="currentColor"/><ellipse cx="15" cy="49" rx="4" ry="13" transform="rotate(0 15 49)" fill="currentColor"/><ellipse cx="20" cy="66" rx="4" ry="13" transform="rotate(-20 20 66)" fill="currentColor"/><ellipse cx="32" cy="82" rx="4" ry="13" transform="rotate(-40 32 82)" fill="currentColor"/><ellipse cx="40" cy="24" rx="4" ry="13" transform="rotate(55 40 24)" fill="currentColor"/><ellipse cx="33" cy="41" rx="4" ry="13" transform="rotate(60 33 41)" fill="currentColor"/><ellipse cx="34" cy="58" rx="4" ry="13" transform="rotate(70 34 58)" fill="currentColor"/><ellipse cx="42" cy="74" rx="4" ry="13" transform="rotate(70 42 74)" fill="currentColor"/></svg></span></div></div>
+ <div class="profile-body"><div class="profile-results-pill"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3h10v5c0 4-2 6-5 6s-5-2-5-6V3ZM7 5H3v3c0 3 2 4 5 4m9-7h4v3c0 3-2 4-5 4M12 14v5m-4 2h8"/></svg>Мои результаты</div>
+ <div class="profile-result-tiles"><button type="button" data-page="projects" class="profile-result-tile"><span class="profile-object object-folder" aria-hidden="true"></span><strong id="profileCompletedProjects">0</strong><span>Проекты и цели<br>завершены</span></button><button type="button" data-page="learning" class="profile-result-tile"><span class="profile-object object-books" aria-hidden="true"></span><strong id="profileVerifiedStages">0</strong><span>Этапы<br>освоены</span></button><button type="button" data-page="portfolio" class="profile-result-tile"><span class="profile-object object-frame" aria-hidden="true"></span><strong id="profileReadyWorks">0</strong><span>Работы в<br>портфолио</span></button></div>
+ <button type="button" class="profile-feature" id="profileFocusLink"><span class="profile-object object-notebook" aria-hidden="true"></span><span class="profile-feature-copy"><span class="profile-eyebrow">В фокусе</span><strong id="profileFocusName">Твой следующий шаг</strong><span id="profileFocusDetail">Добавь навык или проект</span></span><span class="profile-feature-arrow" aria-hidden="true">→</span></button>
+ <div class="profile-week-card"><div class="profile-week-heading"><span id="profileWeekTitle">Эта неделя</span><div><button type="button" id="profileWeekPrev" aria-label="Предыдущая неделя">‹</button><button type="button" id="profileWeekNext" aria-label="Следующая неделя">›</button></div></div><div class="profile-feature profile-week-content"><span class="profile-object object-calendar" aria-hidden="true"></span><div class="profile-feature-copy"><strong id="profileWeekRange"></strong><span id="profileWeekSummary">Пока нет активности</span></div></div><div id="profileActivityDays" class="profile-activity-days" aria-label="Активность по дням"></div><p class="profile-week-footnote">Время по таймеру и записям. Задачи — по дате выполнения.</p></div>
+ <div class="profile-recent" id="profileRecent"><h3>Последние результаты</h3><div id="profileRecentList"></div></div><p id="accountProfileStatus" class="sr-only"></p>
+ <button type="button" class="profile-settings-entry" data-page="settings">Настройки <span aria-hidden="true">→</span></button>
+ </div></div></section>
+    <section class="page" id="page-settings"><div class="topbar"><div class="title-wrap"><h1>Настройки</h1><div class="subtitle">Аккаунт, оформление и параметры планера</div></div></div><div class="settings-grid">
+      <div class="card account-profile-card profile-simple settings-profile-editor" id="settingsProfileEditor">
+          <div class="section-title"><h2>Имя и фото</h2></div><div class="account-profile-photo-block">
+            <div class="account-profile-avatar"><img id="profilePhoto" alt="Фото профиля" hidden><span id="profileInitials">Г</span></div>
+            <button type="button" class="account-photo-change" id="profileChangePhoto">Изменить фото</button>
+            <button type="button" class="account-photo-change photo-remove" id="profileRemovePhoto" hidden>Удалить фото</button>
+            <input id="profilePhotoFile" type="file" accept="image/*" hidden>
+          </div>
+          <div class="account-profile-fields"><div class="field"><label for="profileName">Имя</label><input id="profileName" maxlength="80" autocomplete="name" placeholder="Как тебя зовут?"></div><button type="button" class="btn primary profile-save" id="profileSave">Сохранить профиль</button><p class="account-profile-message" id="profileMessage" role="status" aria-live="polite"></p></div>
+      </div>
+
+      <div class="card cloud-card settings-account-card"><div class="section-title"><h2>Аккаунт</h2></div><div class="settings-credentials">            <div class="field"><label for="supabaseEmail">Email</label><input id="supabaseEmail" type="email" placeholder="you@example.com" autocomplete="username"><button type="button" class="btn account-field-action" id="profileEmailUpdate" hidden>Изменить email</button></div>
+            <div class="field"><label for="supabasePassword" id="profilePasswordLabel">Пароль</label><input id="supabasePassword" type="password" placeholder="Введите пароль" autocomplete="current-password"><button type="button" class="btn account-field-action" id="profilePasswordUpdate" hidden>Изменить пароль</button></div>
+</div><p id="settingsAccountMessage" class="account-profile-message" role="status" aria-live="polite"></p>          <div class="cloud-head account-profile-sync"><div><h2 style="margin:0;font-size:17px" id="accountIdentityTitle">Вход и синхронизация</h2><div class="subtitle" style="margin-top:4px" id="accountIdentityText">Войди или создай аккаунт, чтобы синхронизировать данные.</div></div><div class="cloud-state"><span class="sync-dot" id="cloudSyncDot"></span><span id="cloudStatus">Не настроено</span></div></div>
+          <div class="cloud-actions">
+            <button class="btn" id="supabaseSignUp">Создать аккаунт</button>
+            <button class="btn primary" id="supabaseSignIn">Войти</button>
+            
+            <button class="btn" id="syncNow" disabled>Синхронизировать</button>
+          </div>
+          <div class="cloud-warning" id="cloudConflict">Planner не смог безопасно объединить данные этого устройства и облака. Выбери источник вручную.</div>
+          <div class="cloud-actions" id="cloudConflictActions" style="display:none">
+            <button class="btn" id="uploadLocalCloud">↑ Оставить данные этого устройства</button>
+            <button class="btn" id="exportConflictCopies">Скачать обе версии</button><button class="btn" id="downloadCloudLocal">↓ Использовать данные из облака</button>
+          </div>
+          <div class="cloud-actions"><button class="btn" id="transferGuestData" hidden>Перенести локальные данные в этот аккаунт</button></div><div class="cloud-meta" id="cloudMeta">Синхронизация готова. Войди или создай аккаунт.</div>
+          <details class="cloud-advanced">
+            <summary>Техническое подключение</summary>
+            <div class="form-grid" style="margin-top:10px">
+              <div class="field full"><label>Project URL</label><input id="supabaseUrl" type="url" placeholder="https://xxxx.supabase.co" autocomplete="off"></div>
+              <div class="field full"><label>Publishable / anon key</label><input id="supabaseKey" type="password" placeholder="sb_publishable_… или anon key" autocomplete="off"></div>
+            </div>
+            <div class="cloud-actions"><button class="btn" id="saveSupabaseConfig">Сохранить техническое подключение</button></div>
+            <div class="sync-config-note">Обычному пользователю этот раздел не нужен. Допустим только публичный Publishable/anon key; service role key использовать нельзя.</div>
+          </details>
+</div>
+        <div class="card" id="profileBodyParameters"><div class="section-title"><h2>Параметры тела</h2></div><div class="field"><label for="trainingHeightCm">Рост, см</label><input id="trainingHeightCm" type="number" min="100" max="250" step="1" placeholder="Например, 182"></div><p class="small">Общий параметр профиля. Не зависит от недели.</p><button class="btn" id="saveProfileHeight">Сохранить рост</button><p class="small" id="profileHeightStatus" role="status"></p></div>
+
+        <div class="card theme-settings-card">
+          <div class="section-title"><h2>Тема оформления</h2></div>
+          <div class="theme-choices" role="group" aria-label="Тема оформления">
+            <button type="button" class="theme-choice" data-theme-choice="system" aria-pressed="false"><span class="theme-icon-tile" aria-hidden="true"><svg viewBox="0 0 48 48" aria-hidden="true"><defs><linearGradient id="themeSystemMetal" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fffdf6"/><stop offset="1" stop-color="#aaa79e"/></linearGradient><linearGradient id="themeSystemScreen"><stop offset="50%" stop-color="#eeece5"/><stop offset="50%" stop-color="#303438"/></linearGradient></defs><rect x="5" y="8" width="38" height="27" rx="6" fill="url(#themeSystemMetal)"/><rect x="8" y="11" width="32" height="20" rx="3" fill="url(#themeSystemScreen)"/><path d="M21 35h6v6h-6z" fill="url(#themeSystemMetal)"/><rect x="15" y="40" width="18" height="3" rx="1.5" fill="url(#themeSystemMetal)"/></svg></span><strong>Системная</strong></button>
+            <button type="button" class="theme-choice" data-theme-choice="dark" aria-pressed="false"><span class="theme-icon-tile" aria-hidden="true"><svg viewBox="0 0 48 48" aria-hidden="true"><defs><linearGradient id="themeMoonMetal" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#f5eee0"/><stop offset=".55" stop-color="#d7cdbb"/><stop offset="1" stop-color="#a49a8b"/></linearGradient></defs><path d="M29 5a19 19 0 1 0 14 29c-10 3-19-4-19-14 0-6 2-11 5-15Z" fill="url(#themeMoonMetal)" stroke="#e7dece" stroke-width=".7"/><path d="M25 7C14 9 7 19 9 30" fill="none" stroke="#fff8eb" stroke-opacity=".45" stroke-width=".8" stroke-linecap="round"/></svg></span><strong>Тёмная</strong></button>
+            <button type="button" class="theme-choice" data-theme-choice="light" aria-pressed="false"><span class="theme-icon-tile" aria-hidden="true"><svg viewBox="0 0 48 48" aria-hidden="true"><defs><radialGradient id="themeSunMetal" cx=".35" cy=".25"><stop stop-color="#ffe8a2"/><stop offset=".7" stop-color="#eec770"/><stop offset="1" stop-color="#c99843"/></radialGradient></defs><g fill="none" stroke="#c69c52" stroke-width="3" stroke-linecap="round"><path d="M24 3v4m0 34v4M3 24h4m34 0h4M9 9l3 3m24 24 3 3M9 39l3-3m24-24 3-3"/></g><circle cx="24" cy="24" r="12" fill="url(#themeSunMetal)" stroke="#ebce8c" stroke-width=".8"/><path d="M16 21a9 9 0 0 1 10-6" fill="none" stroke="#fff5ce" stroke-width="1" stroke-linecap="round" opacity=".7"/></svg></span><strong>Светлая</strong></button>
+            <button type="button" class="theme-choice" data-theme-choice="beige" aria-pressed="false"><span class="theme-icon-tile" aria-hidden="true"><svg viewBox="0 0 48 48" fill="none" aria-hidden="true"><rect x="8" y="8" width="32" height="32" rx="10" fill="#e7d4b5" stroke="#b28b58"/><path d="M24 8v32" stroke="#c5a779"/><path d="M8 24h32" stroke="#c5a779"/><circle cx="24" cy="24" r="7" fill="#a77746" stroke="#fff4df" stroke-width="2"/></svg></span><strong>Бежевая</strong></button>
+          </div>
+        </div>
+        <div class="card">
+          <div class="section-title"><div><h2>Категории календаря</h2><span class="small">Ровно 10 категорий · меняется только цвет</span></div></div>
+          <div class="subtitle" style="margin-bottom:12px">Фриланс объединён с «Работой», а «Быт» — с «Личным». Старые события автоматически перенесены в новые категории.</div>
+          <div class="category-color-grid" id="calendarCategoryColors"></div>
+          <div class="dialog-actions">
+            <button class="btn" id="resetCategoryColors" type="button">Сбросить цвета</button>
+            <button class="btn primary" id="saveCategoryColors" type="button">Сохранить цвета</button>
+          </div>
+        </div>
+        <div class="card">
+          <div class="section-title"><h2>Ориентиры трат</h2></div>
+          <div class="subtitle" style="margin-bottom:10px">Дневная сумма — это ориентир, а не запрет. Недельный ориентир считается автоматически × 7.</div>
+          <div class="form-grid">
+            <div class="field"><label>Дневной ориентир, ₽</label><input id="budgetDay" type="number" min="0"></div>
+            <div class="field"><label>Недельный ориентир, ₽ · автоматически</label><input id="budgetWeek" type="number" min="0" disabled></div>
+            <div class="field full"><label>Месячный ориентир, ₽</label><input id="budgetMonth" type="number" min="0"></div>
+          </div>
+          <div class="dialog-actions"><button class="btn primary" id="saveBudgets">Сохранить</button></div>
+        </div>
+        <div class="card">
+          <div class="section-title"><h2>Начальный баланс</h2></div>
+          <div class="subtitle" style="margin-bottom:10px">Точка старта учёта. Эта сумма влияет на «Осталось», но не считается доходом.</div>
+          <div class="form-grid">
+            <div class="field"><label>Дата начала</label><input id="financeOpeningDate" type="date"></div>
+            <div class="field"><label>Баланс на начало дня, ₽</label><input id="financeOpeningBalance" type="number" step="0.01"></div>
+          </div>
+          <div class="dialog-actions"><button class="btn primary" id="saveFinanceSettings">Сохранить</button></div>
+        </div>
+        <div class="card">
+          <div class="section-title"><h2>Данные</h2></div>
+          <div class="note">Локальная копия всегда остаётся в Safari. Planner также хранит одну аварийную резервную копию перед опасными заменами данных и периодически во время работы.</div>
+          <div class="recovery-line"><div><strong>Аварийный резерв</strong><span id="recoveryStatus">Пока не создан</span></div><button class="btn" id="restoreRecovery" disabled>Восстановить</button></div>
+          <div class="storage-protection"><button type="button" class="btn" id="requestPersistentStorage">Защитить локальное хранение</button><p class="small" id="persistentStorageStatus" role="status">Браузер решает, может ли сохранять данные без автоматической очистки.</p></div><input type="file" id="importFile" accept="application/json" hidden><div class="dialog-actions"><button class="btn" id="exportData">Экспорт JSON</button><button class="btn" id="importData">Импорт JSON</button><button class="btn danger" id="resetData">Сбросить данные</button></div>
+        </div>
+</div><div class="settings-signout"><button class="btn danger" id="supabaseSignOut" style="display:none">Выйти из аккаунта</button></div></section>
+  </main>
+</div>
+
+<div class="fab-timer" id="timerDock">
+  <button class="timer-btn" id="timerToggle" title="Запустить / пауза">▶</button>
+  <button class="timer-copy timer-open-page" id="timerOpenFocus" type="button" title="Открыть Фокус">
+    <strong id="timerTitle">Фокус</strong><span id="timerState">Таймер остановлен</span>
+  </button>
+  <div class="timer-time" id="timerTime">00:00:00</div>
+  <button class="btn timer-focus-link" id="timerFocusLink" type="button">Фокус ↗</button>
+  <button class="btn" id="timerStop" style="padding:7px 10px" title="Завершить">■</button>
+</div>
+
+
+<div class="undo-toast" id="undoToast" role="status" aria-live="polite">
+  <div class="undo-toast-copy" id="undoToastText">Изменение сохранено</div>
+  <div class="undo-toast-actions">
+    <button class="btn" id="undoAction" type="button">↶ Отменить</button>
+    <button class="btn" id="redoAction" type="button" style="display:none">↷ Повторить</button>
+  </div>
+</div>
+
+<nav class="mobile-nav" id="mobileNav">
+  <button data-page="today" class="active"><span class="mi"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6.5A2.5 2.5 0 0 1 6.5 4h11A2.5 2.5 0 0 1 20 6.5v11a2.5 2.5 0 0 1-2.5 2.5h-11A2.5 2.5 0 0 1 4 17.5z"/><path d="M8 4v16"/><path d="M4 10h16"/></svg></span>Сегодня</button>
+  <button data-page="calendar"><span class="mi"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2.5"/><path d="M8 3v4M16 3v4M3 10h18"/></svg></span>Календарь</button>
+  <button data-page="money"><span class="mi"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7.5A2.5 2.5 0 0 1 6.5 5h11A2.5 2.5 0 0 1 20 7.5v9a2.5 2.5 0 0 1-2.5 2.5h-11A2.5 2.5 0 0 1 4 16.5z"/><path d="M4 9h16"/><circle cx="15.5" cy="13.5" r="1.5"/></svg></span>Деньги</button>
+  <button data-page="workouts"><span class="mi"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 9v6"/><path d="M19 9v6"/><path d="M8 7v10"/><path d="M16 7v10"/><path d="M5 12h14"/></svg></span>Трен.</button>
+  <button data-page="more"><span class="mi"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="5" cy="12" r="1.3"/><circle cx="12" cy="12" r="1.3"/><circle cx="19" cy="12" r="1.3"/></svg></span>Ещё</button>
+</nav>
+
+
+<dialog id="focusManualDialog">
+  <form id="focusManualForm" class="dialog-inner">
+    <div class="dialog-head"><h3>Добавить занятое время</h3><button type="button" class="icon-btn" data-dialog-close="focusManualDialog" aria-label="Закрыть">×</button></div>
+    <div class="form-grid">
+      <div class="field"><label>Дата</label><input name="date" type="date" required></div>
+      <div class="field"><label>Блок</label><select name="taskId" id="focusManualTask"></select></div>
+      <div class="field"><label>Длительность, минут</label><input name="minutes" type="number" min="1" max="1440" step="1" required placeholder="60"></div>
+      <div class="field"><label>Начало</label><input name="startTime" type="time" step="60" value="12:00"></div>
+      <div class="field full"><label>Комментарий</label><input name="note" placeholder="Например, забыл включить таймер"></div>
+    </div>
+    <div class="dialog-help">Ручная запись попадёт в общую историю фокуса и, если выбран календарный блок, в его проект.</div>
+    <div class="dialog-actions"><button type="button" class="btn" data-dialog-close="focusManualDialog">Отмена</button><button type="submit" class="btn primary">Добавить</button></div>
+  </form>
+</dialog>
+
+<dialog id="moneyLedgerDialog">
+  <div class="dialog-inner money-ledger-dialog">
+    <div class="dialog-head"><h3>Все операции</h3><button type="button" class="icon-btn" data-dialog-close="moneyLedgerDialog" aria-label="Закрыть">×</button></div>
+    <div class="money-ledger-toolbar">
+      <input id="moneyLedgerSearch" placeholder="Поиск по категории, описанию, проекту…" autocomplete="off">
+      <select id="moneyLedgerType">
+        <option value="">Все типы</option>
+        <option value="income">Доходы</option>
+        <option value="expense">Расходы</option>
+        <option value="saving">Накопления</option>
+        <option value="saving_return">Возвраты из накоплений</option>
+      </select>
+    </div>
+    <div class="money-ledger-list" id="moneyLedgerList"></div>
+  </div>
+</dialog>
+
+<dialog id="portfolioCollectionDialog"><form id="portfolioCollectionForm" class="dialog-inner"><div class="dialog-head"><h3>Новая коллекция</h3><button type="button" class="icon-btn" data-dialog-close="portfolioCollectionDialog" aria-label="Закрыть">×</button></div><div class="field"><label for="portfolioCollectionName">Название</label><input id="portfolioCollectionName" required maxlength="50" placeholder="Например, Дизайн"></div><p class="small" id="portfolioCollectionMessage" role="status"></p><div class="dialog-actions"><button type="button" class="btn" data-dialog-close="portfolioCollectionDialog">Отмена</button><button type="submit" class="btn primary">Создать</button></div></form></dialog>
+<dialog id="portfolioPreviewDialog" class="portfolio-preview-dialog"><div class="dialog-inner"><div class="dialog-head"><div><h2 id="portfolioPreviewName"></h2><p class="small">Предпросмотр · только готовые работы</p></div><button type="button" class="icon-btn" data-dialog-close="portfolioPreviewDialog" aria-label="Закрыть предпросмотр">×</button></div><div id="portfolioPreviewBody"></div></div></dialog>
+
+<dialog id="moneyDialog">
+  <form id="moneyForm" class="dialog-inner">
+    <div class="dialog-head"><h3 id="moneyDialogTitle">Новая операция</h3><button type="button" class="icon-btn" data-dialog-close="moneyDialog" aria-label="Закрыть">×</button></div>
+    <input type="hidden" name="id">
+    <div class="form-grid">
+      <div class="field"><label>Дата</label><input name="date" type="date" required></div>
+      <div class="field"><label>Тип</label><select name="type"><option value="income">Доход</option><option value="expense">Расход</option><option value="saving">Отложено</option></select></div>
+      <div class="field" id="moneyCategoryField"><label>Категория</label><input name="category" placeholder="Например, Фриланс" required></div>
+      <div class="field"><label>Сумма, ₽</label><input name="amount" type="number" min="0" step="0.01" required></div>
+      <div class="field"><label>Задача / направление</label><select name="projectId" id="moneyProjectSelect"><option value="">Без задачи</option></select></div>
+      <div class="field" id="moneyGoalField" style="display:none"><label>Цель накопления</label><select name="goalId" id="moneyGoalSelect"><option value="">Не распределять</option></select></div>
+      <div class="field full" id="moneyExternalField" style="display:none">
+        <label class="check-line">
+          <input name="external" type="checkbox">
+          Вклад другого человека
+          <span class="muted">· не уменьшает твой баланс; комментарий будет показан у цели</span>
+        </label>
+      </div>
+      <div class="field full"><label>Описание / имя</label><input name="note" placeholder="Например, Даша или короткое описание"></div>
+      <div class="field" id="moneyRepeatField"><label>Повтор</label><select name="repeat"><option value="none">Не повторять</option><option value="weekly">Каждую неделю</option><option value="monthly">Каждый месяц</option></select></div>
+      <div class="field" id="moneyRepeatUntilField"><label>Повторять до</label><input name="repeatUntil" type="date"></div>
+      <div class="field full" id="moneySeriesField" style="display:none"><label class="check-line"><input name="applySeries" type="checkbox"> Применить изменения ко всей серии <span class="muted">· даты операций не меняются</span></label></div>
+    </div>
+    <div class="dialog-help" id="moneySourceHint" style="display:none"></div>
+    <div class="dialog-actions"><button type="button" class="btn danger" id="deleteMoney" style="margin-right:auto;display:none">Удалить</button><button type="button" class="btn danger" id="deleteMoneySeries" style="display:none">Удалить серию</button><button type="button" class="btn" data-dialog-close="moneyDialog">Отмена</button><button type="submit" class="btn primary">Сохранить</button></div>
+  </form>
+</dialog>
+
+<dialog id="savingsReturnDialog">
+  <form id="savingsReturnForm" class="dialog-inner">
+    <div class="dialog-head"><h3>Вернуть из накоплений</h3><button type="button" class="icon-btn" data-dialog-close="savingsReturnDialog" aria-label="Закрыть">×</button></div>
+    <input type="hidden" name="id">
+    <input type="hidden" name="goalId">
+    <div class="form-grid">
+      <div class="field full"><div class="note" id="savingsReturnGoal">—</div></div>
+      <div class="field"><label>Чьи деньги</label><select name="owner"><option value="own">Мои</option><option value="external">Другого человека</option></select></div>
+      <div class="field"><label>Дата</label><input name="date" type="date" required></div>
+      <div class="field"><label>Сумма, ₽</label><input name="amount" type="number" min="0.01" step="0.01" required></div>
+      <div class="field full"><div class="note" id="savingsReturnAvailable">Доступно: —</div></div>
+      <div class="field full"><label>Комментарий</label><input name="note" placeholder="Например, Даша · необязательно"></div>
+    </div>
+    <div class="dialog-help" id="savingsReturnHelp">Свои деньги вернутся в доступный баланс. Деньги другого человека уменьшат только накопление и твой баланс не изменят.</div>
+    <div class="dialog-actions"><button type="button" class="btn danger" id="deleteSavingsReturn" style="margin-right:auto;display:none">Удалить</button><button type="button" class="btn" data-dialog-close="savingsReturnDialog">Отмена</button><button type="submit" class="btn primary">Сохранить</button></div>
+  </form>
+</dialog>
+
+<dialog id="goalSavingDialog">
+  <form id="goalSavingForm" class="dialog-inner">
+    <div class="dialog-head"><h3>Добавить в накопление</h3><button type="button" class="icon-btn" data-dialog-close="goalSavingDialog" aria-label="Закрыть">×</button></div>
+    <input type="hidden" name="goalId">
+    <div class="form-grid">
+      <div class="field full"><div class="note" id="goalSavingGoal">—</div></div>
+      <div class="field"><label>Дата</label><input name="date" type="date" required></div>
+      <div class="field"><label>Сумма, ₽</label><input name="amount" type="number" min="0.01" step="0.01" required></div>
+      <div class="field full">
+        <label class="check-line">
+          <input name="external" type="checkbox">
+          Вклад другого человека
+          <span class="muted">· не уменьшает твой баланс; комментарий будет показан у цели</span>
+        </label>
+      </div>
+      <div class="field full"><label>Имя или комментарий</label><input name="note" placeholder="Например, Даша · необязательно"></div>
+    </div>
+    <div class="dialog-help">Свои деньги уменьшат доступный баланс. Если вклад делает другой человек, укажи его имя или комментарий — он отобразится прямо в карточке цели.</div>
+    <div class="dialog-actions"><button type="button" class="btn" data-dialog-close="goalSavingDialog">Отмена</button><button type="submit" class="btn primary">Добавить</button></div>
+  </form>
+</dialog>
+
+<dialog id="subscriptionDialog">
+  <form id="subscriptionForm" class="dialog-inner">
+    <div class="dialog-head"><h3 id="subscriptionDialogTitle">Добавить регулярную трату</h3><button type="button" class="icon-btn" data-dialog-close="subscriptionDialog" aria-label="Закрыть">×</button></div>
+    <input type="hidden" name="id">
+    <div class="form-grid">
+      <div class="field full"><label>Название</label><input name="title" required maxlength="60" placeholder="Например, iCloud / YouTube Premium / интернет"></div>
+      <div class="field"><label>Сумма в месяц, ₽</label><input name="amount" type="number" min="0" step="0.01" required placeholder="299"></div>
+      <div class="field"><label>День списания</label><input name="billingDay" type="number" min="1" max="31" step="1" placeholder="Необязательно"></div>
+      <div class="field full"><label>Комментарий</label><input name="note" maxlength="120" placeholder="Необязательно"></div>
+      <div class="field full"><div class="note">Эта запись существует только как справочная статистика. Реальное списание ты, как и раньше, добавляешь отдельно в «Траты» в тот день, когда деньги действительно ушли.</div></div>
+    </div>
+    <div class="dialog-actions">
+      <button type="button" class="btn danger" id="deleteSubscription" style="margin-right:auto;display:none">Удалить</button>
+      <button type="button" class="btn" data-dialog-close="subscriptionDialog">Отмена</button>
+      <button type="submit" class="btn primary">Сохранить</button>
+    </div>
+  </form>
+</dialog>
+
+<dialog id="recurringIncomeDialog">
+  <form id="recurringIncomeForm" class="dialog-inner">
+    <div class="dialog-head"><h3 id="recurringIncomeDialogTitle">Добавить регулярный доход</h3><button type="button" class="icon-btn" data-dialog-close="recurringIncomeDialog" aria-label="Закрыть">×</button></div>
+    <input type="hidden" name="id">
+    <div class="form-grid">
+      <div class="field full"><label>Источник</label><input name="title" required maxlength="60" placeholder="Например, зарплата / аренда / постоянный клиент"></div>
+      <div class="field"><label>Сумма в месяц, ₽</label><input name="amount" type="number" min="0" step="0.01" required placeholder="65000"></div>
+      <div class="field"><label>День поступления</label><input name="billingDay" type="number" min="1" max="31" step="1" placeholder="Необязательно"></div>
+      <div class="field full"><label>Комментарий</label><input name="note" maxlength="120" placeholder="Необязательно"></div>
+      <div class="field full"><div class="note">Это только справочная статистика. Фактическое поступление в «Деньги» добавляется отдельно, когда деньги реально пришли.</div></div>
+    </div>
+    <div class="dialog-actions">
+      <button type="button" class="btn danger" id="deleteRecurringIncome" style="margin-right:auto;display:none">Удалить</button>
+      <button type="button" class="btn" data-dialog-close="recurringIncomeDialog">Отмена</button>
+      <button type="submit" class="btn primary">Сохранить</button>
+    </div>
+  </form>
+</dialog>
+
+<dialog id="foodDialog">
+  <form id="foodForm" class="dialog-inner">
+    <div class="dialog-head"><h3 id="foodDialogTitle">Добавить трату</h3><button type="button" class="icon-btn" data-dialog-close="foodDialog" aria-label="Закрыть">×</button></div>
+    <input type="hidden" name="id">
+    <div class="form-grid">
+      <div class="field"><label>Дата</label><input name="date" type="date" required></div>
+      <div class="field"><label>Название</label><input name="title" placeholder="Обед, ужин, кофе…" required></div>
+      <div class="field"><label>Категория</label><select name="category"><option>Продукты</option><option>Кафе</option><option>Доставка</option><option>Транспорт</option><option>Дом</option><option>Здоровье</option><option>Развлечения</option><option>Покупки</option><option>Подписки/связь</option><option>Перекусы</option><option>Другое</option></select></div>
+      <div class="field"><label>Сумма, ₽</label><input name="amount" type="number" min="0" step="0.01" required></div>
+      <div class="field full"><label>Имя или комментарий</label><input name="note" placeholder="Например, Даша · необязательно"></div>
+      <div class="field full">
+        <label class="check-line">
+          <input name="excludeFromLimit" type="checkbox">
+          Не учитывать в повседневном ориентире
+          <span class="muted">· медицина, крупные обязательные покупки и другие разовые расходы</span>
+        </label>
+      </div>
+      <div class="field full"><div class="note">Расход всё равно полностью попадёт в «Деньги». Этот переключатель влияет только на повседневный ориентир и связанную недельную статистику.</div></div>
+    </div>
+    <div class="dialog-actions"><button type="button" class="btn danger" id="deleteFood" style="margin-right:auto;display:none">Удалить</button><button type="button" class="btn" data-dialog-close="foodDialog">Отмена</button><button type="submit" class="btn primary">Сохранить</button></div>
+  </form>
+</dialog>
+
+<dialog id="projectDialog">
+  <form id="projectForm" class="dialog-inner">
+    <div class="dialog-head"><h3 id="projectDialogTitle">Новая задача</h3><button type="button" class="icon-btn" data-dialog-close="projectDialog" aria-label="Закрыть">×</button></div>
+    <input type="hidden" name="id">
+    <div class="form-grid">
+      <div class="field full"><label for="taskAreaType">Над чем работаем?</label><select name="directionType" id="taskAreaType"><option value="goal">Цель</option><option value="project" selected>Проект</option><option value="work">Работа</option><option value="learning">Обучение</option><option value="creativity">Творчество</option></select></div>
+      <div class="field full"><div class="note" id="taskAreaTypeHelp">Проект с результатом и подзадачами.</div></div>
+      <div class="field full"><label>Название</label><input name="name" required placeholder="Например, Личный сайт"></div>
+      <div class="field"><label>Цвет</label><select name="color">
+        <option value="#6366f1">Индиго</option><option value="#8b5cf6">Фиолетовый</option><option value="#3b82f6">Синий</option><option value="#22c55e">Зелёный</option><option value="#f59e0b">Оранжевый</option><option value="#ef4444">Красный</option><option value="#ec4899">Розовый</option>
+      </select></div>
+      <div class="field full"><label>Описание</label><textarea name="description" placeholder="Что важно и над чем нужно работать"></textarea></div>
+      <div class="field full"><label><input name="archived" type="checkbox"> В архиве</label></div>
+    </div>
+    <div class="dialog-help">Удаление задачи не удалит календарные блоки, деньги и историю фокуса: они просто останутся без привязки.</div>
+    <div class="dialog-actions"><button type="button" class="btn danger" id="deleteProject" style="margin-right:auto;display:none">Удалить задачу</button><button type="button" class="btn" data-dialog-close="projectDialog">Отмена</button><button type="submit" class="btn primary">Сохранить</button></div>
+  </form>
+</dialog>
+
+
+<dialog id="goalDialog">
+  <form id="goalForm" class="dialog-inner">
+    <div class="dialog-head"><h3 id="goalDialogTitle">Новая цель</h3><button type="button" class="icon-btn" data-dialog-close="goalDialog" aria-label="Закрыть">×</button></div>
+    <input type="hidden" name="id">
+    <div class="form-grid">
+      <div class="field full"><label>Название</label><input name="title" required placeholder="Например, Переезд"></div>
+      <div class="field"><label>Сумма цели, ₽</label><input name="target" type="number" min="1" step="1" required></div>
+      <div class="field"><label>Цвет</label><select name="color"><option value="#3b82f6">Синий</option><option value="#8b5cf6">Фиолетовый</option><option value="#22c55e">Зелёный</option><option value="#f59e0b">Оранжевый</option><option value="#ec4899">Розовый</option><option value="#ef4444">Красный</option></select></div>
+    </div>
+    <div class="dialog-help">Прогресс цели считается только из операций «Отложено», привязанных к этой цели.</div>
+    <div class="dialog-actions"><button type="button" class="btn danger" id="deleteGoal" style="margin-right:auto;display:none">Удалить цель</button><button type="button" class="btn" data-dialog-close="goalDialog">Отмена</button><button type="submit" class="btn primary">Сохранить</button></div>
+  </form>
+</dialog>
+
+<dialog id="calendarPresetDialog">
+  <form id="calendarPresetForm" class="dialog-inner">
+    <div class="dialog-head"><h3>Новый быстрый блок</h3><button type="button" class="icon-btn" data-dialog-close="calendarPresetDialog" aria-label="Закрыть">×</button></div>
+    <div class="form-grid">
+      <div class="field full"><label>Название</label><input name="title" required maxlength="40" placeholder="Например, Монтаж"></div>
+      <div class="field"><label>Категория</label><select name="category">
+        <option value="work">Работа</option><option value="project">Свои проекты</option><option value="study">Обучение</option><option value="commute">Дорога</option><option value="food">Еда</option><option value="sport">Спорт</option><option value="personal">Личное / быт</option><option value="together">Время вместе</option><option value="rest">Отдых</option><option value="other">Другое</option>
+      </select></div>
+      <div class="field"><label>Длительность, мин</label><input name="duration" type="number" min="1" max="720" step="1" value="60" required></div>
+      <div class="field"><label>Время по умолчанию</label><input name="defaultStart" type="time" step="60" value="19:00" required></div>
+    </div>
+    <div class="dialog-actions">
+      <button type="button" class="btn" data-dialog-close="calendarPresetDialog">Отмена</button>
+      <button type="submit" class="btn primary">Добавить плашку</button>
+    </div>
+  </form>
+</dialog>
+
+<dialog id="projectNoteDialog" class="project-task-note" aria-label="Подзадача и заметка">
+  <div class="project-note-editor">
+    <div class="project-note-nav"><button class="btn" id="projectNoteClose">‹ Назад</button><button class="btn" id="projectNoteSchedule">Дата и время</button><button class="btn" id="projectNoteNextDay" hidden>На следующий день</button><button class="btn" id="projectNoteCalendar">В календарь ↗</button><button type="button" class="btn primary" id="projectNoteCommit">Готово</button></div>
+    <label class="field"><span class="small">Название подзадачи</span><input id="projectNoteTitle" placeholder="Новая подзадача" autocomplete="off"></label>
+    <div class="project-note-info" id="projectNoteInfo"></div>
+    <div class="plan-actual" id="projectNotePlanActual" hidden></div>
+    <textarea id="projectNoteBody" aria-label="Текст заметки" placeholder="Идеи, ссылки, планы, списки — пиши здесь…" spellcheck="true"></textarea>
+    <div class="project-note-footer"><button class="tiny-btn" id="projectNoteBullet" aria-label="Добавить пункт списка">＋ Список</button><button class="tiny-btn" id="projectNoteChecklist" aria-label="Добавить пункт чек-листа">☐ Чек-лист</button><label class="check-line"><input type="checkbox" id="projectNoteDone"> Выполнено</label><button type="button" class="tiny-btn" id="projectNoteDelete" hidden>Удалить подзадачу</button><button type="button" class="tiny-btn" id="projectNoteDiscard" hidden>Удалить черновик</button><span id="projectNoteSaveStatus" role="status">Сохранено на устройстве</span></div>
+  </div>
+</dialog>
+
+<dialog id="avatarCropDialog" aria-labelledby="avatarCropTitle"><div class="dialog-inner"><div class="dialog-head"><h3 id="avatarCropTitle">Настроить фото</h3><button type="button" class="icon-btn" id="avatarCropClose" aria-label="Закрыть">×</button></div><p class="small">Перетащи фото внутри круга. Используй ползунок или два пальца, чтобы изменить масштаб.</p><div class="avatar-crop-stage"><canvas id="avatarCropCanvas" width="600" height="600" tabindex="0" aria-label="Кадрирование фото. Стрелки сдвигают фото, ползунок меняет масштаб."></canvas><span class="avatar-crop-ring" aria-hidden="true"></span></div><div class="field"><label for="avatarCropZoom">Масштаб <span id="avatarCropZoomValue">100%</span></label><input id="avatarCropZoom" type="range" min="1" max="4" step="0.01" value="1"></div><div class="avatar-crop-tools"><button type="button" class="btn" id="avatarCropCenter">По центру</button><button type="button" class="btn" id="avatarCropReset">Сбросить кадр</button></div><p class="small" id="avatarCropMessage" role="status" aria-live="polite"></p><div class="dialog-actions"><button type="button" class="btn" id="avatarCropCancel">Отмена</button><button type="button" class="btn primary" id="avatarCropApply">Применить</button></div></div></dialog>
+<dialog id="learningEditDialog" class="learning-edit-dialog" aria-labelledby="learningEditTitle"><form id="learningEditForm" class="dialog-inner"><div class="dialog-head"><h3 id="learningEditTitle"></h3><button type="button" class="icon-btn" id="learningEditClose" aria-label="Закрыть редактор">×</button></div><div id="learningEditFields" class="learning-edit-fields"></div><p class="small" id="learningEditMessage" role="status" aria-live="polite"></p><div class="dialog-actions"><button type="button" class="btn" id="learningEditCancel">Отмена</button><button type="submit" class="btn primary" id="learningEditSave">Готово</button></div></form></dialog>
+<dialog id="learningReviewDialog" class="learning-review-dialog" aria-labelledby="learningReviewTitle"><div class="dialog-inner"><div class="dialog-head"><h3 id="learningReviewTitle">Повторение</h3><button type="button" class="icon-btn" id="learningReviewClose" aria-label="Закрыть повторение">×</button></div><span class="small" id="learningReviewContext"></span><h2 id="learningReviewQuestion"></h2><div class="field"><label for="learningRecallAnswer">Твой ответ по памяти</label><textarea id="learningRecallAnswer" rows="5" placeholder="Ответь своими словами или выполни упражнение…"></textarea></div><button type="button" class="btn primary" id="learningReveal">Показать ответ</button><div id="learningAnswerPanel" hidden><div class="learning-answer" id="learningReferenceAnswer"></div><p class="small">Сравни ответы. Это твоя самооценка, а не автоматическая проверка.</p><div class="learning-rating"><button type="button" class="btn" data-learning-rate="again">Не вспомнил</button><button type="button" class="btn" data-learning-rate="hard">С трудом</button><button type="button" class="btn primary" data-learning-rate="good">Уверенно</button></div></div><p class="small" id="learningReviewMessage" role="status" aria-live="polite"></p></div></dialog>
+
+<dialog id="eventDialog">
+  <form id="eventForm" class="dialog-inner">
+    <div class="dialog-head"><h3 id="eventDialogTitle">Событие</h3><button type="button" class="icon-btn" data-dialog-close="eventDialog" aria-label="Закрыть">×</button></div>
+    <input type="hidden" name="id">
+    <div class="plan-actual" id="eventPlanActual" hidden></div><button type="button" class="btn" id="eventLearningLink" hidden>Открыть этап обучения ↗</button>
+    <div class="form-grid">
+      <div class="field full"><label>Название</label><input name="title" required placeholder="Например, Фриланс"></div>
+      <div class="field"><label>Дата</label><input name="date" type="date" required></div>
+      <div class="field"><label>Категория</label><select name="category">
+        <option value="work">Работа</option><option value="project">Свои проекты</option><option value="study">Обучение</option><option value="commute">Дорога</option><option value="food">Еда</option><option value="sport">Спорт</option><option value="personal">Личное / быт</option><option value="together">Время вместе</option><option value="rest">Отдых</option><option value="other">Другое</option>
+      </select></div>
+      <div class="field"><label>Задача / направление</label><select name="projectId" id="eventProjectSelect"><option value="">Без задачи</option></select></div>
+      <div class="field"><label>Статус</label><select name="status">
+        <option value="planned">Запланировано</option>
+        <option value="done">Выполнено</option>
+        <option value="moved">Перенесено</option>
+        <option value="missed">Не сделано</option>
+      </select></div>
+      
+      <div class="field"><label>Начало</label><input name="start" type="time" step="60" required></div>
+      <div class="field"><label>Конец</label><input name="end" type="time" step="60" required></div>
+      <div class="field full"><label>Заметка</label><textarea name="note" placeholder="Необязательно"></textarea></div>
+      <div class="field" id="eventRepeatField"><label>Повтор</label><select name="repeat"><option value="none">Не повторять</option><option value="daily">Каждый день</option><option value="weekdays">По будням</option><option value="weekends">По выходным</option><option value="weekly">Каждую неделю</option></select></div>
+      <div class="field" id="eventRepeatUntilField"><label>Повторять до</label><input name="repeatUntil" type="date"></div>
+      <div class="field full" id="eventSeriesField" style="display:none"><label class="check-line"><input name="applySeries" type="checkbox"> Применить изменения ко всей серии <span class="muted">· даты остальных событий не меняются</span></label></div>
+    </div>
+    <div class="dialog-actions"><button type="button" class="btn" id="eventNextDay" hidden>На следующий день</button><button type="button" class="btn danger" id="deleteEventPreset" style="margin-right:auto;display:none">Удалить быстрый блок</button><button type="button" class="btn danger" id="deleteEvent" style="margin-right:auto;display:none">Удалить</button><button type="button" class="btn danger" id="deleteEventSeries" style="display:none">Удалить серию</button><button type="button" class="btn" data-dialog-close="eventDialog">Отмена</button><button type="submit" class="btn primary">Сохранить</button></div>
+  </form>
+</dialog>
+
+<dialog id="timePickerDialog" class="time-picker-dialog">
+  <div class="dialog-inner time-picker-inner">
+    <div class="dialog-head"><h3 id="timePickerTitle">Выбрать время</h3><button type="button" class="icon-btn" id="timePickerClose" aria-label="Закрыть">×</button></div>
+    <div class="time-picker-preview" id="timePickerPreview">00:00</div>
+    <div class="time-picker-columns">
+      <div class="time-picker-column"><span>Часы</span><div class="time-picker-list" id="timePickerHours"></div></div>
+      <div class="time-picker-column"><span>Минуты</span><div class="time-picker-list" id="timePickerMinutes"></div></div>
+    </div>
+    <div class="dialog-actions">
+      <button type="button" class="btn" id="timePickerNow">Сейчас</button>
+      <button type="button" class="btn primary" id="timePickerDone">Готово</button>
+    </div>
+  </div>
+</dialog>
+<dialog id="workoutDialog">
+  <form id="workoutForm" class="dialog-inner">
+    <div class="dialog-head"><h3 id="workoutDialogTitle">Новая тренировка</h3><button type="button" class="icon-btn" data-dialog-close="workoutDialog" aria-label="Закрыть">×</button></div>
+    <input type="hidden" name="id">
+    <input type="hidden" name="calendarEventId">
+    <div class="form-grid">
+      <div class="field full"><label>Название</label><input name="title" required placeholder="Например, Ноги + пресс"></div>
+      <div class="field"><label>Дата</label><input name="date" type="date" required></div>
+      <div class="field"><label>Время в календаре</label><input name="start" type="time" step="60" value="19:00" required></div>
+      <div class="field"><label>Тип</label><select name="type"><option value="home">Дом</option><option value="outdoor">Улица</option><option value="gym">Спортзал</option></select></div>
+      <div class="field"><label>Статус</label><select name="status"><option value="planned">Запланирована</option><option value="done">Выполнена</option><option value="missed">Пропущена</option></select></div>
+      <div class="field"><label>Длительность, мин</label><input name="duration" type="number" min="0" step="5" placeholder="60"></div>
+      <div class="field"><label>Сожжено, ккал</label><input name="caloriesBurned" type="number" min="0" step="1" placeholder="300"></div>
+      <div class="field full"><label>Комментарий</label><input name="note" placeholder="Например, спина + турник"></div>
+    </div>
+    <div class="dialog-actions"><button type="button" class="btn danger" id="deleteWorkout" style="margin-right:auto;display:none">Удалить</button><button type="button" class="btn" data-dialog-close="workoutDialog">Отмена</button><button type="submit" class="btn primary">Сохранить</button></div>
+  </form>
+</dialog>
+
+<dialog id="calorieDialog">
+  <form id="calorieForm" class="dialog-inner">
+    <div class="dialog-head"><h3 id="calorieDialogTitle">Запись калорий</h3><button type="button" class="icon-btn" data-dialog-close="calorieDialog" aria-label="Закрыть">×</button></div>
+    <input type="hidden" name="id">
+    <div class="form-grid">
+      <div class="field"><label>Дата</label><input name="date" type="date" required></div>
+      <div class="field"><label>Приём пищи / запись</label><input name="title" required placeholder="Завтрак, ужин, перекус"></div>
+      <div class="field"><label>Калории</label><input name="calories" type="number" min="0" step="1" required placeholder="650"></div>
+      <div class="field full"><label>Комментарий</label><input name="note" placeholder="Например, паста с курицей"></div>
+    </div>
+    <div class="dialog-actions"><button type="button" class="btn danger" id="deleteCalorie" style="margin-right:auto;display:none">Удалить</button><button type="button" class="btn" data-dialog-close="calorieDialog">Отмена</button><button type="submit" class="btn primary">Сохранить</button></div>
+  </form>
+</dialog>
+
+<dialog id="weightDialog">
+  <form id="weightForm" class="dialog-inner">
+    <div class="dialog-head"><h3 id="weightDialogTitle">Запись веса</h3><button type="button" class="icon-btn" data-dialog-close="weightDialog" aria-label="Закрыть">×</button></div>
+    <input type="hidden" name="id">
+    <div class="form-grid">
+      <div class="field"><label>Дата</label><input name="date" type="date" required></div>
+      <div class="field"><label>Вес, кг</label><input name="value" type="number" min="0" step="0.1" required placeholder="75.4"></div>
+      <div class="field"><label>Цвет зоны</label><select name="zone"><option value="green">Зелёная</option><option value="yellow">Жёлтая</option><option value="red">Красная</option></select></div>
+      <div class="field full"><label>Комментарий</label><input name="note" placeholder="Утром натощак и т. п."></div>
+    </div>
+    <div class="dialog-actions"><button type="button" class="btn danger" id="deleteWeight" style="margin-right:auto;display:none">Удалить</button><button type="button" class="btn" data-dialog-close="weightDialog">Отмена</button><button type="submit" class="btn primary">Сохранить</button></div>
+  </form>
+</dialog>
+
+
+<script src="./js/app.js"></script>
+</body>
+</html>

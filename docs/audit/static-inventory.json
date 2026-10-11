@@ -1,0 +1,220 @@
+{
+  "files": [
+    {
+      "path": "frontend_ts/public/icon-192.png",
+      "bytes": 25258,
+      "lines": null
+    },
+    {
+      "path": "frontend_ts/public/icon-512.png",
+      "bytes": 91768,
+      "lines": null
+    },
+    {
+      "path": "frontend_ts/public/images/profile-89aa5b0d3614.png",
+      "bytes": 1143194,
+      "lines": null
+    },
+    {
+      "path": "frontend_ts/public/index.html",
+      "bytes": 96275,
+      "lines": 810
+    },
+    {
+      "path": "frontend_ts/public/js/app.js",
+      "bytes": 361534,
+      "lines": 3980
+    },
+    {
+      "path": "frontend_ts/public/manifest.webmanifest",
+      "bytes": 587,
+      "lines": 25
+    },
+    {
+      "path": "frontend_ts/public/service-worker.js",
+      "bytes": 1684,
+      "lines": 34
+    },
+    {
+      "path": "frontend_ts/public/styles/app.css",
+      "bytes": 236742,
+      "lines": 2162
+    }
+  ],
+  "functionDeclarations": 378,
+  "possiblyUnusedFunctions": [
+    {
+      "name": "profileOverviewMetrics",
+      "line": 635
+    },
+    {
+      "name": "resizeProfilePhoto",
+      "line": 683
+    },
+    {
+      "name": "trackedProjectMs",
+      "line": 1062
+    },
+    {
+      "name": "caloriesTotal",
+      "line": 1130
+    },
+    {
+      "name": "weightOnDate",
+      "line": 1132
+    },
+    {
+      "name": "goalSaved",
+      "line": 1270
+    },
+    {
+      "name": "previousCompletedWeek",
+      "line": 1681
+    },
+    {
+      "name": "taskCalendarTargetDate",
+      "line": 2611
+    },
+    {
+      "name": "findTaskCalendarSlot",
+      "line": 2623
+    },
+    {
+      "name": "seedViewedWorkWeek",
+      "line": 3034
+    },
+    {
+      "name": "saveCurrentWeekTemplate",
+      "line": 3040
+    },
+    {
+      "name": "applyCurrentWeekTemplate",
+      "line": 3041
+    },
+    {
+      "name": "focusTaskLabel",
+      "line": 3219
+    },
+    {
+      "name": "focusPeriodBounds",
+      "line": 3319
+    },
+    {
+      "name": "renderFocusChart",
+      "line": 3353
+    },
+    {
+      "name": "renderFocusBreakdown",
+      "line": 3362
+    },
+    {
+      "name": "renderFocusSessions",
+      "line": 3383
+    }
+  ],
+  "innerHTMLAssignments": 80,
+  "saveCalls": 70,
+  "cssImportantCount": 154,
+  "repeatedCSSSelectors": [
+    [
+      ".content",
+      14
+    ],
+    [
+      "@media(max-width:820px),(pointer:coarse)",
+      12
+    ],
+    [
+      ".cards",
+      10
+    ],
+    [
+      ".title-wrap h1",
+      8
+    ],
+    [
+      ".metric .value",
+      8
+    ],
+    [
+      ".goal-card-total",
+      8
+    ],
+    [
+      ".topbar",
+      7
+    ],
+    [
+      ".subtitle",
+      6
+    ],
+    [
+      ".month-day",
+      6
+    ],
+    [
+      ".month-day-num",
+      6
+    ],
+    [
+      ".month-day-count",
+      6
+    ],
+    [
+      ".search-v2 input",
+      6
+    ],
+    [
+      ".today-task-row",
+      6
+    ],
+    [
+      ".today-task-title",
+      6
+    ],
+    [
+      ".workout-week-grid",
+      6
+    ],
+    [
+      ".money-goals-block",
+      6
+    ],
+    [
+      ".goal-card",
+      6
+    ],
+    [
+      ".goal-card-side",
+      6
+    ],
+    [
+      ".goal-actions .tiny-btn",
+      6
+    ],
+    [
+      ".portfolio-work-delete",
+      6
+    ],
+    [
+      ".portfolio-grid,.has-editor .portfolio-grid",
+      6
+    ],
+    [
+      ".portfolio-tools",
+      6
+    ],
+    [
+      ".learning-workspace",
+      6
+    ],
+    [
+      ".learning-next",
+      6
+    ],
+    [
+      ":root",
+      5
+    ]
+  ]
+}
